@@ -6,7 +6,7 @@
 package Servidor;
 
 import java.util.LinkedList;
-
+import Utilidades.*;
 /**
  *
  * @author millenium
@@ -16,4 +16,10 @@ public class Jugador {
     private int tamaño;
     private int puntos;
     private Direccion direccion;
+
+    public LinkedList<Coordenadas> getSerpiente() {
+        return serpiente;
+    }
+    
+    
 }
