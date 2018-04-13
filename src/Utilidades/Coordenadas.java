@@ -41,4 +41,35 @@ public class Coordenadas {
     public void aumentarY(int y) {
         this.y += y;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Coordenadas other = (Coordenadas) obj;
+        if (this.x != other.getX()) {
+            return false;
+        }
+        if (this.y != other.getY()) {
+            return false;
+        }
+        return true;
+    }
+    
+
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + this.x;
+        hash = 83 * hash + this.y;
+        return hash;
+    }
 }

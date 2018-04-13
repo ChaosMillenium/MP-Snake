@@ -52,14 +52,28 @@ public class ThreadServer implements Runnable {
     public void run() {
         try {
             PrintWriter out = new PrintWriter(this.socket.getOutputStream(), true);
-            out.println(ConstructorMensajes.idc(this.socketID));
-            out.println(ConstructorMensajes.tab(this.controlador.getFilas(),this.controlador.getColumnas()));
-            out.println(ConstructorMensajes.tsp(this.controlador.getTamañoBase()));
-            int[] coordenadasIniciales = this.controlador.coordenadasIniciales();
-            out.println(ConstructorMensajes.coi(coordenadasIniciales));
+            BufferedReader in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+            out.println(ConstructorMensajes.idc(this.socketID)); //Manda ID
+            out.println(ConstructorMensajes.tab(this.controlador.getFilas(), this.controlador.getColumnas())); //Manda tamaño tablero
+            out.println(ConstructorMensajes.tsp(this.controlador.getTamañoBase())); //Manda tamaño serpiente
+            //int[] coordenadasIniciales = this.controlador.coordenadasIniciales(); // Manda coordenadas iniciales
+            //out.println(ConstructorMensajes.coi(coordenadasIniciales));
             while (true) {
-                //Direccion, Fin
-                
+                String input = in.readLine();
+                String[] parseado = input.split(";");
+                switch (parseado[0]) {
+                    case "DIR": {
+                        this.controlador.cambiarDireccion(parseado[1], Integer.parseInt(parseado[2]));
+                        break;
+                    }
+                    case "FIN": {
+                        if (Integer.parseInt(parseado[1]) == (this.socketID)) {
+                            ThreadServer.conexionesActivas.remove(this.socketID);
+                            this.socket.close();
+                            return;
+                        }
+                    }
+                }
             }
         } catch (IOException e) {
             System.out.println("Error de E/S");
