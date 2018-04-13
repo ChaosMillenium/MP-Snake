@@ -13,7 +13,7 @@ public class ServidorMain {
 
     public static void main(String[] args) {
         ModeloJuego modelo = new ModeloJuego();
-        ControladorServidor controlador = new ControladorServidor();
+        ControladorServidor controlador = new ControladorServidor(modelo);
 
         modelo.addObserver(controlador);
         
