@@ -10,5 +10,13 @@ package Servidor;
  * @author i.chicano.2016
  */
 public class ServidorMain {
-    
+
+    public static void main(String[] args) {
+        ModeloJuego modelo = new ModeloJuego();
+        ControladorServidor controlador = new ControladorServidor();
+
+        modelo.addObserver(controlador);
+        
+        controlador.iniciarServer();
+    }
 }
