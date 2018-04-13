@@ -7,8 +7,8 @@ package Cliente;
 
 /**
  *
- * @author i.chicano.2016
+ * @author danie
  */
-public class ClienteMain {
-    
+public enum Direccion {
+    ARRIBA, ABAJO, DER, IZQ;
 }
