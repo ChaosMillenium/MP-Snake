@@ -19,6 +19,7 @@ public class Jugador {
 
     public Jugador(int tamaño) {
         this.tamaño = tamaño;
+        this.serpiente = new LinkedList<>();
     }
 
     public LinkedList<Coordenadas> getSerpiente() {

@@ -60,28 +60,34 @@ public class ThreadServer implements Runnable {
             //out.println(ConstructorMensajes.coi(coordenadasIniciales));
             while (true) {
                 String input = in.readLine();
-                String[] parseado = input.split(";");
-                switch (parseado[0]) {
-                    case "DIR": {
-                        this.controlador.cambiarDireccion(parseado[1], Integer.parseInt(parseado[2]));
-                        break;
-                    }
-                    case "FIN": {
-                        if (Integer.parseInt(parseado[1]) == (this.socketID)) {
-                            ThreadServer.conexionesActivas.remove(this.socketID);
-                            this.socket.close();
-                            return;
+                if (input != null) {
+                    System.out.println(input); //Propósito de pruebas
+                    String[] parseado = input.split(";");
+                    switch (parseado[0]) {
+                        case "DIR": {
+                            this.controlador.cambiarDireccion(Integer.parseInt(parseado[1]), parseado[2]);
+                            break;
+                        }
+                        case "FIN": {
+                            if (Integer.parseInt(parseado[1]) == (this.socketID)) {
+                                ThreadServer.conexionesActivas.remove(this.socketID);
+                                this.socket.close();
+                                return;
+                            }
                         }
                     }
                 }
+                else throw new NullPointerException();
             }
         } catch (IOException e) {
-            System.out.println("Error de E/S");
+            System.err.println("Error de E/S");
+        } catch (NullPointerException e){
+            System.err.println("Error: El cliente se ha desconectado del servidor.");
         } finally {
             try {
                 this.socket.close();
             } catch (IOException e) {
-                System.out.println("Error de E/S");
+                System.err.println("Error de E/S");
             }
         }
     }

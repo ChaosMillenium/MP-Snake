@@ -24,4 +24,7 @@ public class ConstructorMensajes{
         return sb.toString();
     }
     
+    public static String dir(String direccion,int id){
+        return "DIR;" + id + ";" + direccion;
+    }
 }
