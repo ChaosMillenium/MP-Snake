@@ -27,4 +27,24 @@ public class ConstructorMensajes{
     public static String dir(String direccion,int id){
         return "DIR;" + id + ";" + direccion;
     }
+    
+    public static String fin(int id){ //Cliente-Servidor
+        return "FIN;" + id;
+    }
+    
+    public static String fin(){ //Servidor-Cliente
+        return "FIN";
+    }
+    
+    public static String err(String mensaje){
+        return "ERR;" + mensaje;
+    }
+    
+    public static boolean isDir(String mensaje){
+        return mensaje.equals("DIR");
+    }
+
+    public static boolean isFin(String mensaje) {
+        return mensaje.equals("FIN");
+    }
 }

@@ -24,14 +24,16 @@ public class ClientTester {
             DataOutputStream output = new DataOutputStream(socket.getOutputStream());
             String input;
             ArrayList<String> mensajes = new ArrayList<>();
-            while (!(input = read.readLine()).equals("TSP;3")){
+            for (int i = 0; i < 4;i++){
+                input = read.readLine();
                 System.out.println(input);
                 mensajes.add(input);
             }
             String ID=mensajes.get(0);
             String[] IDparseado = ID.split(";");
             output.writeBytes(ConstructorMensajes.dir("IZQ", Integer.parseInt(IDparseado[1])));
-            socket.close();
+            while(true){
+            }
         }
     }
 }

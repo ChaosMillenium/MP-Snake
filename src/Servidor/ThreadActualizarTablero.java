@@ -11,9 +11,19 @@ package Servidor;
  */
 public class ThreadActualizarTablero implements Runnable{
 
-    @Override
-    public void run() {
-        
+    private ModeloJuego modelo;
+    
+    public ThreadActualizarTablero(ModeloJuego modelo){
+        this.modelo=modelo;
     }
     
+    @Override
+    public void run() {
+        while(hayJugadores()){
+        }
+    }
+    
+    private boolean hayJugadores(){
+        return this.modelo.hayJugadores();
+    }
 }

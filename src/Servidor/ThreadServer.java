@@ -53,29 +53,26 @@ public class ThreadServer implements Runnable {
         try {
             PrintWriter out = new PrintWriter(this.socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-            out.println(ConstructorMensajes.idc(this.socketID)); //Manda ID
-            out.println(ConstructorMensajes.tab(this.controlador.getFilas(), this.controlador.getColumnas())); //Manda tamaño tablero
-            out.println(ConstructorMensajes.tsp(this.controlador.getTamañoBase())); //Manda tamaño serpiente
-            //int[] coordenadasIniciales = this.controlador.coordenadasIniciales(); // Manda coordenadas iniciales
-            //out.println(ConstructorMensajes.coi(coordenadasIniciales));
             while (true) {
                 String input = in.readLine();
                 if (input != null) {
                     System.out.println(input); //Propósito de pruebas
                     String[] parseado = input.split(";");
-                    switch (parseado[0]) {
-                        case "DIR": {
+                        if (ConstructorMensajes.isDir(parseado[0])) {
                             this.controlador.cambiarDireccion(Integer.parseInt(parseado[1]), parseado[2]);
-                            break;
                         }
-                        case "FIN": {
+                        if (ConstructorMensajes.isFin(parseado[0])) {
                             if (Integer.parseInt(parseado[1]) == (this.socketID)) {
                                 ThreadServer.conexionesActivas.remove(this.socketID);
                                 this.socket.close();
+                                this.controlador.eliminarJugador(this.socketID);
                                 return;
                             }
+                            else {
+                                out.println(ConstructorMensajes.err("Error al transmitir ID propia"));
+                            }
                         }
-                    }
+                    
                 }
                 else throw new NullPointerException();
             }
