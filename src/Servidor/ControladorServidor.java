@@ -16,14 +16,15 @@ import java.util.Observer;
 public class ControladorServidor implements Observer {
 
     private ModeloJuego modelo;
+    private ThreadServer servidor;
 
     public ControladorServidor(ModeloJuego modelo) {
         this.modelo = modelo;
     }
 
     public void iniciarServer() {
-        ThreadServer servidor = new ThreadServer(this);
-        servidor.startServer();
+        this.servidor = new ThreadServer(this);
+        this.servidor.startServer();
     }
 
     public int añadirJugador() {
@@ -54,6 +55,10 @@ public class ControladorServidor implements Observer {
         } catch (IllegalArgumentException e) {
             System.err.println("Dirección inválida");
         }
+    }
+
+    void eliminarJugador(int id) {
+        this.modelo.eliminarJugador(id);
     }
 
 }

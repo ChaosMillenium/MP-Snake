@@ -23,11 +23,12 @@ public class ModeloJuego extends Observable {
     private Map<Integer, Jugador> jugadores;
     private final int VELOCIDAD = 60;
     private final int TAMAÑOBASE = 3;
+    private Thread hiloTablero;
 
-    public ModeloJuego(){
+    public ModeloJuego() {
         this.jugadores = new HashMap<>();
     }
-    
+
     public int añadirJugador() {
         int key = 1;
         while (this.jugadores.keySet().contains(key)) {
@@ -36,8 +37,10 @@ public class ModeloJuego extends Observable {
         Jugador nuevo = new Jugador(this.TAMAÑOBASE);
         asignarCoordInicio(nuevo);
         this.jugadores.put(key, nuevo);
-        setChanged();
-        notifyObservers();
+        if (this.jugadores.size()==1){
+            this.hiloTablero = new Thread(new ThreadActualizarTablero(this));
+            this.hiloTablero.start();
+        }
         return key;
     }
 
@@ -54,24 +57,22 @@ public class ModeloJuego extends Observable {
     }
 
     private void asignarCoordInicio(Jugador jugador) {
-        Coordenadas[] coordArray = new Coordenadas[this.TAMAÑOBASE];
         Random r = new Random();
-        int nuevaX = r.nextInt(columnas);
-        int nuevaY = r.nextInt(filas);
-        Coordenadas nuevaCoordInicio = new Coordenadas(nuevaX, nuevaY);
-        coordArray[0] = nuevaCoordInicio;
-        jugador.nuevaCabeza(nuevaCoordInicio);
-        for (int i = 1; i < this.TAMAÑOBASE; i++) {
-            Coordenadas nuevaCoord = new Coordenadas(nuevaX + (r.nextInt(2) - 1), nuevaY + (r.nextInt(2) - 1));
-            if (!coincideCasilla(nuevaCoord)) {
-                jugador.nuevaCabeza(nuevaCoord);
-                coordArray[i] = nuevaCoordInicio;
-            } else {
-                i--;
+        int nuevoX,nuevoY;
+        boolean fin = false;
+        while (!fin) {
+            nuevoX = r.nextInt(this.columnas);
+            nuevoY = r.nextInt(this.filas - this.TAMAÑOBASE) + this.TAMAÑOBASE;
+            for (int i = 0; i < this.TAMAÑOBASE; i++){
+                Coordenadas coord = new Coordenadas(nuevoX + i, nuevoY);
+                if (coincideCasilla(coord)) break;
+                else jugador.nuevaCabeza(coord);
+                if (i == this.TAMAÑOBASE-1) fin = true;
             }
         }
-    }
 
+    }
+    
     private boolean coincideCasilla(Coordenadas coord) { //Solo comprueba con el resto de serpientes
         for (Jugador jugador : this.jugadores.values()) {
             LinkedList<Coordenadas> serpiente = jugador.getSerpiente();
@@ -88,4 +89,11 @@ public class ModeloJuego extends Observable {
         this.jugadores.get(id).setDireccion(direccion);
     }
 
+    public void eliminarJugador(int id) {
+        this.jugadores.remove(id);
+    }
+
+    public boolean hayJugadores(){
+        return !this.jugadores.isEmpty();
+    }
 }
