@@ -23,23 +23,31 @@ public class ModeloJuego extends Observable {
     private Map<Integer, Jugador> jugadores;
     private final int VELOCIDAD = 60;
     private final int TAMAÑOBASE = 3;
-    private Thread hiloTablero;
+    private ThreadActualizarTablero hiloTablero;
 
     public ModeloJuego() {
         this.jugadores = new HashMap<>();
+        this.hiloTablero = new ThreadActualizarTablero(this);
     }
 
-    public int añadirJugador() {
-        int key = 1;
-        while (this.jugadores.keySet().contains(key)) {
-            key++;
-        }
+    public void añadirJugador() {
+        this.hiloTablero.pausa();
+        int key = siguienteKey();
         Jugador nuevo = new Jugador(this.TAMAÑOBASE);
         asignarCoordInicio(nuevo);
         this.jugadores.put(key, nuevo);
-        if (this.jugadores.size()==1){
-            this.hiloTablero = new Thread(new ThreadActualizarTablero(this));
+        if (this.jugadores.size() == 1) {
             this.hiloTablero.start();
+        }
+        setChanged();
+        notifyObservers("NJ;" + key);
+        this.hiloTablero.pausa();
+    }
+
+    public int siguienteKey() {
+        int key = 1;
+        while (this.jugadores.keySet().contains(key)) {
+            key++;
         }
         return key;
     }
@@ -56,23 +64,34 @@ public class ModeloJuego extends Observable {
         return this.TAMAÑOBASE;
     }
 
+    public int getVELOCIDAD() {
+        return VELOCIDAD;
+    }
+
     private void asignarCoordInicio(Jugador jugador) {
         Random r = new Random();
-        int nuevoX,nuevoY;
+        int nuevoX, nuevoY;
         boolean fin = false;
         while (!fin) {
-            nuevoX = r.nextInt(this.columnas);
-            nuevoY = r.nextInt(this.filas - this.TAMAÑOBASE) + this.TAMAÑOBASE;
-            for (int i = 0; i < this.TAMAÑOBASE; i++){
+            //Se asigna una coordenada aleatoria con un margen con los bordes
+            nuevoX = r.nextInt(this.columnas - this.TAMAÑOBASE * 2) + this.TAMAÑOBASE;
+            nuevoY = r.nextInt(this.filas - this.TAMAÑOBASE * 2) + this.TAMAÑOBASE;
+            for (int i = 0; i < this.TAMAÑOBASE; i++) {
                 Coordenadas coord = new Coordenadas(nuevoX + i, nuevoY);
-                if (coincideCasilla(coord)) break;
-                else jugador.nuevaCabeza(coord);
-                if (i == this.TAMAÑOBASE-1) fin = true;
+                if (coincideCasilla(coord)) { //Se intenta de nuevo
+                    jugador.eliminarSerpiente();
+                    break;
+                } else {
+                    jugador.nuevaCabeza(coord);
+                }
+                if (i == this.TAMAÑOBASE - 1) {
+                    fin = true;
+                }
             }
         }
 
     }
-    
+
     private boolean coincideCasilla(Coordenadas coord) { //Solo comprueba con el resto de serpientes
         for (Jugador jugador : this.jugadores.values()) {
             LinkedList<Coordenadas> serpiente = jugador.getSerpiente();
@@ -93,7 +112,14 @@ public class ModeloJuego extends Observable {
         this.jugadores.remove(id);
     }
 
-    public boolean hayJugadores(){
+    public boolean hayJugadores() {
         return !this.jugadores.isEmpty();
+    }
+
+    public Coordenadas[] getCoordenadas(int id) {
+        Jugador jugador = this.jugadores.get(id);
+        Coordenadas[] coordenadas = new Coordenadas[jugador.getSerpiente().size()];
+        jugador.getSerpiente().toArray(coordenadas);
+        return coordenadas;
     }
 }

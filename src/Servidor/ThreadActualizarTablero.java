@@ -9,21 +9,43 @@ package Servidor;
  *
  * @author millenium
  */
-public class ThreadActualizarTablero implements Runnable{
+public class ThreadActualizarTablero extends Thread {
 
     private ModeloJuego modelo;
+    private boolean pausa = false;
+    private final int VELOCIDAD;
     
-    public ThreadActualizarTablero(ModeloJuego modelo){
-        this.modelo=modelo;
+    public ThreadActualizarTablero(ModeloJuego modelo) {
+        this.modelo = modelo;
+        this.VELOCIDAD = this.modelo.getVELOCIDAD();
     }
-    
+
     @Override
     public void run() {
-        while(hayJugadores()){
+        while (hayJugadores()) {
+            while (this.pausa) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    System.err.println("Error en hilo de tablero.");
+                    this.start();
+                }
+            }
+            
+            try{
+            Thread.sleep(this.VELOCIDAD);
+            } catch (InterruptedException e) {
+                System.err.println("Error en hilo de tablero.");
+                this.start();
+            }
         }
     }
-    
-    private boolean hayJugadores(){
+
+    public void pausa() {
+        this.pausa = !this.pausa;
+    }
+
+    private boolean hayJugadores() {
         return this.modelo.hayJugadores();
     }
 }
