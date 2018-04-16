@@ -5,6 +5,7 @@
  */
 package Servidor;
 
+import Utilidades.Coordenadas;
 import Utilidades.Direccion;
 import java.util.Observable;
 import java.util.Observer;
@@ -27,8 +28,8 @@ public class ControladorServidor implements Observer {
         this.servidor.startServer();
     }
 
-    public int añadirJugador() {
-        return this.modelo.añadirJugador();
+    public void añadirJugador() {
+        this.modelo.añadirJugador();
     }
 
     public int getFilas() {
@@ -45,7 +46,13 @@ public class ControladorServidor implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-
+        String accion = (String) arg;
+        String[] parseado = accion.split(";");
+        if (parseado[0].equals("NJ")){
+            int id = Integer.parseInt(parseado[1]);
+            this.servidor.nuevoJugador(id,coordenadas(id));
+        }
+        
     }
 
     public void cambiarDireccion(int id,String direccion) {
@@ -57,8 +64,24 @@ public class ControladorServidor implements Observer {
         }
     }
 
-    void eliminarJugador(int id) {
+    public void eliminarJugador(int id) {
         this.modelo.eliminarJugador(id);
+    }
+
+    public int[] coordenadas(int id) {
+        Coordenadas[] coordenadas = this.modelo.getCoordenadas(id);
+        int[] coordInt = new int[coordenadas.length*2];
+        int j = 0;
+        for (int i = 0; i < coordInt.length; i+=2){
+            coordInt[i] = coordenadas[j].getX();
+            coordInt[i+1] = coordenadas[j].getY();
+            j++;
+        }
+        return coordInt;
+    }
+
+    public int siguienteKey() {
+        return this.modelo.siguienteKey();
     }
 
 }

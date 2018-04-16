@@ -14,9 +14,9 @@ public class ConstructorMensajes{
         return "TSP;"+tamaño;
     }
     
-    public static String coi(int[] coordenadas){
+    public static String coi(int[] coordenadas, int id){
         StringBuilder sb = new StringBuilder();
-        sb.append("COI;");
+        sb.append("COI;").append(id).append(";");
         for (int i = 0; i < coordenadas.length-1; i++){
             sb.append(coordenadas[i]).append(";");
         }

@@ -33,4 +33,8 @@ public class Jugador {
     public void nuevaCabeza(Coordenadas coord){
         this.serpiente.add(0,coord);
     }
+    
+    public void eliminarSerpiente(){
+        this.serpiente.clear();
+    }
 }
