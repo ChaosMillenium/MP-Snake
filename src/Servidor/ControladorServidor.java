@@ -21,10 +21,10 @@ public class ControladorServidor implements Observer {
 
     public ControladorServidor(ModeloJuego modelo) {
         this.modelo = modelo;
+        this.servidor = new ThreadServer(this);
     }
 
     public void iniciarServer() {
-        this.servidor = new ThreadServer(this);
         this.servidor.startServer();
     }
 
@@ -48,14 +48,51 @@ public class ControladorServidor implements Observer {
     public void update(Observable o, Object arg) {
         String accion = (String) arg;
         String[] parseado = accion.split(";");
-        if (parseado[0].equals("NJ")){
-            int id = Integer.parseInt(parseado[1]);
-            this.servidor.nuevoJugador(id,coordenadas(id));
+        switch (parseado[0]) {
+            case "NJ": {
+                int id = Integer.parseInt(parseado[1]);
+                this.servidor.nuevoJugador(id, coordenadas(id));
+                break;
+            }
+            case "MOV": {
+                int id = Integer.parseInt(parseado[1]);
+                int[] cabeza = {this.modelo.getCabeza(id).getX(),
+                    this.modelo.getCabeza(id).getY()};
+                int[] cola = {this.modelo.getAnteriorCola(id).getX(),
+                    this.modelo.getAnteriorCola(id).getY()};
+                this.servidor.moverJugador(id,cabeza,cola);
+                break;
+            }
+            
+            case "COL": {
+                int id1 = Integer.parseInt(parseado[1]);
+                int id2 = Integer.parseInt(parseado[2]);
+                this.servidor.colision(id1, id2);
+                break;
+            }
+            
+            case "CBR": {
+                int id = Integer.parseInt(parseado[1]);
+                this.servidor.colision(id);
+                break;
+            }
+            
+            case "PTS": {
+                int id = Integer.parseInt(parseado[1]);
+                int puntos = Integer.parseInt(parseado[2]);
+                this.servidor.darPuntos(id, puntos);
+            }
+            
+            default:{
+                System.err.println(accion);
+                break;
+            }
+            
         }
-        
+
     }
 
-    public void cambiarDireccion(int id,String direccion) {
+    public void cambiarDireccion(int id, String direccion) {
         try {
             Direccion instanciaDir = Direccion.valueOf(direccion);
             this.modelo.cambiarDireccion(instanciaDir, id);
@@ -70,11 +107,11 @@ public class ControladorServidor implements Observer {
 
     public int[] coordenadas(int id) {
         Coordenadas[] coordenadas = this.modelo.getCoordenadas(id);
-        int[] coordInt = new int[coordenadas.length*2];
+        int[] coordInt = new int[coordenadas.length * 2];
         int j = 0;
-        for (int i = 0; i < coordInt.length; i+=2){
+        for (int i = 0; i < coordInt.length; i += 2) {
             coordInt[i] = coordenadas[j].getX();
-            coordInt[i+1] = coordenadas[j].getY();
+            coordInt[i + 1] = coordenadas[j].getY();
             j++;
         }
         return coordInt;

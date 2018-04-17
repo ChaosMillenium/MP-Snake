@@ -1,46 +1,58 @@
 package Utilidades;
 
-public class ConstructorMensajes{
-    
-    public static String idc(int id){
-        return "IDC;"+id;
+public class ConstructorMensajes {
+
+    public static String idc(int id) {
+        return "IDC;" + id;
     }
-    
-    public static String tab(int filas,int columnas){
-        return "TAB;"+filas+";"+columnas;
+
+    public static String tab(int filas, int columnas) {
+        return "TAB;" + filas + ";" + columnas;
     }
-    
-    public static String tsp(int tamaño){
-        return "TSP;"+tamaño;
+
+    public static String tsp(int tamaño) {
+        return "TSP;" + tamaño;
     }
-    
-    public static String coi(int[] coordenadas, int id){
+
+    public static String coi(int[] coordenadas, int id) {
         StringBuilder sb = new StringBuilder();
         sb.append("COI;").append(id).append(";");
-        for (int i = 0; i < coordenadas.length-1; i++){
+        for (int i = 0; i < coordenadas.length - 1; i++) {
             sb.append(coordenadas[i]).append(";");
         }
-        sb.append(coordenadas[coordenadas.length-1]);
+        sb.append(coordenadas[coordenadas.length - 1]);
         return sb.toString();
     }
-    
-    public static String dir(String direccion,int id){
-        return "DIR;" + id + ";" + direccion;
+
+    public static String dir(String direccion) {
+        return "DIR;" + direccion;
     }
-    
-    public static String fin(int id){ //Cliente-Servidor
+
+    public static String fin(int id) { //Cliente-Servidor
         return "FIN;" + id;
     }
-    
-    public static String fin(){ //Servidor-Cliente
+
+    public static String fin() { //Servidor-Cliente
         return "FIN";
     }
-    
-    public static String err(String mensaje){
+
+    public static String err(String mensaje) {
         return "ERR;" + mensaje;
     }
-    
-    public static boolean isDir(String mensaje){
+
+    public static String elj(int id) {
+        return "ELJ;" + id;
+    }
+
+    public static String mov(int id, int cabezaX, int cabezaY, int colaX, int colaY) {
+        return "MOV;" + id + ";" + cabezaX + ";" + cabezaY + ";" + colaX + ";" + colaY;
+    }
+
+    public static String pts(int id, int puntos) {
+        return "PTS;" + id + ";" + puntos;
+    }
+
+    public static boolean isDir(String mensaje) {
         return mensaje.equals("DIR");
     }
 
