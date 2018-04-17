@@ -7,8 +7,10 @@ package Servidor;
 
 import Utilidades.Coordenadas;
 import Utilidades.Direccion;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Random;
@@ -23,21 +25,25 @@ public class ModeloJuego extends Observable {
     private Map<Integer, Jugador> jugadores;
     private final int VELOCIDAD = 60;
     private final int TAMAÑOBASE = 3;
+    private final int PUNTOSTESORO = 100;
     private ThreadActualizarTablero hiloTablero;
+    private List<Coordenadas> tesoros;
 
     public ModeloJuego() {
         this.jugadores = new HashMap<>();
         this.hiloTablero = new ThreadActualizarTablero(this);
+        this.tesoros = new ArrayList<>();
     }
 
     public void añadirJugador() {
         this.hiloTablero.pausa();
         int key = siguienteKey();
         Jugador nuevo = new Jugador(this.TAMAÑOBASE);
-        asignarCoordInicio(nuevo);
+        asignarCoordInicio(nuevo, key);
         this.jugadores.put(key, nuevo);
         if (this.jugadores.size() == 1) {
             this.hiloTablero.start();
+            this.generarTesoro();
         }
         setChanged();
         notifyObservers("NJ;" + key);
@@ -68,7 +74,23 @@ public class ModeloJuego extends Observable {
         return VELOCIDAD;
     }
 
-    private void asignarCoordInicio(Jugador jugador) {
+    public Map<Integer, Jugador> getJugadores() {
+        return jugadores;
+    }
+
+    public Coordenadas getCabeza(int id) {
+        return this.jugadores.get(id).getCabeza();
+    }
+
+    public Coordenadas getAnteriorCola(int id) {
+        return this.jugadores.get(id).getAnteriorCola();
+    }
+
+    public int getPUNTOSTESORO() {
+        return PUNTOSTESORO;
+    }
+
+    private void asignarCoordInicio(Jugador jugador, int id) {
         Random r = new Random();
         int nuevoX, nuevoY;
         boolean fin = false;
@@ -78,7 +100,7 @@ public class ModeloJuego extends Observable {
             nuevoY = r.nextInt(this.filas - this.TAMAÑOBASE * 2) + this.TAMAÑOBASE;
             for (int i = 0; i < this.TAMAÑOBASE; i++) {
                 Coordenadas coord = new Coordenadas(nuevoX + i, nuevoY);
-                if (coincideCasilla(coord)) { //Se intenta de nuevo
+                if (colisionJugador(coord, id) != 0) { //Se intenta de nuevo
                     jugador.eliminarSerpiente();
                     break;
                 } else {
@@ -92,16 +114,24 @@ public class ModeloJuego extends Observable {
 
     }
 
-    private boolean coincideCasilla(Coordenadas coord) { //Solo comprueba con el resto de serpientes
-        for (Jugador jugador : this.jugadores.values()) {
-            LinkedList<Coordenadas> serpiente = jugador.getSerpiente();
-            for (Coordenadas comparar : serpiente) {
-                if (coord.equals(comparar)) {
-                    return true;
+    private int colisionJugador(Coordenadas coord, int id) { //Solo comprueba con el resto de serpientes (devuelve id del choque, o 0 si no choca)
+        for (Map.Entry<Integer, Jugador> entrada : this.jugadores.entrySet()) {
+            if (entrada.getKey() != id) {
+                LinkedList<Coordenadas> serpiente = entrada.getValue().getSerpiente();
+                for (Coordenadas comparar : serpiente) {
+                    if (coord.equals(comparar)) {
+                        return entrada.getKey();
+                    }
                 }
             }
         }
-        return false;
+        return 0;
+    }
+
+    private boolean colisionBorde(Coordenadas coord) {
+        int x = coord.getX();
+        int y = coord.getY();
+        return ((x < 0) || (y < 0) || (x >= this.columnas) || (y >= this.filas));
     }
 
     public void cambiarDireccion(Direccion direccion, int id) {
@@ -121,5 +151,44 @@ public class ModeloJuego extends Observable {
         Coordenadas[] coordenadas = new Coordenadas[jugador.getSerpiente().size()];
         jugador.getSerpiente().toArray(coordenadas);
         return coordenadas;
+    }
+
+    public void notificarMovimiento(int id) {
+        int idColision;
+        setChanged();
+        if ((idColision = this.colisionJugador(this.jugadores.get(id).getCabeza(),id)) != 0) {
+            this.eliminarJugador(id);
+            this.eliminarJugador(idColision);
+            notifyObservers("COL;" + id + ";" + idColision);
+        } else if (colisionBorde(this.jugadores.get(id).getCabeza())) {
+            this.eliminarJugador(id);
+            notifyObservers("CBR;" + id);
+        } else {
+            notifyObservers("MOV;" + id);
+            if (colisionTesoro(this.jugadores.get(id).getCabeza())) {
+                this.jugadores.get(id).añadirPuntos(this.PUNTOSTESORO);
+                int nuevosPuntos = this.jugadores.get(id).getPuntos();
+                setChanged();
+                notifyObservers("PTS;" + id + ";" + nuevosPuntos);
+            }
+        }
+    }
+
+    public void generarTesoro() {
+        Random r = new Random();
+        Coordenadas candidato = new Coordenadas(r.nextInt(this.columnas), r.nextInt(this.filas));
+        while (colisionJugador(candidato,0) != 0) {
+            candidato = new Coordenadas(r.nextInt(this.columnas), r.nextInt(this.filas));
+        }
+        this.tesoros.add(candidato);
+    }
+
+    private boolean colisionTesoro(Coordenadas coord) {
+        for (Coordenadas tesoro : this.tesoros) {
+            if (coord.equals(tesoro)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
