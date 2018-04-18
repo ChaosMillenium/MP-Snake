@@ -31,7 +31,6 @@ public class ModeloJuego extends Observable {
 
     public ModeloJuego() {
         this.jugadores = new HashMap<>();
-
         this.tesoros = new ArrayList<>();
     }
 
@@ -96,6 +95,10 @@ public class ModeloJuego extends Observable {
         return PUNTOSTESORO;
     }
 
+    public List<Coordenadas> getTesoros() {
+        return tesoros;
+    }
+
     private void asignarCoordInicio(Jugador jugador, int id) {
         Random r = new Random();
         int nuevoX, nuevoY;
@@ -144,7 +147,7 @@ public class ModeloJuego extends Observable {
         this.jugadores.get(id).setDireccion(direccion);
     }
 
-    public synchronized void eliminarJugador(int id) {
+    public void eliminarJugador(int id) {
         this.jugadores.remove(id);
     }
 
@@ -159,7 +162,7 @@ public class ModeloJuego extends Observable {
         return coordenadas;
     }
 
-    public synchronized void notificarMovimiento(int id) {
+    public void notificarMovimiento(int id) {
         int idColision;
         setChanged();
         if ((idColision = this.colisionJugador(this.jugadores.get(id).getCabeza(), id)) != 0) {

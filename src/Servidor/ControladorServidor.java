@@ -7,6 +7,7 @@ package Servidor;
 
 import Utilidades.Coordenadas;
 import Utilidades.Direccion;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -51,7 +52,7 @@ public class ControladorServidor implements Observer {
         switch (parseado[0]) {
             case "NJ": {
                 int id = Integer.parseInt(parseado[1]);
-                this.servidor.nuevoJugador(id, coordenadas(id));
+                this.servidor.nuevoJugador(id, getCoordenadas(id));
                 break;
             }
             case "MOV": {
@@ -112,7 +113,7 @@ public class ControladorServidor implements Observer {
         this.modelo.eliminarJugador(id);
     }
 
-    public int[] coordenadas(int id) {
+    public int[] getCoordenadas(int id) {
         Coordenadas[] coordenadas = this.modelo.getCoordenadas(id);
         int[] coordInt = new int[coordenadas.length * 2];
         int j = 0;
@@ -126,6 +127,10 @@ public class ControladorServidor implements Observer {
 
     public int siguienteKey() {
         return this.modelo.siguienteKey();
+    }
+
+    public List<Coordenadas> getTesoros(){
+        return this.modelo.getTesoros();
     }
 
 }

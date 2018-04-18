@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import Utilidades.*;
+import java.util.ConcurrentModificationException;
 
 /**
  *
@@ -39,10 +40,9 @@ public class ThreadServidor implements Runnable {
             while (true) {
                 Socket sck = ssck.accept();
                 System.out.println("Conexión entrante");
-                int key = this.controlador.siguienteKey();
+                int key = this.controlador.siguienteKey(); //La key del mapa es la id del jugador
                 ThreadServidor.conexionesActivas.put(key, sck);
                 new Thread(new ThreadServidor(this.controlador, sck, key)).start();
-                this.controlador.añadirJugador();
             }
         } catch (IOException e) {
             System.err.println("Error de E/S");
@@ -56,6 +56,24 @@ public class ThreadServidor implements Runnable {
             BufferedReader in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             out.println(ConstructorMensajes.idc(this.socketID)); //Manda ID
             out.println(ConstructorMensajes.tab(this.controlador.getFilas(), this.controlador.getColumnas())); //Manda tablero
+            this.controlador.añadirJugador();
+            for (int id : ThreadServidor.conexionesActivas.keySet()) {
+                if (id != this.socketID) {
+                    int[] coordenadas = this.controlador.getCoordenadas(id);
+                    this.nuevoJugador(id, coordenadas);
+                }
+            }
+            boolean acceder = true;
+            while (acceder) {
+                try {
+                    for (Coordenadas coord : this.controlador.getTesoros()) {
+                        this.nuevoTesoro(coord.getX(), coord.getY());
+                    }
+                    acceder = false;
+                } catch (ConcurrentModificationException e) {
+                    //Reintenta hasta que se pueda leer
+                }
+            }
             while (true) {
                 String input = in.readLine();
                 if (input != null) {
@@ -67,12 +85,9 @@ public class ThreadServidor implements Runnable {
                         if (!(Integer.parseInt(parseado[1]) == this.socketID)) {
                             System.err.println("Error: El identificador no coincide (FIN), procediendo a desconectarle");
                         }
-                        ThreadServidor.conexionesActivas.remove(this.socketID);
-                        this.controlador.eliminarJugador(this.socketID);
                         this.eliminarJugador(this.socketID);
-                        this.socket.close();
+                        this.controlador.eliminarJugador(this.socketID);
                         return;
-
                     }
 
                 } else {
@@ -80,21 +95,16 @@ public class ThreadServidor implements Runnable {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (IOException)");
+            System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (IOException: Posible colisión)");
         } catch (NullPointerException e) {
             System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (NullPointerException: Mensaje no reconocido/Desconectado sin aviso)");
         } finally {
-            try {
-                ThreadServidor.conexionesActivas.remove(this.socketID);
-                this.controlador.eliminarJugador(this.socketID);
-                this.eliminarJugador(this.socketID);
-                this.socket.close();
-            } catch (IOException e) {
-            }
+            this.eliminarJugador(this.socketID);
+            this.controlador.eliminarJugador(this.socketID);
         }
     }
 
-    private void enviarMensaje(String mensaje) {
+    private synchronized void enviarMensaje(String mensaje) {
         try {
             for (Socket jugador : ThreadServidor.conexionesActivas.values()) {
                 PrintWriter out = new PrintWriter(jugador.getOutputStream(), true);
@@ -105,11 +115,16 @@ public class ThreadServidor implements Runnable {
         }
     }
 
-    public void nuevoJugador(int id, int[] coordenadas) {
+    public synchronized void nuevoJugador(int id, int[] coordenadas) {
         enviarMensaje(ConstructorMensajes.coi(coordenadas, id));
     }
 
-    public void eliminarJugador(int id) {
+    public synchronized void eliminarJugador(int id) {
+        try {
+            ThreadServidor.conexionesActivas.get(id).close();
+        } catch (IOException ex) {
+            System.err.println("Error de E/S");
+        }
         enviarMensaje(ConstructorMensajes.elj(id));
     }
 
@@ -117,19 +132,18 @@ public class ThreadServidor implements Runnable {
         enviarMensaje(ConstructorMensajes.mov(id, cabeza[0], cabeza[1], cola[0], cola[1]));
     }
 
-    public void colision(int id1) {
+    public synchronized void colision(int id1) {
         try {
             String col = ConstructorMensajes.err("Colisión con borde");
             PrintWriter out1 = new PrintWriter(ThreadServidor.conexionesActivas.get(id1).getOutputStream(), true);
             out1.println(col);
             eliminarJugador(id1);
-            ThreadServidor.conexionesActivas.get(id1).close();
         } catch (IOException e) {
             //TODO: Controlar excepcion
         }
     }
 
-    public void colision(int id1, int id2) {
+    public synchronized void colision(int id1, int id2) {
         try {
             String col1 = ConstructorMensajes.err("Colisión con " + id2);
             String col2 = ConstructorMensajes.err("Colisión con " + id1);
@@ -139,8 +153,6 @@ public class ThreadServidor implements Runnable {
             out2.println(col2);
             eliminarJugador(id1);
             eliminarJugador(id2);
-            ThreadServidor.conexionesActivas.get(id1).close();
-            ThreadServidor.conexionesActivas.get(id2).close();
         } catch (IOException e) {
             //TODO: Controlar excepcion
         }
