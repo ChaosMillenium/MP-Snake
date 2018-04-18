@@ -17,11 +17,11 @@ import java.util.Observer;
 public class ControladorServidor implements Observer {
 
     private ModeloJuego modelo;
-    private ThreadServer servidor;
+    private ThreadServidor servidor;
 
     public ControladorServidor(ModeloJuego modelo) {
         this.modelo = modelo;
-        this.servidor = new ThreadServer(this);
+        this.servidor = new ThreadServidor(this);
     }
 
     public void iniciarServer() {
@@ -83,6 +83,11 @@ public class ControladorServidor implements Observer {
                 this.servidor.darPuntos(id, puntos);
             }
             
+            case "TSR": {
+                int x = Integer.parseInt(parseado[1]);
+                int y = Integer.parseInt(parseado[2]);
+                this.servidor.nuevoTesoro(x,y);
+            }
             default:{
                 System.err.println(accion);
                 break;

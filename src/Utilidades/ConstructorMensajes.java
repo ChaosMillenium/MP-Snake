@@ -52,6 +52,10 @@ public class ConstructorMensajes {
         return "PTS;" + id + ";" + puntos;
     }
 
+    public static String tsr(int x, int y) {
+        return "TSR;" + x + ";" + y;
+    }
+
     public static boolean isDir(String mensaje) {
         return mensaje.equals("DIR");
     }
