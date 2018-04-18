@@ -31,23 +31,29 @@ public class ModeloJuego extends Observable {
 
     public ModeloJuego() {
         this.jugadores = new HashMap<>();
-        this.hiloTablero = new ThreadActualizarTablero(this);
+
         this.tesoros = new ArrayList<>();
     }
 
     public void añadirJugador() {
-        this.hiloTablero.pausa();
+        boolean empezarJuego = this.jugadores.isEmpty();
+        if (!empezarJuego) {
+            this.hiloTablero.pausa();
+        }
         int key = siguienteKey();
         Jugador nuevo = new Jugador(this.TAMAÑOBASE);
         asignarCoordInicio(nuevo, key);
         this.jugadores.put(key, nuevo);
-        if (this.jugadores.size() == 1) {
+        if (empezarJuego) {
+            this.hiloTablero = new ThreadActualizarTablero(this);
             this.hiloTablero.start();
             this.generarTesoro();
         }
         setChanged();
         notifyObservers("NJ;" + key);
-        this.hiloTablero.pausa();
+        if (!empezarJuego) {
+            this.hiloTablero.pausa();
+        }
     }
 
     public int siguienteKey() {
@@ -138,7 +144,7 @@ public class ModeloJuego extends Observable {
         this.jugadores.get(id).setDireccion(direccion);
     }
 
-    public void eliminarJugador(int id) {
+    public synchronized void eliminarJugador(int id) {
         this.jugadores.remove(id);
     }
 
@@ -153,10 +159,10 @@ public class ModeloJuego extends Observable {
         return coordenadas;
     }
 
-    public void notificarMovimiento(int id) {
+    public synchronized void notificarMovimiento(int id) {
         int idColision;
         setChanged();
-        if ((idColision = this.colisionJugador(this.jugadores.get(id).getCabeza(),id)) != 0) {
+        if ((idColision = this.colisionJugador(this.jugadores.get(id).getCabeza(), id)) != 0) {
             this.eliminarJugador(id);
             this.eliminarJugador(idColision);
             notifyObservers("COL;" + id + ";" + idColision);
@@ -177,10 +183,12 @@ public class ModeloJuego extends Observable {
     public void generarTesoro() {
         Random r = new Random();
         Coordenadas candidato = new Coordenadas(r.nextInt(this.columnas), r.nextInt(this.filas));
-        while (colisionJugador(candidato,0) != 0) {
+        while (colisionJugador(candidato, 0) != 0) {
             candidato = new Coordenadas(r.nextInt(this.columnas), r.nextInt(this.filas));
         }
         this.tesoros.add(candidato);
+        setChanged();
+        notifyObservers("TSR;" + candidato.getX() + ";" + candidato.getY());
     }
 
     private boolean colisionTesoro(Coordenadas coord) {

@@ -34,12 +34,12 @@ public class ClientTester {
             String[] IDparseado = ID.split(";");
             int id = Integer.parseInt(IDparseado[1]);
             output.writeBytes(ConstructorMensajes.dir("IZQ") + "\n");
-            while (true) {
+            for (int i = 0; i < 50; i++) {
                 input = read.readLine();
                 System.out.println(input);
                 mensajes.add(input);
             }
-            //output.writeBytes(ConstructorMensajes.fin(id)+"\n");
+            output.writeBytes(ConstructorMensajes.fin(id)+"\n");
         }
     }
 }
