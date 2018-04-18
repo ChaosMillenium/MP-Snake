@@ -81,12 +81,14 @@ public class ControladorServidor implements Observer {
                 int id = Integer.parseInt(parseado[1]);
                 int puntos = Integer.parseInt(parseado[2]);
                 this.servidor.darPuntos(id, puntos);
+                break;
             }
             
             case "TSR": {
                 int x = Integer.parseInt(parseado[1]);
                 int y = Integer.parseInt(parseado[2]);
                 this.servidor.nuevoTesoro(x,y);
+                break;
             }
             default:{
                 System.err.println(accion);

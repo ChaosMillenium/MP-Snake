@@ -66,13 +66,13 @@ public class Jugador {
                 break;
             }
             case IZQ:{
-                int nuevoX = this.serpiente.getFirst().getY() - 1;
+                int nuevoX = this.serpiente.getFirst().getX() - 1;
                 nuevaCabeza = new Coordenadas(nuevoX, cabeza.getY());
                 this.serpiente.addFirst(nuevaCabeza);
                 break;
             }
             case DER:{
-                int nuevoX = this.serpiente.getFirst().getY() + 1;
+                int nuevoX = this.serpiente.getFirst().getX() + 1;
                 nuevaCabeza = new Coordenadas(nuevoX, cabeza.getY());
                 this.serpiente.addFirst(nuevaCabeza);
                 break;
