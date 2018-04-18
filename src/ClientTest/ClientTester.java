@@ -29,6 +29,11 @@ public class ClientTester {
                 input = read.readLine();
                 System.out.println(input);
                 mensajes.add(input);
+                String[] parseado = input.split(";");
+                if (parseado[0].equals("ERR")){
+                    socket.close();
+                    return;
+                }
             }
             String ID = mensajes.get(0);
             String[] IDparseado = ID.split(";");
@@ -38,6 +43,11 @@ public class ClientTester {
                 input = read.readLine();
                 System.out.println(input);
                 mensajes.add(input);
+                String[] parseado = input.split(";");
+                if (parseado[0].equals("ERR")){
+                    socket.close();
+                    return;
+                }
             }
             output.writeBytes(ConstructorMensajes.fin(id)+"\n");
         }
