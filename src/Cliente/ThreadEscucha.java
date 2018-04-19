@@ -33,7 +33,7 @@ public class ThreadEscucha extends Thread {
             BufferedReader input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             while (true) {
                 String mensaje = input.readLine();
-                this.controlador.selectorMensajes(mensaje);
+                this.controlador.selectorMensaje(mensaje);
 
             }
         } catch (IOException ex) {
