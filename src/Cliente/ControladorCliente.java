@@ -11,13 +11,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.Observable;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author danie
  */
-public class ControladorCliente {
+public class ControladorCliente extends Observable{
     
     private Direccion dirAct;
     private Serpiente ser;
