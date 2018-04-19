@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Cliente;
 
 import Utilidades.ConstructorMensajes;
@@ -13,10 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-/**
- *
- * @author i.chicano.2016
- */
+
 public class ThreadEscucha extends Thread {
 
     private ControladorCliente controlador;

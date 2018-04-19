@@ -1,37 +1,35 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Cliente;
 
 import java.awt.Color;
-import java.util.ArrayList;
+import java.awt.GridLayout;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-/**
- *
- * @author danie
- */
 public class VistaCliente extends javax.swing.JFrame implements Observer {
-    
-    private JPanel[][] grid;
-    
-    private ControladorCliente controlador;
-    
 
-    public VistaCliente(int largo, int alto) {
+    private JPanel[][] grid; //Matriz filas x columnas
+    private ControladorCliente controlador;
+
+    public VistaCliente(int filas, int columnas) {
         initComponents();
-        for(int i =0; i < largo; i++){
-            for(int j=0; j<alto;j++){
+        this.setTitle("Snake");
+        this.controlador = new ControladorCliente();
+        this.setLayout(new GridLayout(filas, columnas));
+        this.grid = new JPanel[filas][columnas];
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
                 JPanel pixel = new JPanel();
                 pixel.setBackground(Color.white);
+                pixel.setBorder(BorderFactory.createLineBorder(Color.black));
                 this.grid[i][j] = pixel;
+                this.add(pixel);
             }
         }
-        this.controlador = new ControladorCliente();
+        this.setVisible(true);
+        this.pack();
+        this.setLocationRelativeTo(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -55,11 +53,10 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
     }// </editor-fold>//GEN-END:initComponents
 
     @Override
-    public void update(Observable o, Object arg) {                       
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void update(Observable o, Object arg) {
+
     }
-    
-   
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
