@@ -37,5 +37,12 @@ public class Serpiente {
         }
     }
 
-    
+    public Direccion getDir() {
+        return dir;
+    }
+
+    public void setDir(Direccion dir) {
+        this.dir = dir;
+    }
+        
 }
