@@ -7,8 +7,10 @@ package Cliente;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,17 +23,9 @@ public class Cliente {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        try{
-            BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
-            Socket socket = new Socket(ipServer, puertoServer);
-            DataOutputStream streamToServer = new DataOutputStream(socket.getOutputStream());
-            InputStreamReader streamFromServer = new InputStreamReader(socket.getInputStream());
-            BufferedReader serverInput = new BufferedReader(streamFromServer);
-            
-            
-            
-            
-        }
+        
+            VistaCliente v = new VistaCliente();
+       
         
         
         

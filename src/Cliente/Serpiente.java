@@ -5,8 +5,9 @@
  */
 package Cliente;
 
-import Controladores.Direccion;
-import Main.Coordenadas;
+import Utilidades.Coordenadas;
+import Utilidades.Direccion;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -19,7 +20,14 @@ public class Serpiente {
     private Direccion dir;
     private Coordenadas cabeza;
 
-
+    public Serpiente(ArrayList<Coordenadas> coors){
+        this.dir = Direccion.ARRIBA; //añadir direccion aleatoria en el futuro
+        this.serp = new LinkedList<Coordenadas>();
+        this.cabeza = coors.get(0);
+        for(int i = 0; i < coors.size(); i++){
+            this.serp.add(coors.get(i));
+        }
+    }
 
     
 }
