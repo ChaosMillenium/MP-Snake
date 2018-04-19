@@ -24,10 +24,13 @@ public class Cliente {
     public static void main(String[] args) {
         // TODO code application logic here
         
-            ControladorCliente contr = new ControladorCliente();
-            Puntuacion punt = new Puntuacion(contr);
             
-            contr.addObserver(punt);
+       
+        
+        
+        
+        
+        
         
     }  
 }

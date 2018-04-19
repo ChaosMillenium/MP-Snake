@@ -5,84 +5,121 @@
  */
 package Cliente;
 
-import Utilidades.Direccion;
+import Utilidades.*;
 import com.sun.glass.events.KeyEvent;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
-
-import java.net.UnknownHostException;
-
+import java.util.ArrayList;
 import java.util.Observable;
-
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author danie
  */
-
 public class ControladorCliente extends Observable{
     
-    private Serpiente ser;
-    private ThreadEscucha listener;
-
-    public void establecerConexion() {
-        boolean reintentar = true;
-        while (reintentar) {
-            try {
-                String dirIP = JOptionPane.showInputDialog("Introduce la IP del servidor");
-                String puerto = JOptionPane.showInputDialog("Introduce el puerto");
-                Socket socket = new Socket(dirIP, Integer.parseInt(puerto));
-                this.listener = new ThreadEscucha(socket,this);
-                this.listener.start();
-                reintentar = false;
-            } catch (UnknownHostException e) {
-                int yesNo = JOptionPane.showConfirmDialog(null, "Dirección no encontrada. ¿Reintentar?", "Conexión no encontrada", JOptionPane.YES_NO_OPTION);
-                if (yesNo == JOptionPane.NO_OPTION) {
-                    System.exit(0);
-                }
-            } catch (IOException ex) {
-                int yesNo = JOptionPane.showConfirmDialog(null, "Error de E/S. ¿Reintentar?", "Error de conexión", JOptionPane.YES_NO_OPTION);
-                if (yesNo == JOptionPane.NO_OPTION) {
-                    System.exit(0);
-                }
-            }
-        }
+    private ArrayList<Serpiente> serpientes;
+    private ArrayList<Coordenadas> tesoros;
+        
+    public ControladorCliente(){
+        
     }
-
-    public void setDirAct(int key) {
+    
+    public void establecerConexion(){
+        try{
+        String dirIP= JOptionPane.showInputDialog("Introduce la IP del servidor\n");
+        int port= Integer.parseInt(JOptionPane.showInputDialog("Introduce el puerto del servidor\n"));
+        Socket s = new Socket(dirIP, port);
+        BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        String answer = input.readLine();
+        JOptionPane.showMessageDialog(null, answer);
+        } catch(IOException ex){
+            System.out.println(ex.getCause());
+        }        
+    }
+    
+    public void setDirAct(int key){
         //CONTROL DE DIRECCION
-        switch (key) {
+        switch(key){
             case KeyEvent.VK_UP: {
-                if (ser.getDir() != Direccion.ABAJO) {
-                    ser.setDir(Direccion.ARRIBA);
-                    this.listener.enviarDireccion(Direccion.ARRIBA);
+                if(this.serpiente.g != Direccion.ABAJO){
+                    this.dirAct = Direccion.ARRIBA;
                 }
                 break;
             }
             case KeyEvent.VK_DOWN: {
-                if (ser.getDir() != Direccion.ARRIBA) {
-                    ser.setDir(Direccion.ABAJO);
-                    this.listener.enviarDireccion(Direccion.ABAJO);
+                if(this.dirAct != Direccion.ARRIBA){
+                    this.dirAct = Direccion.ABAJO;
                 }
                 break;
             }
             case KeyEvent.VK_LEFT: {
-                if (ser.getDir() != Direccion.DER) {
-                    ser.setDir(Direccion.IZQ);
-                    this.listener.enviarDireccion(Direccion.IZQ);
+                if(this.dirAct != Direccion.DER){
+                    this.dirAct = Direccion.IZQ;
                 }
                 break;
             }
             case KeyEvent.VK_RIGHT: {
-                if (ser.getDir() != Direccion.IZQ) {
-                    ser.setDir(Direccion.DER);
-                    this.listener.enviarDireccion(Direccion.DER);
+                if(this.dirAct != Direccion.IZQ){
+                    this.dirAct = Direccion.DER;
                 }
-            }
-        }
+            }    
+        }   
     }
     
-    public void finalizar(){
+    public void selectorMensaje(String msg){
+        String[] msgSplit = msg.split(";");
+        setChanged();
+        
+        /*if(isDir(type)){ 
+        
+        }else if(isFin(type)){
+            
+        
+        }else if(isCoi(type)){
+        }else if(isMov(type)){
+        }else if(isErr(type)){
+        }*/
+        
+        switch(msgSplit[0]){
+            case "TAB":{
+                VistaCliente v = new VistaCliente(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]));
+                break;
+            }
+            case "TSR":{
+                Coordenadas tes = new Coordenadas(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]));
+                this.tesoros.add(tes);
+                notifyObservers(tes);
+                break;
+            }
+            case "ELJ":{
+                for(Serpiente serpi : this.serpientes){
+                    if(serpi.getId() == Integer.parseInt(msgSplit[1])){
+                        this.serpientes.remove(serpi);
+                        break;
+                    }
+                }
+                break;
+            }
+            case "PTS":{
+                for(Serpiente serpi : this.serpientes){
+                    if(serpi.getId() == Integer.parseInt(msgSplit[1])){
+                        serpi.setPuntos(Integer.parseInt(msgSplit[2]));
+                    }
+                break;
+            }
+            case "COI":{
+                break;
+            }
+            case "MOV":{
+                break;
+            }
+            case "ERR":{
+                break;
+            }
+        }
     }
 }

@@ -22,27 +22,18 @@ public class Serpiente {
     private int id;
     private long puntos;
 
-    public int getId() {
-        return id;
-    }
-    public long getPuntos(){
-        return puntos;
-    }
-    public Serpiente(ArrayList<Coordenadas> coors){
+    public Serpiente(){
+        //Metodo constructor de serpiente
         this.dir = Direccion.ARRIBA; //añadir direccion aleatoria en el futuro
         this.serp = new LinkedList<Coordenadas>();
         this.cabeza = coors.get(0);
         for(int i = 0; i < coors.size(); i++){
             this.serp.add(coors.get(i));
         }
+        this.puntos = 0;
     }
+    
+    
 
-    public Direccion getDir() {
-        return dir;
-    }
-
-    public void setDir(Direccion dir) {
-        this.dir = dir;
-    }
-        
+    
 }
