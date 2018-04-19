@@ -19,7 +19,15 @@ public class Serpiente {
     private LinkedList<Coordenadas> serp;
     private Direccion dir;
     private Coordenadas cabeza;
+    private int id;
+    private long puntos;
 
+    public int getId() {
+        return id;
+    }
+    public long getPuntos(){
+        return puntos;
+    }
     public Serpiente(ArrayList<Coordenadas> coors){
         this.dir = Direccion.ARRIBA; //añadir direccion aleatoria en el futuro
         this.serp = new LinkedList<Coordenadas>();
