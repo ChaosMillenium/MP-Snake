@@ -7,10 +7,9 @@ package Cliente;
 
 import Utilidades.Direccion;
 import com.sun.glass.events.KeyEvent;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,66 +17,67 @@ import javax.swing.JOptionPane;
  * @author danie
  */
 public class ControladorCliente {
-    
-    private Direccion dirAct;
+
     private Serpiente ser;
-    
-    public ControladorCliente(){
-        //this.ser = new Serpiente( getMessage ); Pide la server datos y fabrica serpiente
-        this.dirAct = Direccion.ARRIBA; //cogerlo de la serpiente 
-    }
-    
-    
-    
-    public void establecerConexion(){
-        try{
-        String dirIP= JOptionPane.showInputDialog("Introduce la IP del servidor\n" + "Servidor corriendo en puerto 9090");
-        Socket s = new Socket(dirIP, 9090);
-        BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        String answer = input.readLine();
-        JOptionPane.showMessageDialog(null, answer);
-        } catch(IOException ex){
-            System.out.println(ex.getCause());
+    private ThreadEscucha listener;
+
+    public void establecerConexion() {
+        boolean reintentar = true;
+        while (reintentar) {
+            try {
+                String dirIP = JOptionPane.showInputDialog("Introduce la IP del servidor");
+                String puerto = JOptionPane.showInputDialog("Introduce el puerto");
+                Socket socket = new Socket(dirIP, Integer.parseInt(puerto));
+                this.listener = new ThreadEscucha(socket,this);
+                this.listener.start();
+                reintentar = false;
+            } catch (UnknownHostException e) {
+                int yesNo = JOptionPane.showConfirmDialog(null, "Dirección no encontrada. ¿Reintentar?", "Conexión no encontrada", JOptionPane.YES_NO_OPTION);
+                if (yesNo == JOptionPane.NO_OPTION) {
+                    System.exit(0);
+                }
+            } catch (IOException ex) {
+                int yesNo = JOptionPane.showConfirmDialog(null, "Error de E/S. ¿Reintentar?", "Error de conexión", JOptionPane.YES_NO_OPTION);
+                if (yesNo == JOptionPane.NO_OPTION) {
+                    System.exit(0);
+                }
+            }
         }
-        
     }
-    
-   
-    
-    
-    public void setDirAct(int key){
+
+    public void setDirAct(int key) {
         //CONTROL DE DIRECCION
-        switch(key){
+        switch (key) {
             case KeyEvent.VK_UP: {
-                if(this.dirAct != Direccion.ABAJO){
-                    this.dirAct = Direccion.ARRIBA;
+                if (ser.getDir() != Direccion.ABAJO) {
+                    ser.setDir(Direccion.ARRIBA);
+                    this.listener.enviarDireccion(Direccion.ARRIBA);
                 }
                 break;
             }
             case KeyEvent.VK_DOWN: {
-                if(this.dirAct != Direccion.ARRIBA){
-                    this.dirAct = Direccion.ABAJO;
+                if (ser.getDir() != Direccion.ARRIBA) {
+                    ser.setDir(Direccion.ABAJO);
+                    this.listener.enviarDireccion(Direccion.ABAJO);
                 }
                 break;
             }
             case KeyEvent.VK_LEFT: {
-                if(this.dirAct != Direccion.DER){
-                    this.dirAct = Direccion.IZQ;
+                if (ser.getDir() != Direccion.DER) {
+                    ser.setDir(Direccion.IZQ);
+                    this.listener.enviarDireccion(Direccion.IZQ);
                 }
                 break;
             }
             case KeyEvent.VK_RIGHT: {
-                if(this.dirAct != Direccion.IZQ){
-                    this.dirAct = Direccion.DER;
+                if (ser.getDir() != Direccion.IZQ) {
+                    ser.setDir(Direccion.DER);
+                    this.listener.enviarDireccion(Direccion.DER);
                 }
-            }    
-        }   
+            }
+        }
     }
     
-    
-    
-    
-    
-    
-    
+    public void finalizar(){
+    }
 }
