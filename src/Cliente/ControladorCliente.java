@@ -9,15 +9,20 @@ import Utilidades.Direccion;
 import com.sun.glass.events.KeyEvent;
 import java.io.IOException;
 import java.net.Socket;
+
 import java.net.UnknownHostException;
+
+import java.util.Observable;
+
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author danie
  */
-public class ControladorCliente {
 
+public class ControladorCliente extends Observable{
+    
     private Serpiente ser;
     private ThreadEscucha listener;
 
