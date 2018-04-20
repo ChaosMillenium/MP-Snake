@@ -1,20 +1,25 @@
 package Cliente;
 
+import Utilidades.Coordenadas;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class VistaCliente extends javax.swing.JFrame implements Observer {
 
     private JPanel[][] grid; //Matriz filas x columnas
+    private ArrayList<Serpiente> serpientes;
     private ControladorCliente controlador;
 
     public VistaCliente(int filas, int columnas) {
         initComponents();
         this.setTitle("Snake");
+        this.serpientes = new ArrayList<>();
         this.controlador = new ControladorCliente();
         this.setLayout(new GridLayout(filas, columnas));
         this.grid = new JPanel[filas][columnas];
@@ -54,8 +59,57 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-     /*  JPanel cuadrado = new JPanel(); 
-       cuadrado = this;*/
+
+        String[] msg = arg.split(";");
+        switch(msg[0]){
+            case "TAB":{
+                this.grid = new JPanel[Integer.parseInt(msg[1])][Integer.parseInt(msg[2])];
+                break;
+            }
+            case "TSR":{
+                this.grid[Integer.parseInt(msg[1])][Integer.parseInt(msg[2])].setBackground(Color.YELLOW);
+                break;
+            }
+            case "ELJ":{
+                for(Serpiente serpi: this.serpientes){
+                    if(serpi.getId() == Integer.parseInt(msg[1])){
+                        for(int i = 0;i < serpi.getLongitud(); i++){
+                            Coordenadas c = serpi.getCoordenadas(i);
+                            this.grid[c.getX()][c.getY()].setBackground(Color.WHITE);
+                        }
+                    }
+                }
+                //jugador eliminado terminar hilo?
+                break;
+            }
+            case "PTS":{
+                //no hacer nada, se ocupa la otra vista
+                break;
+            }
+            case "COI":{
+                for(int i = 2;i < msg.length; i+=2){
+                    this.grid[Integer.parseInt(msg[i])][Integer.parseInt(msg[i+1])].setBackground(new Color(Integer.parseInt(msg[1])));
+                }
+            }
+            case "MOV":{
+                this.grid[Integer.parseInt(msg[2])][Integer.parseInt(msg[3])].setBackground(new Color(Integer.parseInt(msg[1])));
+                this.grid[Integer.parseInt(msg[4])][Integer.parseInt(msg[5])].setBackground(Color.WHITE);
+                break;
+            }
+            case "FIN":{
+                JOptionPane.showInputDialog("Fin de partida");
+                break;
+            }
+            case "ERR":{
+                JOptionPane.showInputDialog(msg[1]);
+                break;
+            }
+            default :{
+                JOptionPane.showInputDialog("Error");
+                break;
+            }
+        }
+
     }
 
 
