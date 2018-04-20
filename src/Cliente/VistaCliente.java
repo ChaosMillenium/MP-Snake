@@ -59,8 +59,8 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-
-        String[] msg = arg.split(";");
+        String mensaje = (String) arg;
+        String[] msg = mensaje.split(";");
         switch(msg[0]){
             case "TAB":{
                 this.grid = new JPanel[Integer.parseInt(msg[1])][Integer.parseInt(msg[2])];

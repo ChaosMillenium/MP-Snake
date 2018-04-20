@@ -5,8 +5,6 @@
  */
 package Servidor;
 
-import javax.swing.JOptionPane;
-
 /**
  *
  * @author i.chicano.2016
