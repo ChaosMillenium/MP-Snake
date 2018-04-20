@@ -50,6 +50,18 @@ public class Serpiente {
     public void setPuntos(long puntos) {
         this.puntos = puntos;
     }
+    
+    public void setCabeza(Coordenadas c){
+        this.cabeza = c;
+    }
+    
+    public void addCasilla(Coordenadas c){
+        this.serp.add(c);
+    }
+    
+    public void eliminarCola(){
+        this.serp.remove(this.serp.size());
+    }
    
     
 }
