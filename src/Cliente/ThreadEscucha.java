@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class ThreadEscucha extends Thread {
@@ -49,6 +51,14 @@ public class ThreadEscucha extends Thread {
             out.println(ConstructorMensajes.fin(id));
         } catch (IOException ex) {
             System.err.println("Error de E/S"); //TODO: Controlar excepción
+        }
+    }
+    
+    public void cerrarConexion(){
+        try {
+            this.socket.close();
+        } catch (IOException ex) {
+            System.err.println("Error de E/S");
         }
     }
 }

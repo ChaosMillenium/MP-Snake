@@ -55,12 +55,20 @@ public class Serpiente {
         this.cabeza = c;
     }
     
+    public Coordenadas getCoordenadas(int n){
+        return this.serp.get(n)
+    }
+    
     public void addCasilla(Coordenadas c){
         this.serp.add(c);
     }
     
     public void eliminarCola(){
         this.serp.remove(this.serp.size());
+    }
+    
+    public int getLongitud(){
+        return this.serp.size();
     }
    
     
