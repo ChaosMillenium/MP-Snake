@@ -95,7 +95,6 @@ public class ControladorCliente extends Observable {
                     //VistaCliente v = new VistaCliente(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]));
                     notifyObservers(msg);
                     break;
-
                 }
                 case "TSR":{
                     notifyObservers(msg);
