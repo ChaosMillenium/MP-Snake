@@ -59,6 +59,7 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+
         String[] msg = arg.split(";");
         switch(msg[0]){
             case "TAB":{
@@ -108,6 +109,7 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
                 break;
             }
         }
+
     }
 
 
