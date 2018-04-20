@@ -56,7 +56,7 @@ public class Serpiente {
     }
     
     public Coordenadas getCoordenadas(int n){
-        return this.serp.get(n)
+        return this.serp.get(n);
     }
     
     public void addCasilla(Coordenadas c){

@@ -117,7 +117,8 @@ public class ThreadServidor implements Runnable {
         } catch (IOException ex) {
             System.err.println("Error de E/S");
         }
-        enviarMensaje(ConstructorMensajes.elj(id));
+        int[] coordenadas = this.controlador.getCoordenadas(id);
+        enviarMensaje(ConstructorMensajes.elj(id, coordenadas));
         System.out.println("El cliente" + id + "ha salido.");
     }
 
