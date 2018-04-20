@@ -30,7 +30,7 @@ public class ClientTester {
                 System.out.println(input);
                 mensajes.add(input);
                 String[] parseado = input.split(";");
-                if (parseado[0].equals("ERR")){
+                if (parseado[0].equals("ERR")) {
                     socket.close();
                     return;
                 }
@@ -38,18 +38,35 @@ public class ClientTester {
             String ID = mensajes.get(0);
             String[] IDparseado = ID.split(";");
             int id = Integer.parseInt(IDparseado[1]);
-            output.writeBytes(ConstructorMensajes.dir("IZQ") + "\n");
-            for (int i = 0; i < 50; i++) {
+            String dir = "IZQ";
+            while(true) { 
                 input = read.readLine();
                 System.out.println(input);
                 mensajes.add(input);
                 String[] parseado = input.split(";");
-                if (parseado[0].equals("ERR")){
+                if (parseado[0].equals("ERR")) {
                     socket.close();
                     return;
                 }
+                switch (dir) {
+                    case "IZQ":
+                        dir = "ABAJO";
+                        output.writeBytes(ConstructorMensajes.dir(dir) + "\n");
+                        break;
+                    case "DER":
+                        dir = "ARRIBA";
+                        output.writeBytes(ConstructorMensajes.dir(dir) + "\n");
+                        break;
+                    case "ABAJO":
+                        dir = "DER";
+                        output.writeBytes(ConstructorMensajes.dir(dir) + "\n");
+                        break;
+                    case "ARRIBA":
+                        dir = "IZQ";
+                        output.writeBytes(ConstructorMensajes.dir(dir) + "\n");
+                        break;
+                }
             }
-            output.writeBytes(ConstructorMensajes.fin(id)+"\n");
         }
     }
 }

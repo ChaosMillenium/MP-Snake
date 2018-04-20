@@ -11,7 +11,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import Utilidades.*;
-import java.util.ConcurrentModificationException;
+import java.util.Collections;
 
 /**
  *
@@ -22,7 +22,7 @@ public class ThreadServidor implements Runnable {
     private ControladorServidor controlador;
     private Socket socket;
     private int socketID;
-    private static Map<Integer, Socket> conexionesActivas = new HashMap<>();
+    private static Map<Integer, Socket> conexionesActivas = Collections.synchronizedMap(new HashMap<>());
 
     public ThreadServidor(ControladorServidor controlador) { //Constructor inicial
         this.controlador = controlador;
@@ -62,18 +62,10 @@ public class ThreadServidor implements Runnable {
                     this.nuevoJugador(id, coordenadas);
                 }
             }
-            boolean acceder = true;
-            while (acceder) {
-                try {
-                    for (Coordenadas coord : this.controlador.getTesoros()) { //Se envían las coordenadas de todos los tesoros
-                        this.nuevoTesoro(coord.getX(), coord.getY());
-                    }
-                    ThreadServidor.conexionesActivas.put(this.socketID, this.socket); //Añade el nuevo cliente a la lista de conexiones activas
-                    acceder = false;
-                } catch (ConcurrentModificationException e) {
-                    //Reintenta hasta que se pueda leer
-                }
+            for (Coordenadas coord : this.controlador.getTesoros()) { //Se envían las coordenadas de todos los tesoros
+                this.nuevoTesoro(coord.getX(), coord.getY());
             }
+            ThreadServidor.conexionesActivas.put(this.socketID, this.socket); //Añade el nuevo cliente a la lista de conexiones activas
             while (true) {
                 String input = in.readLine(); //Lee un mensaje enviado desde el cliente
                 if (input != null) {
@@ -95,7 +87,7 @@ public class ThreadServidor implements Runnable {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (IOException: Posible colisión)");
+            System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (IOException: Finalización incorrecta por parte del cliente.)");
         } catch (NullPointerException e) {
             System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (NullPointerException: Mensaje no reconocido/Desconectado sin aviso)");
         } finally {
@@ -126,6 +118,7 @@ public class ThreadServidor implements Runnable {
             System.err.println("Error de E/S");
         }
         enviarMensaje(ConstructorMensajes.elj(id));
+        System.out.println("El cliente" + id + "ha salido.");
     }
 
     public void moverJugador(int id, int[] cabeza, int[] cola) { //Envía a todos los jugadores que se ha movido un nuevo jugador
