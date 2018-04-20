@@ -181,12 +181,12 @@ public class ModeloJuego extends Observable {
         int idColision;
         setChanged();
         if ((idColision = this.colisionJugador(this.jugadores.get(id).getCabeza(), id)) != 0) {
+            notifyObservers("COL;" + id + ";" + idColision);
             this.eliminarJugador(id);
             this.eliminarJugador(idColision);
-            notifyObservers("COL;" + id + ";" + idColision);
         } else if (colisionBorde(this.jugadores.get(id).getCabeza())) {
-            this.eliminarJugador(id);
             notifyObservers("CBR;" + id);
+            this.eliminarJugador(id);
         } else {
             notifyObservers("MOV;" + id);
             if (colisionTesoro(this.jugadores.get(id).getCabeza())) {

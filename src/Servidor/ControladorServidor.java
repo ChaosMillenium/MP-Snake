@@ -7,7 +7,9 @@ package Servidor;
 
 import Utilidades.Coordenadas;
 import Utilidades.Direccion;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -44,7 +46,11 @@ public class ControladorServidor implements Observer {
     public int getTamañoBase() {
         return this.modelo.getTamañoBase();
     }
-
+    
+    public Map<Integer, Jugador> getSerpientes(){
+        return this.modelo.getJugadores();
+    }
+    
     @Override
     public void update(Observable o, Object arg) {
         String accion = (String) arg;
@@ -52,7 +58,7 @@ public class ControladorServidor implements Observer {
         switch (parseado[0]) {
             case "NJ": {
                 int id = Integer.parseInt(parseado[1]);
-                this.servidor.nuevoJugador(id, getCoordenadas(id));
+                this.servidor.nuevoJugador(id, this.getCoordenadas(id));
                 break;
             }
             case "MOV": {
