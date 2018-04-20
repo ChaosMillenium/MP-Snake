@@ -89,6 +89,7 @@ public class ControladorCliente extends Observable {
     }
 
     public void selectorMensaje(String msg){
+        System.out.println(msg);
         String[] msgSplit = msg.split(";");
         setChanged();
         switch(msgSplit[0]){

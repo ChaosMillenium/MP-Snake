@@ -54,7 +54,8 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-
+     /*  JPanel cuadrado = new JPanel(); 
+       cuadrado = this;*/
     }
 
 
