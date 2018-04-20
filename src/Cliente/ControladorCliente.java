@@ -86,13 +86,15 @@ public class ControladorCliente extends Observable {
     }
 
     public void selectorMensaje(String msg){
-
-       
+            if(!msg.isEmpty()){
             String[] msgSplit = msg.split(";");
             setChanged();
             switch(msgSplit[0]){
+                case "IDC":{
+                    break;
+                }
                 case "TAB":{
-                    //VistaCliente v = new VistaCliente(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]));
+                    VistaCliente v = new VistaCliente(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]));
                     notifyObservers(msg);
                     break;
                 }
@@ -109,6 +111,13 @@ public class ControladorCliente extends Observable {
                     break;
                 }
                 case "COI":{
+                    this.serpienteCliente = new Serpiente(Integer.parseInt(msgSplit[1]));
+                    for(int i = 2;i < msgSplit.length; i+=2){
+                        int x = Integer.parseInt(msgSplit[i]);
+                        int y = Integer.parseInt(msgSplit[i+1]);
+                        Coordenadas c = new Coordenadas(x,y);
+                        this.serpienteCliente.addCasilla(c);
+                    }
                     notifyObservers(msg);
                     break;
                 }
@@ -131,7 +140,7 @@ public class ControladorCliente extends Observable {
                     break;
                 }
             }
-        
+        }
     }
     
 }

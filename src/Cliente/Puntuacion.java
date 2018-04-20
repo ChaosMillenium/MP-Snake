@@ -44,8 +44,8 @@ public class Puntuacion extends javax.swing.JFrame implements Observer {
         String serpi = (String) arg;
         String[] parseado = serpi.split(";"); 
         if(parseado[0].equals("IDC")){
-            int id= Integer.parseInt(parseado[0]);
-            long puntos = Long.parseLong(parseado[1]);
+            int id= Integer.parseInt(parseado[1]);
+            long puntos = Long.parseLong(parseado[2]);
             JPanel jugador = new JPanel();
             JLabel nombre = new JLabel();
             nombre.setText(String.valueOf(id));

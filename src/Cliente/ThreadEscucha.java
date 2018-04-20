@@ -27,12 +27,13 @@ public class ThreadEscucha extends Thread {
             BufferedReader input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             while (true) {
                 String mensaje = input.readLine();
+                System.out.println(mensaje);
                 this.controlador.selectorMensaje(mensaje);
 
             }
         } catch (IOException ex) {
             System.err.println("Error de E/S"); //TODO: Controlar excepción
-
+            //aqui saltaba excepcion
         }
     }
 
@@ -58,7 +59,7 @@ public class ThreadEscucha extends Thread {
         try {
             this.socket.close();
         } catch (IOException ex) {
-            System.err.println("Error de E/S");
+            System.err.println("Error de E/S"); //TODO: Controlar excepción
         }
     }
 }
