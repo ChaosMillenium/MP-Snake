@@ -5,6 +5,8 @@
  */
 package Servidor;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author i.chicano.2016
@@ -16,7 +18,8 @@ public class ServidorMain {
         ControladorServidor controlador = new ControladorServidor(modelo);
 
         modelo.addObserver(controlador);
-        
+        int[] filasColumnas = PeticionFilasColumnas.pedirFilasColumnas();
+        modelo.setFilasColumnas(filasColumnas[0], filasColumnas[1]);
         controlador.iniciarServer();
     }
 }
