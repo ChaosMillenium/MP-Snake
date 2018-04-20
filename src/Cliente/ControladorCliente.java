@@ -98,35 +98,33 @@ public class ControladorCliente extends Observable {
                 break;
             }
             case "TSR":{
-                //Coordenadas tes = new Coordenadas(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]));
-                //this.tesoros.add(tes);
+                Coordenadas tes = new Coordenadas(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]));
+                this.tesoros.add(tes);
                 notifyObservers(msg);
                 break;
             }
             case "ELJ":{
-                /*for(Serpiente serpi : this.serpientes){
+                for(Serpiente serpi : this.serpientes){
                     if(serpi.getId() == Integer.parseInt(msgSplit[1])){
                         this.serpientes.remove(serpi);
-                        notifyObservers(serpi);
                         break;
                     }
-                }*/
+                }
                 notifyObservers(msg);
                 break;
             }
             case "PTS":{
-                /*for(Serpiente serpi : this.serpientes){
+                for(Serpiente serpi : this.serpientes){
                     if(serpi.getId() == Integer.parseInt(msgSplit[1])){
                         serpi.setPuntos(Integer.parseInt(msgSplit[2]));
-                        notifyObservers(serpi);
                         break;
                     }
-                }*/
+                }
                 notifyObservers(msg);
                 break;
             }
             case "COI":{
-                /*Serpiente s = new Serpiente(Integer.parseInt(msgSplit[1]));
+                Serpiente s = new Serpiente(Integer.parseInt(msgSplit[1]));
                 for(int i = 2;i < msgSplit.length; i+=2){
                     int x = Integer.parseInt(msgSplit[i]);
                     int y = Integer.parseInt(msgSplit[i+1]);
@@ -137,29 +135,29 @@ public class ControladorCliente extends Observable {
                         s.addCasilla(c);
                     }
                 }
-                notifyObservers(s);*/
                 notifyObservers(msg);
                 break;
             }
             case "MOV":{
-                /*for(Serpiente serpi : this.serpientes){
+                for(Serpiente serpi : this.serpientes){
                     if(serpi.getId() == Integer.parseInt(msgSplit[1])){
                         Coordenadas cabeza = new Coordenadas(Integer.parseInt(msgSplit[2]), Integer.parseInt(msgSplit[3]));
                         Coordenadas cola = new Coordenadas(Integer.parseInt(msgSplit[4]), Integer.parseInt(msgSplit[5]));
                         serpi.setCabeza(cabeza);
                         serpi.eliminarCola();
-                        notifyObservers(serpi);
                         break;
                     }
-                }*/
+                }
                 notifyObservers(msg);
                 break;
             }
             case "FIN":{
+                //finalizar hilo?
                 notifyObservers(msg);
                 break;
             }
             case "ERR":{
+                System.out.println(msgSplit[1]);
                 //lanzar mensaje error
                 break;
             }
