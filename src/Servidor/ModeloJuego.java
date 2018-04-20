@@ -22,7 +22,7 @@ import java.util.Random;
  */
 public class ModeloJuego extends Observable {
 
-    private int columnas = 60, filas = 60;
+    private int columnas, filas;
     private Map<Integer, Jugador> jugadores;
     private final int VELOCIDAD = 60;
     private final int TAMAÑOBASE = 3;
@@ -216,5 +216,10 @@ public class ModeloJuego extends Observable {
             }
         }
         return false;
+    }
+
+    public void setFilasColumnas(int filas, int columnas) {
+        this.filas = filas;
+        this.columnas = columnas;
     }
 }
