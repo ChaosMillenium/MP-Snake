@@ -24,14 +24,11 @@ import javax.swing.JOptionPane;
  */
 public class ControladorCliente extends Observable {
 
-    private ArrayList<Serpiente> serpientes;
-    private ArrayList<Coordenadas> tesoros;
     private Serpiente serpienteCliente;
     private ThreadEscucha listener;
 
     public ControladorCliente(){
-        this.serpientes = new ArrayList<>();
-        this.tesoros = new ArrayList<>();
+        
     }
     
     
@@ -89,82 +86,51 @@ public class ControladorCliente extends Observable {
     }
 
     public void selectorMensaje(String msg){
-        String[] msgSplit = msg.split(";");
-        setChanged();
-        switch(msgSplit[0]){
-            case "TAB":{
-                //VistaCliente v = new VistaCliente(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]));
-                notifyObservers(msg);
-                break;
-            }
-            case "TSR":{
-                Coordenadas tes = new Coordenadas(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]));
-                this.tesoros.add(tes);
-                notifyObservers(msg);
-                break;
-            }
-            case "ELJ":{
-                for(Serpiente serpi : this.serpientes){
-                    if(serpi.getId() == Integer.parseInt(msgSplit[1])){
-                        this.serpientes.remove(serpi);
-                        break;
-                    }
+       
+            String[] msgSplit = msg.split(";");
+            setChanged();
+            switch(msgSplit[0]){
+                case "TAB":{
+                    //VistaCliente v = new VistaCliente(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]));
+                    notifyObservers(msg);
+                    break;
                 }
-                notifyObservers(msg);
-                break;
-            }
-            case "PTS":{
-                for(Serpiente serpi : this.serpientes){
-                    if(serpi.getId() == Integer.parseInt(msgSplit[1])){
-                        serpi.setPuntos(Integer.parseInt(msgSplit[2]));
-                        break;
-                    }
+                case "TSR":{
+                    notifyObservers(msg);
+                    break;
                 }
-                notifyObservers(msg);
-                break;
-            }
-            case "COI":{
-                Serpiente s = new Serpiente(Integer.parseInt(msgSplit[1]));
-                for(int i = 2;i < msgSplit.length; i+=2){
-                    int x = Integer.parseInt(msgSplit[i]);
-                    int y = Integer.parseInt(msgSplit[i+1]);
-                    Coordenadas c = new Coordenadas(x,y);
-                    if(i == 2){
-                        s.setCabeza(c);
-                    }else{
-                        s.addCasilla(c);
-                    }
+                case "ELJ":{
+                    notifyObservers(msg);
+                    break;
                 }
-                notifyObservers(msg);
-                break;
-            }
-            case "MOV":{
-                for(Serpiente serpi : this.serpientes){
-                    if(serpi.getId() == Integer.parseInt(msgSplit[1])){
-                        Coordenadas cabeza = new Coordenadas(Integer.parseInt(msgSplit[2]), Integer.parseInt(msgSplit[3]));
-                        Coordenadas cola = new Coordenadas(Integer.parseInt(msgSplit[4]), Integer.parseInt(msgSplit[5]));
-                        serpi.setCabeza(cabeza);
-                        serpi.eliminarCola();
-                        break;
-                    }
+                case "PTS":{
+                    notifyObservers(msg);
+                    break;
                 }
-                notifyObservers(msg);
-                break;
+                case "COI":{
+                    notifyObservers(msg);
+                    break;
+                }
+                case "MOV":{
+                    notifyObservers(msg);
+                    break;
+                }
+                case "FIN":{
+                    this.listener.cerrarConexion();
+                    notifyObservers(msg);
+                    break;
+                }
+                case "ERR":{
+                    this.listener.cerrarConexion();
+                    notifyObservers(msg);
+                    break;
+                }
+                default :{
+                    //lanzar mensaje error
+                    break;
+                }
             }
-            case "FIN":{
-                //finalizar hilo?
-                notifyObservers(msg);
-                break;
-            }
-            case "ERR":{
-                System.out.println(msgSplit[1]);
-                //lanzar mensaje error
-                break;
-            }
-            default :{
-                //lanzar mensaje error
-                break;
-            }
-        }
+        
     }
+    
 }
