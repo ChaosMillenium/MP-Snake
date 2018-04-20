@@ -13,13 +13,12 @@ import javax.swing.JPanel;
 public class VistaCliente extends javax.swing.JFrame implements Observer {
 
     private JPanel[][] grid; //Matriz filas x columnas
-    private ArrayList<Serpiente> serpientes;
     private ControladorCliente controlador;
 
     public VistaCliente(int filas, int columnas) {
         initComponents();
         this.setTitle("Snake");
-        this.serpientes = new ArrayList<>();
+        //this.serpientes = new ArrayList<>();
         this.controlador = new ControladorCliente();
         this.setLayout(new GridLayout(filas, columnas));
         this.grid = new JPanel[filas][columnas];
@@ -71,13 +70,8 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
                 break;
             }
             case "ELJ":{
-                for(Serpiente serpi: this.serpientes){
-                    if(serpi.getId() == Integer.parseInt(msg[1])){
-                        for(int i = 0;i < serpi.getLongitud(); i++){
-                            Coordenadas c = serpi.getCoordenadas(i);
-                            this.grid[c.getX()][c.getY()].setBackground(Color.WHITE);
-                        }
-                    }
+                for(int i = 2; i < msg.length; i+=2){
+                    this.grid[Integer.parseInt(msg[i])][Integer.parseInt(msg[i+1])].setBackground(Color.WHITE);
                 }
                 //jugador eliminado terminar hilo?
                 break;
