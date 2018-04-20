@@ -8,6 +8,7 @@ package Servidor;
 import Utilidades.Coordenadas;
 import Utilidades.Direccion;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,8 +31,8 @@ public class ModeloJuego extends Observable {
     private List<Coordenadas> tesoros;
 
     public ModeloJuego() {
-        this.jugadores = new HashMap<>();
-        this.tesoros = new ArrayList<>();
+        this.jugadores = Collections.synchronizedMap(new HashMap<>());
+        this.tesoros = Collections.synchronizedList(new ArrayList<>());
     }
 
     public void añadirJugador() {
@@ -42,7 +43,9 @@ public class ModeloJuego extends Observable {
         int key = siguienteKey();
         Jugador nuevo = new Jugador(this.TAMAÑOBASE);
         asignarCoordInicio(nuevo, key);
-        this.jugadores.put(key, nuevo);
+        synchronized (this.jugadores) {
+            this.jugadores.put(key, nuevo);
+        }
         if (empezarJuego) {
             this.hiloTablero = new ThreadActualizarTablero(this);
             this.hiloTablero.start();
@@ -57,8 +60,10 @@ public class ModeloJuego extends Observable {
 
     public int siguienteKey() {
         int key = 1;
-        while (this.jugadores.keySet().contains(key)) {
-            key++;
+        synchronized (this.jugadores) {
+            while (this.jugadores.keySet().contains(key)) {
+                key++;
+            }
         }
         return key;
     }
@@ -84,11 +89,15 @@ public class ModeloJuego extends Observable {
     }
 
     public Coordenadas getCabeza(int id) {
-        return this.jugadores.get(id).getCabeza();
+        synchronized (this.jugadores) {
+            return this.jugadores.get(id).getCabeza();
+        }
     }
 
     public Coordenadas getAnteriorCola(int id) {
-        return this.jugadores.get(id).getAnteriorCola();
+        synchronized (this.jugadores) {
+            return this.jugadores.get(id).getAnteriorCola();
+        }
     }
 
     public int getPUNTOSTESORO() {
@@ -124,12 +133,14 @@ public class ModeloJuego extends Observable {
     }
 
     private int colisionJugador(Coordenadas coord, int id) { //Solo comprueba con el resto de serpientes (devuelve id del choque, o 0 si no choca)
-        for (Map.Entry<Integer, Jugador> entrada : this.jugadores.entrySet()) {
-            if (entrada.getKey() != id) {
-                LinkedList<Coordenadas> serpiente = entrada.getValue().getSerpiente();
-                for (Coordenadas comparar : serpiente) {
-                    if (coord.equals(comparar)) {
-                        return entrada.getKey();
+        synchronized (this.jugadores) {
+            for (Map.Entry<Integer, Jugador> entrada : this.jugadores.entrySet()) {
+                if (entrada.getKey() != id) {
+                    LinkedList<Coordenadas> serpiente = entrada.getValue().getSerpiente();
+                    for (Coordenadas comparar : serpiente) {
+                        if (coord.equals(comparar)) {
+                            return entrada.getKey();
+                        }
                     }
                 }
             }
@@ -144,11 +155,15 @@ public class ModeloJuego extends Observable {
     }
 
     public void cambiarDireccion(Direccion direccion, int id) {
-        this.jugadores.get(id).setDireccion(direccion);
+        synchronized (this.jugadores) {
+            this.jugadores.get(id).setDireccion(direccion);
+        }
     }
 
     public void eliminarJugador(int id) {
-        this.jugadores.remove(id);
+        synchronized (this.jugadores) {
+            this.jugadores.remove(id);
+        }
     }
 
     public boolean hayJugadores() {

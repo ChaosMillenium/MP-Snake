@@ -5,10 +5,7 @@
  */
 package Servidor;
 
-import Utilidades.Coordenadas;
-import Utilidades.Direccion;
 import java.util.ConcurrentModificationException;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 
@@ -34,7 +31,6 @@ public class ThreadActualizarTablero extends Thread {
     public void run() {
         Random aleatTesoro = new Random();
         while (hayJugadores()) {
-            try {
                 while (this.pausa) {
                     try {
                         Thread.sleep(100);
@@ -51,10 +47,7 @@ public class ThreadActualizarTablero extends Thread {
                 //TODO: Revisar probabilidades
                 if (aleatTesoro.nextInt(100) < PROBABILIDAD) { //10% cada VELOCIDAD ms de generar un tesoro
                     this.modelo.generarTesoro();
-                }
-            } catch (ConcurrentModificationException e) {
-                //Reintenta si no se puede acceder al mapa de jugadores
-            }
+                }           
             try {
                 Thread.sleep(this.VELOCIDAD);
             } catch (InterruptedException e) {
