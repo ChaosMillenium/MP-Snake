@@ -16,6 +16,7 @@ public class ServidorMain {
         ControladorServidor controlador = new ControladorServidor(modelo);
 
         modelo.addObserver(controlador);
+        //TODO: Controlar lectura de datos
         int[] filasColumnas = PeticionFilasColumnas.pedirFilasColumnas();
         modelo.setFilasColumnas(filasColumnas[0], filasColumnas[1]);
         controlador.iniciarServer();

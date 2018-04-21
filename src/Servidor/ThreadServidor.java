@@ -144,7 +144,7 @@ public class ThreadServidor implements Runnable {
     public synchronized void colision(int id1, int id2) { //Envía a todos los jugadores que ha ocurrido una colisión entre dos jugadores, o uno consigo mismo
         try {
             if (id1 == id2) {
-                String col = ConstructorMensajes.err("Colisión de " + id1 + "consigo mismo");
+                String col = ConstructorMensajes.err("Colisión de " + id1 + " consigo mismo");
                 PrintWriter out = new PrintWriter(ThreadServidor.conexionesActivas.get(id1).getOutputStream(), true);
                 out.println(col);
                 eliminarJugador(id1);
