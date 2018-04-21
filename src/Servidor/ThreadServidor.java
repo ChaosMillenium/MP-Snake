@@ -56,16 +56,16 @@ public class ThreadServidor implements Runnable {
             out.println(ConstructorMensajes.idc(this.socketID)); //Manda ID
             out.println(ConstructorMensajes.tab(this.controlador.getFilas(), this.controlador.getColumnas())); //Manda tablero
             this.controlador.añadirJugador(); //Añade jugador al modelo de juego
-            for (int id : ThreadServidor.conexionesActivas.keySet()) { //Envia todas las coordenadas de los jugadores ya existente al nuevo jugador (incluido el suyo)
-                if (id != this.socketID) {
-                    int[] coordenadas = this.controlador.getCoordenadas(id);
-                    this.nuevoJugador(id, coordenadas);
-                }
-            }
-            for (Coordenadas coord : this.controlador.getTesoros()) { //Se envían las coordenadas de todos los tesoros
-                this.nuevoTesoro(coord.getX(), coord.getY());
-            }
             ThreadServidor.conexionesActivas.put(this.socketID, this.socket); //Añade el nuevo cliente a la lista de conexiones activas
+            //Envia todas las coordenadas de los jugadores ya existentes al nuevo jugador (incluido el suyo)
+            for (int id : ThreadServidor.conexionesActivas.keySet()) {
+                int[] coordenadas = this.controlador.getCoordenadas(id);
+                out.println(ConstructorMensajes.coi(coordenadas, id));
+            }
+            //Se envían las coordenadas de todos los tesoros
+            for (Coordenadas coord : this.controlador.getTesoros()) { 
+                out.println(ConstructorMensajes.tsr(coord.getX(), coord.getY()));
+            }           
             while (true) {
                 String input = in.readLine(); //Lee un mensaje enviado desde el cliente
                 if (input != null) {
@@ -92,8 +92,7 @@ public class ThreadServidor implements Runnable {
             System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (NullPointerException: Mensaje no reconocido/Desconectado sin aviso)");
         } finally {
             this.eliminarJugador(this.socketID);
-            this.controlador.eliminarJugador(this.socketID);
-        }
+            this.controlador.eliminarJugador(this.socketID);        }
     }
 
     private synchronized void enviarMensaje(String mensaje) { //Envía un mensaje a todos los jugadores
@@ -119,7 +118,7 @@ public class ThreadServidor implements Runnable {
         }
         int[] coordenadas = this.controlador.getCoordenadas(id);
         enviarMensaje(ConstructorMensajes.elj(id, coordenadas));
-        System.out.println("El cliente" + id + "ha salido.");
+        System.out.println("El cliente " + id + " ha salido.");
     }
 
     public void moverJugador(int id, int[] cabeza, int[] cola) { //Envía a todos los jugadores que se ha movido un nuevo jugador
