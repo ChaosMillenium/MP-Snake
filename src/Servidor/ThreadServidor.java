@@ -40,7 +40,7 @@ public class ThreadServidor implements Runnable {
             while (true) {
                 Socket sck = serverSck.accept(); //Acepta cliente
                 System.out.println("Conexión entrante");
-                int key = this.controlador.siguienteKey(); //La key del mapa es la id del jugador
+                int key = this.controlador.siguienteKey(); 
                 new Thread(new ThreadServidor(this.controlador, sck, key)).start(); //Inicia un hilo por cliente
             }
         } catch (IOException e) {
@@ -69,7 +69,7 @@ public class ThreadServidor implements Runnable {
             while (true) {
                 String input = in.readLine(); //Lee un mensaje enviado desde el cliente
                 if (input != null) {
-                    System.out.println(input); //Propósito de pruebas
+                    //System.out.println(input); //Propósito de pruebas
                     String[] parseado = input.split(";"); //Parsea los mensajes
                     if (ConstructorMensajes.isDir(parseado[0])) { //Si la cabecera es un mensaje de dirección
                         this.controlador.cambiarDireccion(this.socketID, parseado[1]); //Cambia la dirección del jugador en el modelo

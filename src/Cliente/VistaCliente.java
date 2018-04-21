@@ -34,7 +34,10 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
         this.setVisible(true);
         this.pack();
         this.setLocationRelativeTo(null);
-        this.grid[10][10].setBackground(Color.blue);
+        
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+        this.addKeyListener(this.controlador);
         
     }
 
@@ -60,32 +63,20 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        /*if(this.grid[11][11] == null){
-            System.out.println("nulo");
-        }else{
-        this.grid[11][11].setBackground(Color.red);
-        this.grid[12][12].setBackground(Color.black);
-        }*/
         String mensaje = (String) arg;
         String[] msg = mensaje.split(";");
-        //this.grid[11][11].setBackground(Color.red);
         switch(msg[0]){
             case "TAB":{
                 //this.grid[11][11].setBackground(Color.red);
-                this.grid = new JPanel[Integer.parseInt(msg[1])][Integer.parseInt(msg[2])];
+                //this.grid = new JPanel[Integer.parseInt(msg[1])][Integer.parseInt(msg[2])];
                 break;
             }
             case "TSR":{
-                    this.grid[Integer.parseInt(msg[1])][Integer.parseInt(msg[2])] = JPanel();
-
                     this.grid[Integer.parseInt(msg[1])][Integer.parseInt(msg[2])].setBackground(Color.yellow);
-                
-               
                 break;
             }
             case "ELJ":{
                 for(int i = 2; i < msg.length; i+=2){
-                    this.grid[Integer.parseInt(msg[1])][Integer.parseInt(msg[2])] = new JPanel();
                     this.grid[Integer.parseInt(msg[1])][Integer.parseInt(msg[2])].setBackground(Color.white);
                 }
                 //jugador eliminado terminar hilo?
@@ -97,14 +88,11 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
             }
             case "COI":{
                 for(int i = 2;i < msg.length; i=i+2){
-                    this.grid[Integer.parseInt(msg[i])][Integer.parseInt(msg[i+1])] = new JPanel();
                     this.grid[Integer.parseInt(msg[i])][Integer.parseInt(msg[i+1])].setBackground(Color.red);
                 }
             }
             case "MOV":{
-                this.grid[Integer.parseInt(msg[2])][Integer.parseInt(msg[3])] = new JPanel();
                 this.grid[Integer.parseInt(msg[2])][Integer.parseInt(msg[3])].setBackground(Color.red);
-                this.grid[Integer.parseInt(msg[4])][Integer.parseInt(msg[5])] = new JPanel();
                 this.grid[Integer.parseInt(msg[4])][Integer.parseInt(msg[5])].setBackground(Color.white);
                 break;
             }

@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class ThreadEscucha extends Thread {
@@ -40,7 +38,9 @@ public class ThreadEscucha extends Thread {
     public void enviarDireccion(Direccion dir) {
         try {
             PrintWriter out = new PrintWriter(this.socket.getOutputStream(), true);
-            out.println(ConstructorMensajes.dir(dir.toString()));
+            String direccion = dir.toString();
+            //System.out.println(direccion);
+            out.println(ConstructorMensajes.dir(direccion));
         } catch (IOException ex) {
             System.err.println("Error de E/S"); //TODO: Controlar excepción
         }
