@@ -10,5 +10,5 @@ package Utilidades;
  * @author danie
  */
 public enum Direccion {
-    ARRIBA, ABAJO, DER, IZQ;
+    ARRIBA, ABAJO, DER, IZQ, INDEF;
 }

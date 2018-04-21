@@ -10,7 +10,7 @@ public class Jugador {
     private int puntos = 0;
     private Direccion direccion = Direccion.ARRIBA;
     private Coordenadas anteriorCola;
-    
+
     public Jugador(int tamaño) {
         this.tamaño = tamaño;
         this.serpiente = new LinkedList<>();
@@ -28,10 +28,10 @@ public class Jugador {
         this.direccion = direccion;
     }
 
-    public Coordenadas getCabeza(){
+    public Coordenadas getCabeza() {
         return this.serpiente.getFirst();
     }
-    
+
     public Coordenadas getAnteriorCola() {
         return anteriorCola;
     }
@@ -42,33 +42,30 @@ public class Jugador {
 
     public void nuevaCabeza() {
         Coordenadas cabeza = this.serpiente.getFirst();
-        Coordenadas nuevaCabeza;
+        Coordenadas nuevaCabeza = null;
         switch (this.direccion) {
             case ARRIBA: {
-                int nuevoY = this.serpiente.getFirst().getY() + 1;
-                nuevaCabeza = new Coordenadas(cabeza.getX(), nuevoY);
-                this.serpiente.addFirst(nuevaCabeza);
-                break;
-            }
-            case ABAJO:{
                 int nuevoY = this.serpiente.getFirst().getY() - 1;
                 nuevaCabeza = new Coordenadas(cabeza.getX(), nuevoY);
-                this.serpiente.addFirst(nuevaCabeza);
                 break;
             }
-            case IZQ:{
+            case ABAJO: {
+                int nuevoY = this.serpiente.getFirst().getY() + 1;
+                nuevaCabeza = new Coordenadas(cabeza.getX(), nuevoY);
+                break;
+            }
+            case IZQ: {
                 int nuevoX = this.serpiente.getFirst().getX() - 1;
                 nuevaCabeza = new Coordenadas(nuevoX, cabeza.getY());
-                this.serpiente.addFirst(nuevaCabeza);
                 break;
             }
-            case DER:{
+            case DER: {
                 int nuevoX = this.serpiente.getFirst().getX() + 1;
                 nuevaCabeza = new Coordenadas(nuevoX, cabeza.getY());
-                this.serpiente.addFirst(nuevaCabeza);
                 break;
             }
         }
+        this.serpiente.addFirst(nuevaCabeza);
     }
 
     public void eliminarCola() {
@@ -78,9 +75,9 @@ public class Jugador {
     public void eliminarSerpiente() {
         this.serpiente.clear();
     }
-    
-    public void añadirPuntos(int puntos){
-        this.puntos+=puntos;
+
+    public void añadirPuntos(int puntos) {
+        this.puntos += puntos;
         this.tamaño++;
         this.nuevaCabeza();
     }
@@ -88,6 +85,5 @@ public class Jugador {
     public int getPuntos() {
         return puntos;
     }
-    
-    
+
 }

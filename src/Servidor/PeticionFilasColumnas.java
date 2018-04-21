@@ -28,7 +28,7 @@ public class PeticionFilasColumnas {
         panel.add(campoColumnas);
         
         JOptionPane.showConfirmDialog(null, panel,
-                "Introduzca filas y columnas", JOptionPane.OK_OPTION);
+                "Introduzca filas y columnas", JOptionPane.OK_CANCEL_OPTION);
         int filas = Integer.parseInt(campoFilas.getText());
         int columnas = Integer.parseInt(campoColumnas.getText());
         int[] filasColumnas = {filas, columnas};

@@ -157,7 +157,12 @@ public class ModeloJuego extends Observable {
 
     public void cambiarDireccion(Direccion direccion, int id) {
         synchronized (this.jugadores) {
-            this.jugadores.get(id).setDireccion(direccion);
+            if (((direccion == Direccion.ARRIBA) && (direccion != Direccion.ABAJO)) //No se puede mover en la dirección contraria
+                    || ((direccion == Direccion.ABAJO) && (direccion != Direccion.ARRIBA))
+                    || ((direccion == Direccion.IZQ) && (direccion != Direccion.DER))
+                    || ((direccion == Direccion.DER) && (direccion != Direccion.IZQ))) {
+                this.jugadores.get(id).setDireccion(direccion);
+            }
         }
     }
 
@@ -187,12 +192,12 @@ public class ModeloJuego extends Observable {
             if (idColision != id) { //Si la colisión es entre 2 jugadores elimina al segundo
                 this.eliminarJugador(idColision);
             }
-        } else if (colisionBorde(this.jugadores.get(id).getCabeza())) {
+        } else if (this.colisionBorde(this.jugadores.get(id).getCabeza())) {
             notifyObservers("CBR;" + id);
             this.eliminarJugador(id);
         } else {
             notifyObservers("MOV;" + id);
-            if (colisionTesoro(this.jugadores.get(id).getCabeza())) {
+            if (this.colisionTesoro(this.jugadores.get(id).getCabeza())) {
                 this.jugadores.get(id).añadirPuntos(this.PUNTOSTESORO);
                 int nuevosPuntos = this.jugadores.get(id).getPuntos();
                 setChanged();
