@@ -41,19 +41,21 @@ public class Puntuacion extends javax.swing.JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        String serpi = (String) arg;
-        String[] parseado = serpi.split(";"); 
-        if(parseado[0].equals("IDC")){
-            int id= Integer.parseInt(parseado[1]);
-            long puntos = Long.parseLong(parseado[2]);
-            JPanel jugador = new JPanel();
-            JLabel nombre = new JLabel();
-            nombre.setText(String.valueOf(id));
-            JLabel puntuacion = new JLabel();
-            puntuacion.setText(String.valueOf(puntos));
-            jugador.add(nombre);
-            jugador.add(puntuacion); 
-            this.add(jugador);
+        if(!((String) arg).isEmpty()){
+            String serpi = (String) arg;
+            String[] parseado = serpi.split(";"); 
+            if(parseado[0].equals("IDC")){
+                int id= Integer.parseInt(parseado[1]);
+                long puntos = Long.parseLong(parseado[2]);
+                JPanel jugador = new JPanel();
+                JLabel nombre = new JLabel();
+                nombre.setText(String.valueOf(id));
+                JLabel puntuacion = new JLabel();
+                puntuacion.setText(String.valueOf(puntos));
+                jugador.add(nombre);
+                jugador.add(puntuacion); 
+                this.add(jugador);
+            }
         }
              
     }

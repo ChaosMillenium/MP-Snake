@@ -8,14 +8,9 @@ package Cliente;
 import Utilidades.*;
 import com.sun.glass.events.KeyEvent;
 import java.awt.HeadlessException;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Observable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -26,9 +21,8 @@ public class ControladorCliente extends Observable {
 
     private Serpiente serpienteCliente;
     private ThreadEscucha listener;
-
+    
     public ControladorCliente(){
-        
     }
     
     
@@ -83,7 +77,7 @@ public class ControladorCliente extends Observable {
                 break;
             }
         }
-    }
+    }    
 
     public void selectorMensaje(String msg){
             if(!msg.isEmpty()){
@@ -94,7 +88,8 @@ public class ControladorCliente extends Observable {
                     break;
                 }
                 case "TAB":{
-                    VistaCliente v = new VistaCliente(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]));
+                    VistaCliente v = new VistaCliente(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]), this);
+                    this.addObserver(v);
                     notifyObservers(msg);
                     break;
                 }
@@ -122,6 +117,7 @@ public class ControladorCliente extends Observable {
                     break;
                 }
                 case "MOV":{
+                    //System.out.println("controladorM");
                     notifyObservers(msg);
                     break;
                 }
