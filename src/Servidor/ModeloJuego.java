@@ -137,7 +137,7 @@ public class ModeloJuego extends Observable {
             for (Map.Entry<Integer, Jugador> entrada : this.jugadores.entrySet()) {
                 LinkedList<Coordenadas> serpiente = entrada.getValue().getSerpiente();
                 for (Coordenadas comparar : serpiente) {
-                    if ((id == entrada.getKey()) && (comparar.equals(serpiente.getFirst()))) {
+                    if ((id == entrada.getKey()) && (!comparar.equals(serpiente.getFirst()))) {
                         if (coord.equals(comparar)) {
                             return entrada.getKey();
                         }
