@@ -69,7 +69,7 @@ public class ThreadServidor implements Runnable {
             while (true) {
                 String input = in.readLine(); //Lee un mensaje enviado desde el cliente
                 if (input != null) {
-                    //System.out.println(input); //Propósito de pruebas
+                    System.out.println(input); //Propósito de pruebas
                     String[] parseado = input.split(";"); //Parsea los mensajes
                     if (ConstructorMensajes.isDir(parseado[0])) { //Si la cabecera es un mensaje de dirección
                         this.controlador.cambiarDireccion(this.socketID, parseado[1]); //Cambia la dirección del jugador en el modelo

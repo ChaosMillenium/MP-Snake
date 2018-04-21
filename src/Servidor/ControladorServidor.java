@@ -109,7 +109,6 @@ public class ControladorServidor implements Observer {
     public void cambiarDireccion(int id, String direccion) {
         try {
             Direccion instanciaDir = Direccion.valueOf(direccion);
-            System.out.println(direccion);
             this.modelo.cambiarDireccion(instanciaDir, id);
         } catch (IllegalArgumentException e) {
             System.err.println("Dirección inválida");
