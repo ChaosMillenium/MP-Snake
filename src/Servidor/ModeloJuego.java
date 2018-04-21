@@ -136,12 +136,10 @@ public class ModeloJuego extends Observable {
     private int colisionJugador(Coordenadas coord, int id) { //Solo comprueba con el resto de serpientes (devuelve id del choque, o 0 si no choca)
         synchronized (this.jugadores) {
             for (Map.Entry<Integer, Jugador> entrada : this.jugadores.entrySet()) {
-                if (entrada.getKey() != id) {
-                    LinkedList<Coordenadas> serpiente = entrada.getValue().getSerpiente();
-                    for (Coordenadas comparar : serpiente) {
-                        if (coord.equals(comparar)) {
-                            return entrada.getKey();
-                        }
+                LinkedList<Coordenadas> serpiente = entrada.getValue().getSerpiente();
+                for (Coordenadas comparar : serpiente) {
+                    if (coord.equals(comparar)) {
+                        return entrada.getKey();
                     }
                 }
             }
@@ -178,13 +176,15 @@ public class ModeloJuego extends Observable {
         return coordenadas;
     }
 
-    public void notificarMovimiento(int id) {
+    public void notificarMovimiento(int id) { //Revisa las colisiones, si no colisiona envia movimiento y comprueba tesoro
         int idColision;
         setChanged();
         if ((idColision = this.colisionJugador(this.jugadores.get(id).getCabeza(), id)) != 0) {
             notifyObservers("COL;" + id + ";" + idColision);
             this.eliminarJugador(id);
-            this.eliminarJugador(idColision);
+            if (idColision != id) { //Si la colisión es entre 2 jugadores elimina al segundo
+                this.eliminarJugador(idColision);
+            }
         } else if (colisionBorde(this.jugadores.get(id).getCabeza())) {
             notifyObservers("CBR;" + id);
             this.eliminarJugador(id);
