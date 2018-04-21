@@ -59,6 +59,7 @@ public class ModeloJuego extends Observable {
     }
 
     public int siguienteKey() {
+        //posible problema de las keys
         int key = 1;
         synchronized (this.jugadores) {
             while (this.jugadores.keySet().contains(key)) {

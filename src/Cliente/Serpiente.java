@@ -24,7 +24,7 @@ public class Serpiente {
 
     public Serpiente(int id){
         //Metodo constructor de serpiente
-        this.dir = Direccion.ARRIBA; //añadir direccion aleatoria en el futuro
+        this.dir = Direccion.DER; //añadir direccion aleatoria en el futuro
         this.serp = new LinkedList<Coordenadas>();
         this.cabeza = null;
         this.puntos = 0;

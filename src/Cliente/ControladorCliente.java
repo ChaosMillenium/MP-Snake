@@ -8,6 +8,7 @@ package Cliente;
 import Utilidades.*;
 import com.sun.glass.events.KeyEvent;
 import java.awt.HeadlessException;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Observable;
@@ -17,12 +18,13 @@ import javax.swing.JOptionPane;
  *
  * @author danie
  */
-public class ControladorCliente extends Observable {
+public class ControladorCliente extends Observable implements KeyListener{
 
     private Serpiente serpienteCliente;
     private ThreadEscucha listener;
     
     public ControladorCliente(){
+        
     }
     
     
@@ -47,29 +49,30 @@ public class ControladorCliente extends Observable {
 
     public void setDirAct(int key) {
         //CONTROL DE DIRECCION
+        //direccines cambiadas, pulsa W y va arriba aunque si lees el codigo no deberia hacer eso
         switch (key) {
-            case KeyEvent.VK_UP: {
+            case KeyEvent.VK_D: {
                 if (serpienteCliente.getDir() != Direccion.ABAJO) {
                     serpienteCliente.setDir(Direccion.ARRIBA);
                     this.listener.enviarDireccion(Direccion.ARRIBA);
                 }
                 break;
             }
-            case KeyEvent.VK_DOWN: {
+            case KeyEvent.VK_A: {
                 if (serpienteCliente.getDir() != Direccion.ARRIBA) {
                     serpienteCliente.setDir(Direccion.ABAJO);
                     this.listener.enviarDireccion(Direccion.ABAJO);
                 }
                 break;
             }
-            case KeyEvent.VK_LEFT: {
+            case KeyEvent.VK_W: {
                 if (serpienteCliente.getDir() != Direccion.DER) {
                     serpienteCliente.setDir(Direccion.IZQ);
                     this.listener.enviarDireccion(Direccion.IZQ);
                 }
                 break;
             }
-            case KeyEvent.VK_RIGHT: {
+            case KeyEvent.VK_S: {
                 if (serpienteCliente.getDir() != Direccion.IZQ) {
                     serpienteCliente.setDir(Direccion.DER);
                     this.listener.enviarDireccion(Direccion.DER);
@@ -90,7 +93,6 @@ public class ControladorCliente extends Observable {
                 case "TAB":{
                     VistaCliente v = new VistaCliente(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]), this);
                     this.addObserver(v);
-                    notifyObservers(msg);
                     break;
                 }
                 case "TSR":{
@@ -137,6 +139,22 @@ public class ControladorCliente extends Observable {
                 }
             }
         }
+    }
+
+    @Override
+    public void keyTyped(java.awt.event.KeyEvent e) {
+        //no hacer nada por ahora
+    }
+
+    @Override
+    public void keyPressed(java.awt.event.KeyEvent e) {
+        int key = e.getKeyCode();
+        setDirAct(key);
+    }
+
+    @Override
+    public void keyReleased(java.awt.event.KeyEvent e) {
+        //no hacer nada por ahora
     }
     
 }
