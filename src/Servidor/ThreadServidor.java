@@ -63,9 +63,9 @@ public class ThreadServidor implements Runnable {
                 out.println(ConstructorMensajes.coi(coordenadas, id));
             }
             //Se envían las coordenadas de todos los tesoros
-            for (Coordenadas coord : this.controlador.getTesoros()) { 
+            for (Coordenadas coord : this.controlador.getTesoros()) {
                 out.println(ConstructorMensajes.tsr(coord.getX(), coord.getY()));
-            }           
+            }
             while (true) {
                 String input = in.readLine(); //Lee un mensaje enviado desde el cliente
                 if (input != null) {
@@ -91,8 +91,13 @@ public class ThreadServidor implements Runnable {
         } catch (NullPointerException e) {
             System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (NullPointerException: Mensaje no reconocido/Desconectado sin aviso)");
         } finally {
-            this.eliminarJugador(this.socketID);
-            this.controlador.eliminarJugador(this.socketID);        }
+            try {
+                this.eliminarJugador(this.socketID);
+                this.controlador.eliminarJugador(this.socketID);
+            } catch (NullPointerException ex) {
+                //Salta cuando ya se ha eliminado, por lo que no hay que repetirlo
+            }
+        }
     }
 
     private synchronized void enviarMensaje(String mensaje) { //Envía un mensaje a todos los jugadores
@@ -136,16 +141,23 @@ public class ThreadServidor implements Runnable {
         }
     }
 
-    public synchronized void colision(int id1, int id2) { //Envía a todos los jugadores que ha ocurrido una colisión entre dos jugadores
+    public synchronized void colision(int id1, int id2) { //Envía a todos los jugadores que ha ocurrido una colisión entre dos jugadores, o uno consigo mismo
         try {
-            String col1 = ConstructorMensajes.err("Colisión con " + id2);
-            String col2 = ConstructorMensajes.err("Colisión con " + id1);
-            PrintWriter out1 = new PrintWriter(ThreadServidor.conexionesActivas.get(id1).getOutputStream(), true);
-            PrintWriter out2 = new PrintWriter(ThreadServidor.conexionesActivas.get(id2).getOutputStream(), true);
-            out1.println(col1);
-            out2.println(col2);
-            eliminarJugador(id1);
-            eliminarJugador(id2);
+            if (id1 == id2) {
+                String col = ConstructorMensajes.err("Colisión de " + id1 + "consigo mismo");
+                PrintWriter out = new PrintWriter(ThreadServidor.conexionesActivas.get(id1).getOutputStream(), true);
+                out.println(col);
+                eliminarJugador(id1);
+            } else {
+                String col1 = ConstructorMensajes.err("Colisión con " + id2);
+                String col2 = ConstructorMensajes.err("Colisión con " + id1);
+                PrintWriter out1 = new PrintWriter(ThreadServidor.conexionesActivas.get(id1).getOutputStream(), true);
+                PrintWriter out2 = new PrintWriter(ThreadServidor.conexionesActivas.get(id2).getOutputStream(), true);
+                out1.println(col1);
+                out2.println(col2);
+                eliminarJugador(id1);
+                eliminarJugador(id2);
+            }
         } catch (IOException e) {
             //TODO: Controlar excepcion
         }
