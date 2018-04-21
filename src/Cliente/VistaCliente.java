@@ -37,7 +37,7 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
         
         this.setFocusable(true);
         this.requestFocusInWindow();
-        this.addKeyListener(this.controlador);
+        this.addKeyListener(new DetectorTeclas(this.controlador));
         
     }
 
@@ -72,28 +72,23 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
                 break;
             }
             case "TSR":{
-                    this.grid[Integer.parseInt(msg[1])][Integer.parseInt(msg[2])].setBackground(Color.yellow);
+                    this.grid[Integer.parseInt(msg[2])][Integer.parseInt(msg[1])].setBackground(Color.yellow);
                 break;
             }
             case "ELJ":{
                 for(int i = 2; i < msg.length; i+=2){
-                    this.grid[Integer.parseInt(msg[1])][Integer.parseInt(msg[2])].setBackground(Color.white);
+                    this.grid[Integer.parseInt(msg[2])][Integer.parseInt(msg[1])].setBackground(Color.white);
                 }
-                //jugador eliminado terminar hilo?
-                break;
-            }
-            case "PTS":{
-                //no hacer nada, se ocupa la otra vista
                 break;
             }
             case "COI":{
                 for(int i = 2;i < msg.length; i=i+2){
-                    this.grid[Integer.parseInt(msg[i])][Integer.parseInt(msg[i+1])].setBackground(Color.red);
+                    this.grid[Integer.parseInt(msg[i+1])][Integer.parseInt(msg[i])].setBackground(Color.red);
                 }
             }
             case "MOV":{
-                this.grid[Integer.parseInt(msg[2])][Integer.parseInt(msg[3])].setBackground(Color.red);
-                this.grid[Integer.parseInt(msg[4])][Integer.parseInt(msg[5])].setBackground(Color.white);
+                this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])].setBackground(Color.red);
+                this.grid[Integer.parseInt(msg[5])][Integer.parseInt(msg[4])].setBackground(Color.white);
                 break;
             }
             case "FIN":{
@@ -101,7 +96,8 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
                 break;
             }
             case "ERR":{
-                JOptionPane.showInputDialog(msg[1]);
+                JOptionPane.showMessageDialog(null, msg[1]);
+                System.exit(0);
                 break;
             }
             default :{

@@ -19,7 +19,7 @@ public class ThreadActualizarTablero extends Thread {
     private Map<Integer, Jugador> jugadores;
     private boolean pausa = false;
     private final int VELOCIDAD;
-    private final int PROBABILIDAD = 5;
+    private final int PROBABILIDAD = 1;
 
     public ThreadActualizarTablero(ModeloJuego modelo) {
         this.modelo = modelo;

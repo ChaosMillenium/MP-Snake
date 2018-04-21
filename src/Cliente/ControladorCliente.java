@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
  *
  * @author danie
  */
-public class ControladorCliente extends Observable implements KeyListener{
+public class ControladorCliente extends Observable{
 
     private Serpiente serpienteCliente;
     private ThreadEscucha listener;
@@ -51,28 +51,28 @@ public class ControladorCliente extends Observable implements KeyListener{
         //CONTROL DE DIRECCION
         //direccines cambiadas, pulsa W y va arriba aunque si lees el codigo no deberia hacer eso
         switch (key) {
-            case KeyEvent.VK_D: {
+            case KeyEvent.VK_UP: {
                 if (serpienteCliente.getDir() != Direccion.ABAJO) {
                     serpienteCliente.setDir(Direccion.ARRIBA);
                     this.listener.enviarDireccion(Direccion.ARRIBA);
                 }
                 break;
             }
-            case KeyEvent.VK_A: {
+            case KeyEvent.VK_DOWN: {
                 if (serpienteCliente.getDir() != Direccion.ARRIBA) {
                     serpienteCliente.setDir(Direccion.ABAJO);
                     this.listener.enviarDireccion(Direccion.ABAJO);
                 }
                 break;
             }
-            case KeyEvent.VK_W: {
+            case KeyEvent.VK_LEFT: {
                 if (serpienteCliente.getDir() != Direccion.DER) {
                     serpienteCliente.setDir(Direccion.IZQ);
                     this.listener.enviarDireccion(Direccion.IZQ);
                 }
                 break;
             }
-            case KeyEvent.VK_S: {
+            case KeyEvent.VK_RIGHT: {
                 if (serpienteCliente.getDir() != Direccion.IZQ) {
                     serpienteCliente.setDir(Direccion.DER);
                     this.listener.enviarDireccion(Direccion.DER);
@@ -88,6 +88,7 @@ public class ControladorCliente extends Observable implements KeyListener{
             setChanged();
             switch(msgSplit[0]){
                 case "IDC":{
+                    notifyObservers(msg);
                     break;
                 }
                 case "TAB":{
@@ -139,22 +140,6 @@ public class ControladorCliente extends Observable implements KeyListener{
                 }
             }
         }
-    }
-
-    @Override
-    public void keyTyped(java.awt.event.KeyEvent e) {
-        //no hacer nada por ahora
-    }
-
-    @Override
-    public void keyPressed(java.awt.event.KeyEvent e) {
-        int key = e.getKeyCode();
-        setDirAct(key);
-    }
-
-    @Override
-    public void keyReleased(java.awt.event.KeyEvent e) {
-        //no hacer nada por ahora
     }
     
 }
