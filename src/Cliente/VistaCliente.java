@@ -83,6 +83,26 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
             case "MOV":{
                 this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])].setBackground(Color.red);
                 this.grid[Integer.parseInt(msg[5])][Integer.parseInt(msg[4])].setBackground(Color.white);
+                
+                /*if(this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])].getBackground().equals(Color.orange) || 
+                        this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])].getBackground().equals(Color.red)){
+                    switch (this.controlador.getDir()) {
+                        case ARRIBA:
+                            this.grid[Integer.parseInt(msg[3])-1][Integer.parseInt(msg[2])].setBackground(Color.red);
+                            break;
+                        case ABAJO:
+                            this.grid[Integer.parseInt(msg[3])+1][Integer.parseInt(msg[2])].setBackground(Color.red);
+                            break;
+                        case IZQ:
+                            this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])-1].setBackground(Color.red);
+                            break;
+                        case DER:
+                            this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])+1].setBackground(Color.red);
+                            break;
+                        default:
+                            break;
+                    }
+                }*/
                 break;
             }
             case "FIN":{

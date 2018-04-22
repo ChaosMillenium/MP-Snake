@@ -8,7 +8,6 @@ package Cliente;
 import Utilidades.*;
 import com.sun.glass.events.KeyEvent;
 import java.awt.HeadlessException;
-import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Observable;
@@ -22,6 +21,11 @@ public class ControladorCliente extends Observable {
 
     private Serpiente serpienteCliente;
     private ThreadEscucha listener;
+    private Direccion dirAct = Direccion.ARRIBA;
+    
+    public Direccion getDir(){
+        return this.dirAct;
+    }
 
     public void establecerConexion() {
         boolean reintentar = true;
@@ -48,18 +52,22 @@ public class ControladorCliente extends Observable {
         switch (key) {
             case KeyEvent.VK_UP: {
                 this.listener.enviarDireccion(Direccion.ARRIBA);
+                this.dirAct = Direccion.ARRIBA;
                 break;
             }
             case KeyEvent.VK_DOWN: {
                 this.listener.enviarDireccion(Direccion.ABAJO);
+                this.dirAct = Direccion.ABAJO;
                 break;
             }
             case KeyEvent.VK_LEFT: {
                 this.listener.enviarDireccion(Direccion.IZQ);
+                this.dirAct = Direccion.IZQ;
                 break;
             }
             case KeyEvent.VK_RIGHT: {
                 this.listener.enviarDireccion(Direccion.DER);
+                this.dirAct = Direccion.DER;
                 break;
             }
         }
@@ -88,7 +96,6 @@ public class ControladorCliente extends Observable {
                     break;
                 }
                 case "MOV": {
-                    //System.out.println("controladorM");
                     notifyObservers(msg);
                     break;
                 }
@@ -111,5 +118,6 @@ public class ControladorCliente extends Observable {
             }
         }
     }
+
 
 }
