@@ -24,7 +24,7 @@ public class ModeloJuego extends Observable {
 
     private int columnas, filas;
     private Map<Integer, Jugador> jugadores;
-    private final int VELOCIDAD = 60;
+    private final int VELOCIDAD = 70;
     private final int TAMAÑOBASE = 3;
     private final int PUNTOSTESORO = 100;
     private ThreadActualizarTablero hiloTablero;
@@ -113,10 +113,12 @@ public class ModeloJuego extends Observable {
         Random r = new Random();
         int nuevoX, nuevoY;
         boolean fin = false;
+        int margenColumnas = (int) (this.columnas * 0.2);
+        int margenFilas = (int) (this.filas * 0.2);
         while (!fin) {
             //Se asigna una coordenada aleatoria con un margen con los bordes
-            nuevoX = r.nextInt(this.columnas - this.TAMAÑOBASE * 2) + this.TAMAÑOBASE;
-            nuevoY = r.nextInt(this.filas - this.TAMAÑOBASE * 2) + this.TAMAÑOBASE;
+            nuevoX = r.nextInt(this.columnas - margenColumnas) + margenColumnas;
+            nuevoY = r.nextInt(this.filas - margenFilas) + margenFilas;
             for (int i = 0; i < this.TAMAÑOBASE; i++) {
                 Coordenadas coord = new Coordenadas(nuevoX + i, nuevoY);
                 if (colisionJugador(coord, id) != 0) { //Se intenta de nuevo
@@ -157,11 +159,15 @@ public class ModeloJuego extends Observable {
 
     public void cambiarDireccion(Direccion direccion, int id) {
         synchronized (this.jugadores) {
-            if (((direccion == Direccion.ARRIBA) && (direccion != Direccion.ABAJO)) //No se puede mover en la dirección contraria
-                    || ((direccion == Direccion.ABAJO) && (direccion != Direccion.ARRIBA))
-                    || ((direccion == Direccion.IZQ) && (direccion != Direccion.DER))
-                    || ((direccion == Direccion.DER) && (direccion != Direccion.IZQ))) {
-                this.jugadores.get(id).setDireccion(direccion);
+            Jugador jugador = this.jugadores.get(id);
+            if (!jugador.isEspera()) { //Comprueba que se pueda cambiar dirección
+                if (((direccion == Direccion.ARRIBA) && (direccion != Direccion.ABAJO)) //No se puede mover en la dirección contraria
+                        || ((direccion == Direccion.ABAJO) && (direccion != Direccion.ARRIBA))
+                        || ((direccion == Direccion.IZQ) && (direccion != Direccion.DER))
+                        || ((direccion == Direccion.DER) && (direccion != Direccion.IZQ))) {
+                    jugador.setDireccion(direccion);
+                    jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
+                }
             }
         }
     }

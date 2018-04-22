@@ -10,6 +10,7 @@ public class Jugador {
     private int puntos = 0;
     private Direccion direccion = Direccion.ARRIBA;
     private Coordenadas anteriorCola;
+    private boolean espera = false; //Valora que no se pueda cambiar de dirección hasta el próximo turno de tablero para evitar giros de 360º si se pulsa muy rápido
 
     public Jugador(int tamaño) {
         this.tamaño = tamaño;
@@ -84,6 +85,14 @@ public class Jugador {
 
     public int getPuntos() {
         return puntos;
+    }
+
+    public boolean isEspera() {
+        return espera;
+    }
+
+    public void setEspera(boolean espera) {
+        this.espera = espera;
     }
 
 }

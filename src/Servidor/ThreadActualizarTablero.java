@@ -43,9 +43,10 @@ public class ThreadActualizarTablero extends Thread {
                     entrada.getValue().nuevaCabeza();
                     entrada.getValue().eliminarCola();
                     this.modelo.notificarMovimiento(entrada.getKey());
+                    entrada.getValue().setEspera(false); //Ya se puede cambiar de dirección
                 }
                 //TODO: Revisar probabilidades
-                if (aleatTesoro.nextInt(100) < PROBABILIDAD) { //10% cada VELOCIDAD ms de generar un tesoro
+                if (this.modelo.getTesoros().isEmpty() || (aleatTesoro.nextInt(100) < PROBABILIDAD)) { //PROBABILIDAD % cada VELOCIDAD ms de generar un tesoro
                     this.modelo.generarTesoro();
                 }           
             try {
