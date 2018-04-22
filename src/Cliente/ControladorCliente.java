@@ -8,7 +8,6 @@ package Cliente;
 import Utilidades.*;
 import com.sun.glass.events.KeyEvent;
 import java.awt.HeadlessException;
-import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Observable;
@@ -22,6 +21,16 @@ public class ControladorCliente extends Observable {
 
     private Serpiente serpienteCliente;
     private ThreadEscucha listener;
+    
+    private Coordenadas coorAnt;
+    
+    public Coordenadas getCoorAnt(){
+        try{
+            return this.coorAnt;
+        }catch (NullPointerException ex){
+            return this.serpienteCliente.getCabeza();
+        }
+    }
 
     public void establecerConexion() {
         boolean reintentar = true;
@@ -88,8 +97,8 @@ public class ControladorCliente extends Observable {
                     break;
                 }
                 case "MOV": {
-                    //System.out.println("controladorM");
                     notifyObservers(msg);
+                    this.coorAnt = new Coordenadas(Integer.parseInt(msgSplit[3]),Integer.parseInt(msgSplit[2]));
                     break;
                 }
                 case "FIN": {
@@ -111,5 +120,6 @@ public class ControladorCliente extends Observable {
             }
         }
     }
+
 
 }

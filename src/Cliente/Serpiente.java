@@ -41,8 +41,8 @@ public class Serpiente {
         this.puntos = puntos;
     }
     
-    public void setCabeza(Coordenadas c){
-        this.cabeza = c;
+    public Coordenadas getCabeza(){
+        return this.serp.get(0);
     }
     
     public Coordenadas getCoordenadas(int n){
@@ -54,12 +54,13 @@ public class Serpiente {
     }
     
     public void eliminarCola(){
-        this.serp.remove(this.serp.size());
+        this.serp.remove(this.serp.size()-1);
     }
     
     public int getLongitud(){
         return this.serp.size();
     }
    
+    
     
 }

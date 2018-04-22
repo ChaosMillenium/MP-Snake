@@ -1,5 +1,6 @@
 package Cliente;
 
+import Utilidades.Coordenadas;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.Observable;
@@ -83,6 +84,29 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
             case "MOV":{
                 this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])].setBackground(Color.red);
                 this.grid[Integer.parseInt(msg[5])][Integer.parseInt(msg[4])].setBackground(Color.white);
+                
+                if(this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])].getBackground().equals(Color.orange) ||
+                        this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])].getBackground().equals(Color.red)){
+                    
+                    Coordenadas old = this.controlador.getCoorAnt();
+                    Coordenadas patat = null;
+                    if (!(old == null)){
+                        Coordenadas neew = new Coordenadas(Integer.parseInt(msg[3]),Integer.parseInt(msg[2]));
+                        if(old.getX()>neew.getX()){
+                            this.grid[Integer.parseInt(msg[3])+1][Integer.parseInt(msg[2])].setBackground(Color.red);
+                            //derecha
+                        }else if(old.getX()<neew.getX()){
+                            this.grid[Integer.parseInt(msg[3])-1][Integer.parseInt(msg[2])].setBackground(Color.red);
+                            //izq
+                        }else if(old.getY()<neew.getY()){
+                            this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])-1].setBackground(Color.red);
+                            //arriba
+                        }else if(old.getY()>neew.getY()){
+                            this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])+1].setBackground(Color.red);
+                            //abajo
+                        }
+                    }
+                }
                 break;
             }
             case "FIN":{
