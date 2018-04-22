@@ -10,6 +10,7 @@ import Utilidades.Direccion;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class ModeloJuego extends Observable {
 
     private int columnas, filas;
     private Map<Integer, Jugador> jugadores;
-    private final int VELOCIDAD = 70;
+    private final int VELOCIDAD = 75;
     private final int TAMAÑOBASE = 3;
     private final int PUNTOSTESORO = 100;
     private ThreadActualizarTablero hiloTablero;
@@ -139,11 +140,16 @@ public class ModeloJuego extends Observable {
         synchronized (this.jugadores) {
             for (Map.Entry<Integer, Jugador> entrada : this.jugadores.entrySet()) {
                 LinkedList<Coordenadas> serpiente = entrada.getValue().getSerpiente();
-                for (Coordenadas comparar : serpiente) {
-                    if ((id == entrada.getKey()) && (!comparar.equals(serpiente.getFirst()))) {
-                        if (coord.equals(comparar)) {
-                            return entrada.getKey();
-                        }
+                int primero;
+                if (id == entrada.getKey()) { //Si se revisa la colisión con uno mismo, salta la cabeza (para evitar errores)
+                    primero = 1;
+                } else {
+                    primero = 0;
+                }
+                for (int i = primero; i < serpiente.size(); i++) {
+                    Coordenadas comparar = serpiente.get(i);
+                    if (coord.equals(comparar)) {
+                        return entrada.getKey();
                     }
                 }
             }
@@ -224,8 +230,11 @@ public class ModeloJuego extends Observable {
     }
 
     private boolean colisionTesoro(Coordenadas coord) {
-        for (Coordenadas tesoro : this.tesoros) {
+        Iterator<Coordenadas> iter = this.tesoros.iterator();
+        while (iter.hasNext()) {
+            Coordenadas tesoro = iter.next();
             if (coord.equals(tesoro)) {
+                iter.remove();
                 return true;
             }
         }
