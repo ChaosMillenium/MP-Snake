@@ -21,15 +21,10 @@ public class ControladorCliente extends Observable {
 
     private Serpiente serpienteCliente;
     private ThreadEscucha listener;
+    private Direccion dirAct = Direccion.ARRIBA;
     
-    private Coordenadas coorAnt;
-    
-    public Coordenadas getCoorAnt(){
-        try{
-            return this.coorAnt;
-        }catch (NullPointerException ex){
-            return this.serpienteCliente.getCabeza();
-        }
+    public Direccion getDir(){
+        return this.dirAct;
     }
 
     public void establecerConexion() {
@@ -57,18 +52,22 @@ public class ControladorCliente extends Observable {
         switch (key) {
             case KeyEvent.VK_UP: {
                 this.listener.enviarDireccion(Direccion.ARRIBA);
+                this.dirAct = Direccion.ARRIBA;
                 break;
             }
             case KeyEvent.VK_DOWN: {
                 this.listener.enviarDireccion(Direccion.ABAJO);
+                this.dirAct = Direccion.ABAJO;
                 break;
             }
             case KeyEvent.VK_LEFT: {
                 this.listener.enviarDireccion(Direccion.IZQ);
+                this.dirAct = Direccion.IZQ;
                 break;
             }
             case KeyEvent.VK_RIGHT: {
                 this.listener.enviarDireccion(Direccion.DER);
+                this.dirAct = Direccion.DER;
                 break;
             }
         }
@@ -98,7 +97,6 @@ public class ControladorCliente extends Observable {
                 }
                 case "MOV": {
                     notifyObservers(msg);
-                    this.coorAnt = new Coordenadas(Integer.parseInt(msgSplit[3]),Integer.parseInt(msgSplit[2]));
                     break;
                 }
                 case "FIN": {
