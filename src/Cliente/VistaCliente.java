@@ -34,7 +34,6 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
         this.setVisible(true);
         this.pack();
         this.setLocationRelativeTo(null);
-        
         this.setFocusable(true);
         this.requestFocusInWindow();
         this.addKeyListener(new DetectorTeclas(this.controlador));
@@ -66,13 +65,8 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
         String mensaje = (String) arg;
         String[] msg = mensaje.split(";");
         switch(msg[0]){
-            case "TAB":{
-                //this.grid[11][11].setBackground(Color.red);
-                //this.grid = new JPanel[Integer.parseInt(msg[1])][Integer.parseInt(msg[2])];
-                break;
-            }
             case "TSR":{
-                    this.grid[Integer.parseInt(msg[2])][Integer.parseInt(msg[1])].setBackground(Color.yellow);
+                this.grid[Integer.parseInt(msg[2])][Integer.parseInt(msg[1])].setBackground(Color.orange);
                 break;
             }
             case "ELJ":{
@@ -92,16 +86,13 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
                 break;
             }
             case "FIN":{
-                JOptionPane.showInputDialog("Fin de partida");
+                JOptionPane.showMessageDialog(this, "El servidor ha cerrado la conexión");
+                //El controlador cierra la conexión y el programa
                 break;
             }
             case "ERR":{
-                JOptionPane.showMessageDialog(null, msg[1]);
-                System.exit(0);
-                break;
-            }
-            default :{
-                JOptionPane.showInputDialog("Error");
+                JOptionPane.showMessageDialog(this, msg[1]);
+                //El controlador cierra la conexión y el programa
                 break;
             }
         }

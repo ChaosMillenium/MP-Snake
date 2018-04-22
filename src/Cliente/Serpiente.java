@@ -17,26 +17,16 @@ import java.util.LinkedList;
 public class Serpiente {
     
     private LinkedList<Coordenadas> serp;
-    private Direccion dir;
     private Coordenadas cabeza;
     private int id;
     private long puntos;
 
     public Serpiente(int id){
         //Metodo constructor de serpiente
-        this.dir = Direccion.DER; //añadir direccion aleatoria en el futuro
         this.serp = new LinkedList<Coordenadas>();
         this.cabeza = null;
         this.puntos = 0;
         this.id = id;
-    }
-
-    public Direccion getDir() {
-        return dir;
-    }
-
-    public void setDir(Direccion dir) {
-        this.dir = dir;
     }
 
     public int getId() {
