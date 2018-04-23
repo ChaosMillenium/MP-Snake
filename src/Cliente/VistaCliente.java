@@ -1,5 +1,6 @@
 package Cliente;
 
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.Observable;
@@ -7,10 +8,12 @@ import java.util.Observer;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SpringLayout;
 
 public class VistaCliente extends javax.swing.JFrame implements Observer {
 
     private JPanel[][] grid; //Matriz filas x columnas
+    private JPanel menu;
     private ControladorCliente controlador;
 
     public VistaCliente(int filas, int columnas, ControladorCliente c) {
@@ -24,12 +27,15 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
             for (int j = 0; j < columnas; j++) {
                 JPanel pixel = new JPanel();
                 pixel.setBackground(Color.white);
-                //pixel.setOpaque(true);
                 pixel.setBorder(BorderFactory.createLineBorder(Color.black));
                 this.grid[i][j] = pixel;
                 this.add(pixel);
             }
         }
+        this.menu = new JPanel();
+        this.menu.setBackground(Color.blue);
+        this.menu.setBorder(BorderFactory.createLineBorder(Color.red));
+        this.menu.setVisible(true);
         
         this.setVisible(true);
         this.pack();

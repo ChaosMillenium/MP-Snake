@@ -26,9 +26,10 @@ public class ControladorCliente extends Observable {
         boolean reintentar = true;
         while (reintentar) {
             try {
-                String dirIP = JOptionPane.showInputDialog("Introduce la IP del servidor");
-                String puerto = JOptionPane.showInputDialog("Introduce el puerto del servidor");
-                Socket socket = new Socket(dirIP, Integer.parseInt(puerto));
+                //String dirIP = JOptionPane.showInputDialog("Introduce la IP del servidor");
+                //String puerto = JOptionPane.showInputDialog("Introduce el puerto del servidor");
+                //Socket socket = new Socket(dirIP, Integer.parseInt(puerto));
+                Socket socket = new Socket("127.0.0.1",8000); //Pruebas
                 this.listener = new ThreadEscucha(socket, this);
                 this.listener.start();
                 reintentar = false;
@@ -73,6 +74,8 @@ public class ControladorCliente extends Observable {
                     //Cuando llega el tamaño de tablero se crea la vista del tablero
                     VistaCliente v = new VistaCliente(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]), this);
                     this.addObserver(v);
+                    Puntuacion p = new Puntuacion(this);
+                    this.addObserver(p);
                     break;
                 }
                 case "COI": {
@@ -86,7 +89,8 @@ public class ControladorCliente extends Observable {
                     notifyObservers(msg);
                     break;
                 }
-                /*case "MOV": {
+                case "MOV": {
+                    /*
                     //guardar coordenada actual
                     
                     //guardar proxima coordenada
@@ -113,8 +117,10 @@ public class ControladorCliente extends Observable {
                     notifyObservers(concat);
                     //reasignar nueva coorAct
                     this.coorAct = new Coordenadas(Integer.parseInt(msgSplit[3]),Integer.parseInt(msgSplit[2]));
+                    */
+                    notifyObservers(msg);
                     break;
-                }*/
+                }
                 case "FIN": {
                     notifyObservers(msg);
                     this.listener.cerrarConexion();
