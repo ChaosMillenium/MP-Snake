@@ -21,12 +21,8 @@ public class ControladorCliente extends Observable {
 
     private Serpiente serpienteCliente;
     private ThreadEscucha listener;
-    private Direccion dirAct = Direccion.ARRIBA;
+    private Coordenadas coorAct;
     
-    public Direccion getDir(){
-        return this.dirAct;
-    }
-
     public void establecerConexion() {
         boolean reintentar = true;
         while (reintentar) {
@@ -52,22 +48,18 @@ public class ControladorCliente extends Observable {
         switch (key) {
             case KeyEvent.VK_UP: {
                 this.listener.enviarDireccion(Direccion.ARRIBA);
-                this.dirAct = Direccion.ARRIBA;
                 break;
             }
             case KeyEvent.VK_DOWN: {
                 this.listener.enviarDireccion(Direccion.ABAJO);
-                this.dirAct = Direccion.ABAJO;
                 break;
             }
             case KeyEvent.VK_LEFT: {
                 this.listener.enviarDireccion(Direccion.IZQ);
-                this.dirAct = Direccion.IZQ;
                 break;
             }
             case KeyEvent.VK_RIGHT: {
                 this.listener.enviarDireccion(Direccion.DER);
-                this.dirAct = Direccion.DER;
                 break;
             }
         }
@@ -96,7 +88,32 @@ public class ControladorCliente extends Observable {
                     break;
                 }
                 case "MOV": {
-                    notifyObservers(msg);
+                    //guardar coordenada actual
+                    
+                    //guardar proxima coordenada
+                    Coordenadas coorNew = new Coordenadas(Integer.parseInt(msgSplit[3]),Integer.parseInt(msgSplit[2]));
+                    //ver tipo movimiento
+                    String concat;
+                    if(!(this.coorAct == null)){
+                        if(this.coorAct.getX() > coorNew.getX()){
+                            concat = msg.concat(";IZQ");
+                        }else if(this.coorAct.getX() < coorNew.getX()){
+                            concat = msg.concat(";DER");
+                        }else if(this.coorAct.getY() > coorNew.getY()){
+                            concat = msg.concat(";ABAJO");
+                        }else if(this.coorAct.getY() < coorNew.getY()){
+                            concat = msg.concat(";ARRIBA");
+                        }else{
+                            concat = msg.concat(";"); //error nunca debe ocurrir
+                        }
+                    }else{
+                        concat = msg.concat(";NULL");
+                    }
+                    
+                    //¿añadir al mensaje la direccion?
+                    notifyObservers(concat);
+                    //reasignar nueva coorAct
+                    this.coorAct = new Coordenadas(Integer.parseInt(msgSplit[3]),Integer.parseInt(msgSplit[2]));
                     break;
                 }
                 case "FIN": {

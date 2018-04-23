@@ -114,26 +114,26 @@ public class ModeloJuego extends Observable {
         Random r = new Random();
         int nuevoX, nuevoY;
         boolean fin = false;
-        int margenColumnas = (int) (this.columnas * 0.2);
-        int margenFilas = (int) (this.filas * 0.2);
-        while (!fin) {
+        int margenColumnas = this.TAMAÑOBASE + 5;
+        int margenFilas = this.TAMAÑOBASE + 5;
+        while(!fin){
             //Se asigna una coordenada aleatoria con un margen con los bordes
             nuevoX = r.nextInt((this.columnas - margenColumnas) +1) + margenColumnas;
             nuevoY = r.nextInt((this.filas - margenFilas) +1) + margenFilas;
+            System.out.println("X: "+ nuevoX + " Y: "+ nuevoY);
             for (int i = 0; i < this.TAMAÑOBASE; i++) {
-                Coordenadas coord = new Coordenadas(nuevoX + i, nuevoY);
-                if (colisionJugador(coord, id) != 0) { //Se intenta de nuevo
-                    jugador.eliminarSerpiente();
-                    break;
-                } else {
-                    jugador.nuevaCabeza(coord);
+                    Coordenadas coord = new Coordenadas(nuevoX + i, nuevoY);
+                    if (colisionJugador(coord, id) != 0) { //Se intenta de nuevo
+                        jugador.eliminarSerpiente();
+                        break;
+                    } else {
+                        jugador.nuevaCabeza(coord);
+                    }
+                    if ((i == this.TAMAÑOBASE - 1)) {
+                        fin = true;
+                    }
                 }
-                if ((i == this.TAMAÑOBASE - 1)) {
-                    fin = true;
-                }
-            }
         }
-
     }
 
     private int colisionJugador(Coordenadas coord, int id) { //Solo comprueba con el resto de serpientes (devuelve id del choque, o 0 si no choca)
@@ -167,10 +167,23 @@ public class ModeloJuego extends Observable {
         synchronized (this.jugadores) {
             Jugador jugador = this.jugadores.get(id);
             if (!jugador.isEspera()) { //Comprueba que se pueda cambiar dirección
-                if (((direccion == Direccion.ARRIBA) && (direccion != Direccion.ABAJO)) //No se puede mover en la dirección contraria
+                /*if (((direccion == Direccion.ARRIBA) && (direccion != Direccion.ABAJO)) //No se puede mover en la dirección contraria
                         || ((direccion == Direccion.ABAJO) && (direccion != Direccion.ARRIBA))
                         || ((direccion == Direccion.IZQ) && (direccion != Direccion.DER))
                         || ((direccion == Direccion.DER) && (direccion != Direccion.IZQ))) {
+                    jugador.setDireccion(direccion);
+                    jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
+                }*/
+                if(jugador.getDireccion().equals(Direccion.IZQ) && !direccion.equals(Direccion.DER)){
+                    jugador.setDireccion(direccion);
+                    jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
+                }else if(jugador.getDireccion().equals(Direccion.DER) && !direccion.equals(Direccion.IZQ)){
+                    jugador.setDireccion(direccion);
+                    jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
+                }else if(jugador.getDireccion().equals(Direccion.ARRIBA) && !direccion.equals(Direccion.ABAJO)){
+                    jugador.setDireccion(direccion);
+                    jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
+                }else if(jugador.getDireccion().equals(Direccion.ABAJO) && !direccion.equals(Direccion.ARRIBA)){
                     jugador.setDireccion(direccion);
                     jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
                 }
