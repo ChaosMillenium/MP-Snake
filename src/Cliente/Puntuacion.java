@@ -60,7 +60,8 @@ public class Puntuacion extends javax.swing.JFrame implements Observer {
                 if (puntuacion != null) {
                     puntuacion.setText(String.valueOf(puntos));
                 }
-
+            } else if (parseado[0].equals("TAB")){
+                
             }
         }
 

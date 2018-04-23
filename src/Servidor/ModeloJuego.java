@@ -119,9 +119,9 @@ public class ModeloJuego extends Observable {
         int margenFilas = (int) max(this.TAMAÑOBASE, this.filas * 0.2);
         while (!fin) {
             //Se asigna una coordenada aleatoria con un margen con los bordes
-            nuevoX = r.nextInt((this.columnas - margenColumnas) + 1) + margenColumnas;
-            nuevoY = r.nextInt((this.filas - margenFilas) + 1) + margenFilas;
-            System.out.println("X: " + nuevoX + " Y: " + nuevoY);
+            nuevoX = r.nextInt(this.columnas - (2 *margenColumnas)) + margenColumnas;
+            nuevoY = r.nextInt(this.filas - (2 *margenFilas)) + margenFilas;
+            //System.out.println("X: " + nuevoX + " Y: " + nuevoY); //Pruebas coordenadas iniciales
             for (int i = 0; i < this.TAMAÑOBASE; i++) {
                 Coordenadas coord = new Coordenadas(nuevoX + i, nuevoY);
                 if (colisionJugador(coord, id) != 0) { //Se intenta de nuevo
