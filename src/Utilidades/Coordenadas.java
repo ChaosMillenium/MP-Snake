@@ -41,7 +41,7 @@ public class Coordenadas {
     public void aumentarY(int y) {
         this.y += y;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
