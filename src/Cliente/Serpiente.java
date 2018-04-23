@@ -6,8 +6,6 @@
 package Cliente;
 
 import Utilidades.Coordenadas;
-import Utilidades.Direccion;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**

@@ -5,6 +5,8 @@
  */
 package Servidor;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author i.chicano.2016
@@ -16,9 +18,23 @@ public class ServidorMain {
         ControladorServidor controlador = new ControladorServidor(modelo);
 
         modelo.addObserver(controlador);
-        //TODO: Controlar lectura de datos
-        int[] filasColumnas = PeticionFilasColumnas.pedirFilasColumnas();
-        modelo.setFilasColumnas(filasColumnas[0], filasColumnas[1]);
+
+        while (true) {
+            try {
+                int[] filasColumnas = PeticionFilasColumnas.pedirFilasColumnas();
+                if ((filasColumnas[0] > 9) && (filasColumnas[1]) > 9) { //El tablero no puede ser menor de 10x10
+                    modelo.setFilasColumnas(filasColumnas[0], filasColumnas[1]);
+                    break;
+                }
+                else throw new NumberFormatException();
+                
+            } catch (NumberFormatException | NullPointerException ex) {
+                int resultado = JOptionPane.showConfirmDialog(null, "Error al introducir los datos. ¿Reintentar?", "Error al introducir los datos", JOptionPane.OK_CANCEL_OPTION);
+                if (resultado != JOptionPane.OK_OPTION) {
+                    System.exit(0);
+                }
+            }
+        }
         controlador.iniciarServer();
     }
 }

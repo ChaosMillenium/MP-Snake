@@ -81,7 +81,7 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
                 }
             }
             case "MOV":{
-                if(this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])].getBackground().equals(Color.orange)){
+                /*if(this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])].getBackground().equals(Color.orange)){
                     switch (msg[6]) {
                         case "ARRIBA":
                             try{
@@ -124,7 +124,7 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
                         default:
                             break;
                     }
-                }
+                }*/
                 this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])].setBackground(Color.red);
                 this.grid[Integer.parseInt(msg[5])][Integer.parseInt(msg[4])].setBackground(Color.white);
                 break;

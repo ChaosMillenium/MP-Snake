@@ -48,24 +48,11 @@ public class Puntuacion extends javax.swing.JFrame implements Observer {
             String[] parseado = serpi.split(";");
             if (parseado[0].equals("IDC") || parseado[0].equals("COI")) {
                 int id = Integer.parseInt(parseado[1]);
-                JPanel jugador = new JPanel();
-                JPanel panelNombre = new JPanel();
-                panelNombre.setBackground(Color.CYAN);
-                JLabel lblJugador = new JLabel("Jugador: ");
-                JLabel nombre = new JLabel(String.valueOf(id));
-                JPanel panelPuntuacion = new JPanel();
-                panelPuntuacion.setBackground(Color.orange);
-                JLabel lblPuntos = new JLabel("Puntos: ");
-                JLabel puntuacion = new JLabel("0");
-                this.puntuaciones.put(id, puntuacion);
-                panelNombre.add(lblJugador);
-                panelNombre.add(nombre);
-                panelPuntuacion.add(lblPuntos);
-                panelPuntuacion.add(puntuacion);
-                jugador.add(panelNombre);
-                jugador.add(panelPuntuacion);
-                this.add(jugador);
-                this.setVisible(true);
+                if (noExiste(id)) {
+                    JPanel jugador = crearPanelNuevoJugador(id);
+                    this.add(jugador);
+                    this.setVisible(true);
+                }
             } else if (parseado[0].equals("PTS")) {
                 int id = Integer.parseInt(parseado[1]);
                 long puntos = Long.parseLong(parseado[2]);
@@ -73,11 +60,40 @@ public class Puntuacion extends javax.swing.JFrame implements Observer {
                 if (puntuacion != null) {
                     puntuacion.setText(String.valueOf(puntos));
                 }
+
             }
         }
 
     }
 
+    private JPanel crearPanelNuevoJugador(int id) {
+        JPanel jugador = new JPanel();
+        JPanel panelNombre = new JPanel();
+        panelNombre.setBackground(Color.CYAN);
+        JLabel lblJugador = new JLabel("Jugador: ");
+        JLabel nombre = new JLabel(String.valueOf(id));
+        JPanel panelPuntuacion = new JPanel();
+        panelPuntuacion.setBackground(Color.orange);
+        JLabel lblPuntos = new JLabel("Puntos: ");
+        JLabel puntuacion = new JLabel("0");
+        this.puntuaciones.put(id, puntuacion);
+        panelNombre.add(lblJugador);
+        panelNombre.add(nombre);
+        panelPuntuacion.add(lblPuntos);
+        panelPuntuacion.add(puntuacion);
+        jugador.add(panelNombre);
+        jugador.add(panelPuntuacion);
+        return jugador;
+    }
+
+    private boolean noExiste(int id) {
+        for (Integer idComparar : this.puntuaciones.keySet()) {
+            if (id == idComparar) {
+                return false;
+            }
+        }
+        return true;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }
