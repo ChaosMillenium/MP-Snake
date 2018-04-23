@@ -127,7 +127,9 @@ public class ThreadServidor implements Runnable {
     }
 
     public void moverJugador(int id, int[] cabeza, int[] cola) { //Envía a todos los jugadores que se ha movido un nuevo jugador
-        enviarMensaje(ConstructorMensajes.mov(id, cabeza[0], cabeza[1], cola[0], cola[1]));
+        String mensaje = ConstructorMensajes.mov(id, cabeza[0], cabeza[1], cola[0], cola[1]);
+        enviarMensaje(mensaje);
+        System.out.println(mensaje);
     }
 
     public synchronized void colision(int id1) { //Envía a todos los jugadores que se ha ocurrido una colisión con un borde

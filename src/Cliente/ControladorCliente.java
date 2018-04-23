@@ -21,7 +21,6 @@ public class ControladorCliente extends Observable {
 
     private Serpiente serpienteCliente;
     private ThreadEscucha listener;
-    private Coordenadas coorAct;
     
     public void establecerConexion() {
         boolean reintentar = true;
@@ -87,7 +86,7 @@ public class ControladorCliente extends Observable {
                     notifyObservers(msg);
                     break;
                 }
-                case "MOV": {
+                /*case "MOV": {
                     //guardar coordenada actual
                     
                     //guardar proxima coordenada
@@ -115,7 +114,7 @@ public class ControladorCliente extends Observable {
                     //reasignar nueva coorAct
                     this.coorAct = new Coordenadas(Integer.parseInt(msgSplit[3]),Integer.parseInt(msgSplit[2]));
                     break;
-                }
+                }*/
                 case "FIN": {
                     notifyObservers(msg);
                     this.listener.cerrarConexion();

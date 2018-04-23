@@ -7,6 +7,7 @@ package Servidor;
 
 import Utilidades.Coordenadas;
 import Utilidades.Direccion;
+import static java.lang.Double.max;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -114,25 +115,25 @@ public class ModeloJuego extends Observable {
         Random r = new Random();
         int nuevoX, nuevoY;
         boolean fin = false;
-        int margenColumnas = this.TAMAÑOBASE + 5;
-        int margenFilas = this.TAMAÑOBASE + 5;
-        while(!fin){
+        int margenColumnas = (int) max(this.TAMAÑOBASE, this.columnas * 0.2);
+        int margenFilas = (int) max(this.TAMAÑOBASE, this.filas * 0.2);
+        while (!fin) {
             //Se asigna una coordenada aleatoria con un margen con los bordes
-            nuevoX = r.nextInt((this.columnas - margenColumnas) +1) + margenColumnas;
-            nuevoY = r.nextInt((this.filas - margenFilas) +1) + margenFilas;
-            System.out.println("X: "+ nuevoX + " Y: "+ nuevoY);
+            nuevoX = r.nextInt((this.columnas - margenColumnas) + 1) + margenColumnas;
+            nuevoY = r.nextInt((this.filas - margenFilas) + 1) + margenFilas;
+            System.out.println("X: " + nuevoX + " Y: " + nuevoY);
             for (int i = 0; i < this.TAMAÑOBASE; i++) {
-                    Coordenadas coord = new Coordenadas(nuevoX + i, nuevoY);
-                    if (colisionJugador(coord, id) != 0) { //Se intenta de nuevo
-                        jugador.eliminarSerpiente();
-                        break;
-                    } else {
-                        jugador.nuevaCabeza(coord);
-                    }
-                    if ((i == this.TAMAÑOBASE - 1)) {
-                        fin = true;
-                    }
+                Coordenadas coord = new Coordenadas(nuevoX + i, nuevoY);
+                if (colisionJugador(coord, id) != 0) { //Se intenta de nuevo
+                    jugador.eliminarSerpiente();
+                    break;
+                } else {
+                    jugador.nuevaCabeza(coord);
                 }
+                if ((i == this.TAMAÑOBASE - 1)) {
+                    fin = true;
+                }
+            }
         }
     }
 
@@ -174,16 +175,16 @@ public class ModeloJuego extends Observable {
                     jugador.setDireccion(direccion);
                     jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
                 }*/
-                if(jugador.getDireccion().equals(Direccion.IZQ) && !direccion.equals(Direccion.DER)){
+                if (jugador.getDireccion().equals(Direccion.IZQ) && !(direccion.equals(Direccion.DER) || direccion.equals(Direccion.IZQ))) {
                     jugador.setDireccion(direccion);
                     jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
-                }else if(jugador.getDireccion().equals(Direccion.DER) && !direccion.equals(Direccion.IZQ)){
+                } else if (jugador.getDireccion().equals(Direccion.DER) && !(direccion.equals(Direccion.DER) || direccion.equals(Direccion.IZQ))) {
                     jugador.setDireccion(direccion);
                     jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
-                }else if(jugador.getDireccion().equals(Direccion.ARRIBA) && !direccion.equals(Direccion.ABAJO)){
+                } else if (jugador.getDireccion().equals(Direccion.ARRIBA) && !(direccion.equals(Direccion.ARRIBA) || direccion.equals(Direccion.ABAJO))) {
                     jugador.setDireccion(direccion);
                     jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
-                }else if(jugador.getDireccion().equals(Direccion.ABAJO) && !direccion.equals(Direccion.ARRIBA)){
+                } else if (jugador.getDireccion().equals(Direccion.ABAJO) && !(direccion.equals(Direccion.ARRIBA) || direccion.equals(Direccion.ABAJO))) {
                     jugador.setDireccion(direccion);
                     jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
                 }
@@ -217,9 +218,12 @@ public class ModeloJuego extends Observable {
             if (idColision != id) { //Si la colisión es entre 2 jugadores elimina al segundo
                 this.eliminarJugador(idColision);
             }
-        } else if (this.colisionBorde(this.jugadores.get(id).getCabeza())) {
+        }
+
+        if (this.colisionBorde(this.jugadores.get(id).getCabeza())) {
             notifyObservers("CBR;" + id);
             this.eliminarJugador(id);
+
         } else {
             notifyObservers("MOV;" + id);
             if (this.colisionTesoro(this.jugadores.get(id).getCabeza())) {

@@ -11,7 +11,7 @@ public class Jugador {
     private Direccion direccion = Direccion.ARRIBA;
     private Coordenadas anteriorCola;
     private boolean espera = false; //Valora que no se pueda cambiar de dirección hasta el próximo turno de tablero para evitar giros de 360º si se pulsa muy rápido
-
+    
     public Jugador(int tamaño) {
         this.tamaño = tamaño;
         this.serpiente = new LinkedList<>();
@@ -80,7 +80,7 @@ public class Jugador {
     public void añadirPuntos(int puntos) {
         this.puntos += puntos;
         this.tamaño++;
-        this.nuevaCabeza();
+        this.serpiente.addLast(this.anteriorCola);
     }
 
     public int getPuntos() {
@@ -94,5 +94,5 @@ public class Jugador {
     public void setEspera(boolean espera) {
         this.espera = espera;
     }
-
+    
 }
