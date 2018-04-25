@@ -26,10 +26,10 @@ public class ControladorCliente extends Observable {
         boolean reintentar = true;
         while (reintentar) {
             try {
-                //String dirIP = JOptionPane.showInputDialog("Introduce la IP del servidor");
-                //String puerto = JOptionPane.showInputDialog("Introduce el puerto del servidor");
-                //Socket socket = new Socket(dirIP, Integer.parseInt(puerto));
-                Socket socket = new Socket("127.0.0.1",8000); //Pruebas
+                String dirIP = JOptionPane.showInputDialog("Introduce la IP del servidor");
+                String puerto = JOptionPane.showInputDialog("Introduce el puerto del servidor");
+                Socket socket = new Socket(dirIP, Integer.parseInt(puerto));
+                //Socket socket = new Socket("127.0.0.1",8000); //Pruebas
                 this.listener = new ThreadEscucha(socket, this);
                 this.listener.start();
                 reintentar = false;
@@ -74,6 +74,10 @@ public class ControladorCliente extends Observable {
                     //Cuando llega el tamaño de tablero se crea la vista del tablero
                     VistaCliente v = new VistaCliente(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]), this);
                     this.addObserver(v);
+                    break;
+                }
+                case "IDC": {
+                    //Se crea vista puntuaciones
                     Puntuacion p = new Puntuacion(this);
                     this.addObserver(p);
                     break;

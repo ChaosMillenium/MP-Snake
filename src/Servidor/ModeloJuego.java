@@ -119,8 +119,8 @@ public class ModeloJuego extends Observable {
         int margenFilas = (int) max(this.TAMAÑOBASE, this.filas * 0.2);
         while (!fin) {
             //Se asigna una coordenada aleatoria con un margen con los bordes
-            nuevoX = r.nextInt(this.columnas - (2 *margenColumnas)) + margenColumnas;
-            nuevoY = r.nextInt(this.filas - (2 *margenFilas)) + margenFilas;
+            nuevoX = r.nextInt(this.columnas - (2 * margenColumnas)) + margenColumnas;
+            nuevoY = r.nextInt(this.filas - (2 * margenFilas)) + margenFilas;
             //System.out.println("X: " + nuevoX + " Y: " + nuevoY); //Pruebas coordenadas iniciales
             for (int i = 0; i < this.TAMAÑOBASE; i++) {
                 Coordenadas coord = new Coordenadas(nuevoX + i, nuevoY);
@@ -212,25 +212,28 @@ public class ModeloJuego extends Observable {
     public void notificarMovimiento(int id) { //Revisa las colisiones, si no colisiona envia movimiento y comprueba tesoro
         int idColision;
         setChanged();
-        if ((idColision = this.colisionJugador(this.jugadores.get(id).getCabeza(), id)) != 0) {
-            notifyObservers("COL;" + id + ";" + idColision);
-            this.eliminarJugador(id);
-            if (idColision != id) { //Si la colisión es entre 2 jugadores elimina al segundo
-                this.eliminarJugador(idColision);
+        synchronized(this.jugadores)
+        {
+            if ((idColision = this.colisionJugador(this.jugadores.get(id).getCabeza(), id)) != 0) {
+                notifyObservers("COL;" + id + ";" + idColision);
+                this.eliminarJugador(id);
+                if (idColision != id) { //Si la colisión es entre 2 jugadores elimina al segundo
+                    this.eliminarJugador(idColision);
+                }
             }
-        }
 
-        if (this.colisionBorde(this.jugadores.get(id).getCabeza())) {
-            notifyObservers("CBR;" + id);
-            this.eliminarJugador(id);
+            if (this.colisionBorde(this.jugadores.get(id).getCabeza())) {
+                notifyObservers("CBR;" + id);
+                this.eliminarJugador(id);
 
-        } else {
-            notifyObservers("MOV;" + id);
-            if (this.colisionTesoro(this.jugadores.get(id).getCabeza())) {
-                this.jugadores.get(id).añadirPuntos(this.PUNTOSTESORO);
-                int nuevosPuntos = this.jugadores.get(id).getPuntos();
-                setChanged();
-                notifyObservers("PTS;" + id + ";" + nuevosPuntos);
+            } else {
+                notifyObservers("MOV;" + id);
+                if (this.colisionTesoro(this.jugadores.get(id).getCabeza())) {
+                    this.jugadores.get(id).añadirPuntos(this.PUNTOSTESORO);
+                    int nuevosPuntos = this.jugadores.get(id).getPuntos();
+                    setChanged();
+                    notifyObservers("PTS;" + id + ";" + nuevosPuntos);
+                }
             }
         }
     }
