@@ -82,50 +82,6 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
                 }
             }
             case "MOV":{
-                /*if(this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])].getBackground().equals(Color.orange)){
-                    switch (msg[6]) {
-                        case "ARRIBA":
-                            try{
-                                this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])+1].setBackground(Color.red);
-                            }catch (ArrayIndexOutOfBoundsException ex){
-                                //no se debe hacer nada, no es que falte codigo
-                            }
-                            break;
-                        case "ABAJO":
-                            try{
-                                this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])-1].setBackground(Color.red);
-                            }catch (ArrayIndexOutOfBoundsException ex){
-                                //no se debe hacer nada, no es que falte codigo
-                            }
-                            break;
-                        case "IZQ":
-                            try{
-                                this.grid[Integer.parseInt(msg[3])-1][Integer.parseInt(msg[2])].setBackground(Color.red);
-                            }catch (ArrayIndexOutOfBoundsException ex){
-                                //no se debe hacer nada, no es que falte codigo
-                            }
-                            break;
-                        case "DER":
-                            try{
-                                this.grid[Integer.parseInt(msg[3])+1][Integer.parseInt(msg[2])].setBackground(Color.red);
-                            }catch (ArrayIndexOutOfBoundsException ex){
-                                //no se debe hacer nada, no es que falte codigo
-                            }
-                            break;
-                        case "NULL":
-                            //Esto solo dberia poder pasar si al ser creado hay un tesoro justo enfrente nuestra
-                            //Como la direccion a la que nos dirigimos por defecto es haci arriba se utiliza el mismo codigo
-                            System.out.println("Error MOV tesoro comido"); //test si pasa alguna vez
-                            try{
-                                this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])+1].setBackground(Color.red);
-                            }catch (ArrayIndexOutOfBoundsException ex){
-                                //no se debe hacer nada, no es que falte codigo
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }*/
                 this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])].setBackground(Color.red);
                 this.grid[Integer.parseInt(msg[5])][Integer.parseInt(msg[4])].setBackground(Color.white);
                 break;
