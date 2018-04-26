@@ -1,12 +1,17 @@
 package Cliente;
 
+
 import java.util.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class Puntuacion extends javax.swing.JFrame implements Observer {
+public class Puntuacion extends javax.swing.JFrame implements Observer, ActionListener {
 
     private ControladorCliente jugadorObs;
+    private JButton desconectar;
+    private int id;
     private Map<Integer, JLabel> puntuaciones; //Mapa para guardar las puntuaciones, la clave es el id de jugador
 
     public Puntuacion(ControladorCliente observado) {
@@ -14,12 +19,19 @@ public class Puntuacion extends javax.swing.JFrame implements Observer {
         this.puntuaciones = new HashMap<>();
         this.setTitle("Puntuaciones");
         this.jugadorObs = observado;
-        this.setLayout(new GridLayout(0, 1));
+        getContentPane().setLayout(new BoxLayout(getContentPane(),  BoxLayout.Y_AXIS));
+        JPanel menu = new JPanel();
+        this.add(menu);
+        this.desconectar = new JButton("Fin de partida");
+        this.desconectar.setEnabled(true);
+        this.desconectar.addActionListener(this);
+        menu.add(this.desconectar);
         this.setBackground(Color.GREEN);
         this.setPreferredSize(new Dimension(250, 250));
         this.setVisible(true);
 
     }
+    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -47,6 +59,9 @@ public class Puntuacion extends javax.swing.JFrame implements Observer {
             String serpi = (String) arg;
             String[] parseado = serpi.split(";");
             if (parseado[0].equals("IDC") || parseado[0].equals("COI")) {
+                if(parseado[0].equals("IDC")){
+                    this.id = Integer.parseInt(parseado[1]);
+                }
                 int id = Integer.parseInt(parseado[1]);
                 if (noExiste(id)) {
                     JPanel jugador = crearPanelNuevoJugador(id);
@@ -64,7 +79,6 @@ public class Puntuacion extends javax.swing.JFrame implements Observer {
                 
             }
         }
-
     }
 
     private JPanel crearPanelNuevoJugador(int id) {
@@ -95,6 +109,11 @@ public class Puntuacion extends javax.swing.JFrame implements Observer {
             }
         }
         return true;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        this.jugadorObs.cerrarConexion();
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
