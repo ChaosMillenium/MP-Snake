@@ -87,7 +87,6 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
             }
             case "MOV":{
                 this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])].setBackground(SelectorColor.generarColor(Integer.parseInt(msg[1])));
-
                 this.grid[Integer.parseInt(msg[5])][Integer.parseInt(msg[4])].setBackground(Color.white);
                 break;
             }

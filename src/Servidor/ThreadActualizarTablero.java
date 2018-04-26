@@ -6,8 +6,10 @@
 package Servidor;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 /**
  *
@@ -37,8 +39,10 @@ public class ThreadActualizarTablero extends Thread {
                     this.start();
                 }
             }
-            synchronized (this.modelo.getJugadores()) {
-                for (Map.Entry<Integer, Jugador> entrada : this.modelo.getJugadores().entrySet()) { //Movimiento de jugadores
+
+            Set<Map.Entry<Integer, Jugador>> entradas = Collections.synchronizedSet(this.modelo.getJugadores().entrySet());
+            synchronized (entradas) {
+                for (Map.Entry<Integer, Jugador> entrada : entradas) { //Movimiento de jugadores
                     entrada.getValue().nuevaCabeza();
                     entrada.getValue().eliminarCola();
                     this.modelo.notificarMovimiento(entrada.getKey());
