@@ -29,7 +29,7 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
         this.setBackground(Color.GREEN);
         this.setPreferredSize(new Dimension(250, 250));
         this.setVisible(true);
-
+        this.setFocusableWindowState(false);
     }
     
 
