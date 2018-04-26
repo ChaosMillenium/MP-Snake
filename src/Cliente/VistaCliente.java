@@ -73,6 +73,7 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
                 break;
             }
             case "ELJ":{
+                System.out.println(mensaje);
                 for(int i = 2; i < msg.length; i+=2){
                     this.grid[Integer.parseInt(msg[2])][Integer.parseInt(msg[1])].setBackground(Color.white);
                 }
