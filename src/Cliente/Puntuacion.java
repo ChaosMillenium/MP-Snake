@@ -83,6 +83,7 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
 
     private JPanel crearPanelNuevoJugador(int id) {
         JPanel jugador = new JPanel();
+        jugador.setBackground(SelectorColor.generarColor(id));
         JPanel panelNombre = new JPanel();
         panelNombre.setBackground(Color.CYAN);
         JLabel lblJugador = new JLabel("Jugador: ");

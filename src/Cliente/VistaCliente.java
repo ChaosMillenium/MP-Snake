@@ -37,6 +37,8 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
         this.setLocationRelativeTo(null);
         this.setFocusable(true);
         this.requestFocusInWindow();
+        this.toFront();
+        this.requestFocus();
         this.addKeyListener(new DetectorTeclas(this.controlador));
         
     }
@@ -78,11 +80,12 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
             }
             case "COI":{
                 for(int i = 2;i < msg.length; i=i+2){
-                    this.grid[Integer.parseInt(msg[i+1])][Integer.parseInt(msg[i])].setBackground(Color.red);
+                    this.grid[Integer.parseInt(msg[i+1])][Integer.parseInt(msg[i])].setBackground(SelectorColor.generarColor(Integer.parseInt(msg[1])));
                 }
             }
             case "MOV":{
-                this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])].setBackground(Color.red);
+                this.grid[Integer.parseInt(msg[3])][Integer.parseInt(msg[2])].setBackground(SelectorColor.generarColor(Integer.parseInt(msg[1])));
+
                 this.grid[Integer.parseInt(msg[5])][Integer.parseInt(msg[4])].setBackground(Color.white);
                 break;
             }
