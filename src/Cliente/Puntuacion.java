@@ -1,5 +1,6 @@
 package Cliente;
 
+import Utilidades.SelectorColor;
 import java.util.*;
 import java.awt.*;
 import javax.swing.*;

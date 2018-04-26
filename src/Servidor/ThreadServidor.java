@@ -40,7 +40,7 @@ public class ThreadServidor implements Runnable {
             while (true) {
                 Socket sck = serverSck.accept(); //Acepta cliente
                 System.out.println("Conexión entrante");
-                int key = this.controlador.siguienteKey(); 
+                int key = this.controlador.siguienteKey();
                 new Thread(new ThreadServidor(this.controlador, sck, key)).start(); //Inicia un hilo por cliente
             }
         } catch (IOException e) {
@@ -117,6 +117,9 @@ public class ThreadServidor implements Runnable {
 
     public synchronized void eliminarJugador(int id) { //Envía a todos los jugadores que se ha eliminado un nuevo jugador
         try {
+            PrintWriter out = new PrintWriter(
+                    ThreadServidor.conexionesActivas.get(id).getOutputStream(), true);
+            out.println(ConstructorMensajes.fin(id));
             ThreadServidor.conexionesActivas.get(id).close();
         } catch (IOException ex) {
             System.err.println("Error de E/S");
