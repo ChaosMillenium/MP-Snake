@@ -10,13 +10,13 @@ import Utilidades.Direccion;
 import static java.lang.Double.max;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -33,7 +33,7 @@ public class ModeloJuego extends Observable {
     private List<Coordenadas> tesoros;
 
     public ModeloJuego() {
-        this.jugadores = Collections.synchronizedMap(new HashMap<>());
+        this.jugadores = new ConcurrentHashMap<>();
         this.tesoros = Collections.synchronizedList(new ArrayList<>());
     }
 
@@ -198,11 +198,11 @@ public class ModeloJuego extends Observable {
         }
     }
 
-    public void finalizarJugador(int id){
+    public void finalizarJugador(int id) {
         this.eliminarJugador(id);
         notifyObservers("FIN;" + id);
     }
-    
+
     public boolean hayJugadores() {
         return !this.jugadores.isEmpty();
     }
