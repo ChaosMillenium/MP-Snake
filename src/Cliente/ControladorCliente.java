@@ -41,6 +41,11 @@ public class ControladorCliente extends Observable {
             }
         }
     }
+    public void cerrarConexion(){
+        this.listener.enviarFin(this.serpienteCliente.getId());
+        this.listener.cerrarConexion();
+        System.exit(0);
+    }
 
     public void setDirAct(int key) {
         //CONTROL DE DIRECCION
@@ -66,7 +71,7 @@ public class ControladorCliente extends Observable {
     }
 
     public void selectorMensaje(String msg) {
-        if (!msg.isEmpty()) {
+        if (msg != null) {
             String[] msgSplit = msg.split(";");
             setChanged();
             switch (msgSplit[0]) {
@@ -94,34 +99,6 @@ public class ControladorCliente extends Observable {
                     break;
                 }
                 case "MOV": {
-                    /*
-                    //guardar coordenada actual
-                    
-                    //guardar proxima coordenada
-                    Coordenadas coorNew = new Coordenadas(Integer.parseInt(msgSplit[3]),Integer.parseInt(msgSplit[2]));
-                    //ver tipo movimiento
-                    String concat;
-                    if(!(this.coorAct == null)){
-                        if(this.coorAct.getX() > coorNew.getX()){
-                            concat = msg.concat(";IZQ");
-                        }else if(this.coorAct.getX() < coorNew.getX()){
-                            concat = msg.concat(";DER");
-                        }else if(this.coorAct.getY() > coorNew.getY()){
-                            concat = msg.concat(";ABAJO");
-                        }else if(this.coorAct.getY() < coorNew.getY()){
-                            concat = msg.concat(";ARRIBA");
-                        }else{
-                            concat = msg.concat(";"); //error nunca debe ocurrir
-                        }
-                    }else{
-                        concat = msg.concat(";NULL");
-                    }
-                    
-                    //¿añadir al mensaje la direccion?
-                    notifyObservers(concat);
-                    //reasignar nueva coorAct
-                    this.coorAct = new Coordenadas(Integer.parseInt(msgSplit[3]),Integer.parseInt(msgSplit[2]));
-                    */
                     notifyObservers(msg);
                     break;
                 }

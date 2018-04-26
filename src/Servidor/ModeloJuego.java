@@ -207,6 +207,17 @@ public class ModeloJuego extends Observable {
         return !this.jugadores.isEmpty();
     }
 
+    public Coordenadas[] getCoordenadasAnt(int id) {
+        Jugador jugador = this.jugadores.get(id);
+        Coordenadas[] coordenadasAnt = new Coordenadas[jugador.getSerpiente().size()];
+        LinkedList<Coordenadas> serpiente = jugador.getSerpiente();
+        for (int i = 1; i < serpiente.size(); i++) {
+            coordenadasAnt[i - 1] = serpiente.get(i);
+        }
+        coordenadasAnt[serpiente.size() - 1] = jugador.getAnteriorCola();
+        return coordenadasAnt;
+    }
+
     public Coordenadas[] getCoordenadas(int id) {
         Jugador jugador = this.jugadores.get(id);
         Coordenadas[] coordenadas = new Coordenadas[jugador.getSerpiente().size()];
@@ -215,29 +226,33 @@ public class ModeloJuego extends Observable {
     }
 
     public void notificarMovimiento(int id) { //Revisa las colisiones, si no colisiona envia movimiento y comprueba tesoro
-        int idColision;
-        setChanged();
-        synchronized(this.jugadores)
-        {
-            if ((idColision = this.colisionJugador(this.jugadores.get(id).getCabeza(), id)) != 0) {
-                notifyObservers("COL;" + id + ";" + idColision);
-                this.eliminarJugador(id);
-                if (idColision != id) { //Si la colisión es entre 2 jugadores elimina al segundo
-                    this.eliminarJugador(idColision);
+        synchronized (this.jugadores) {
+            int idColision;
+            setChanged();
+
+            if (!this.jugadores.isEmpty()) {
+                if ((idColision = this.colisionJugador(this.jugadores.get(id).getCabeza(), id)) != 0) {
+                    notifyObservers("COL;" + id + ";" + idColision);
+                    this.eliminarJugador(id);
+                    if (idColision != id) { //Si la colisión es entre 2 jugadores elimina al segundo
+                        this.eliminarJugador(idColision);
+                    }
                 }
             }
-
-            if (this.colisionBorde(this.jugadores.get(id).getCabeza())) {
-                notifyObservers("CBR;" + id);
-                this.eliminarJugador(id);
-
-            } else {
-                notifyObservers("MOV;" + id);
-                if (this.colisionTesoro(this.jugadores.get(id).getCabeza())) {
-                    this.jugadores.get(id).añadirPuntos(this.PUNTOSTESORO);
-                    int nuevosPuntos = this.jugadores.get(id).getPuntos();
-                    setChanged();
-                    notifyObservers("PTS;" + id + ";" + nuevosPuntos);
+            if (!this.jugadores.isEmpty()) {
+                if (this.colisionBorde(this.jugadores.get(id).getCabeza())) {
+                    notifyObservers("CBR;" + id);
+                    this.eliminarJugador(id);
+                } else {
+                    notifyObservers("MOV;" + id);
+                    if (!this.jugadores.isEmpty()) {
+                        if (this.colisionTesoro(this.jugadores.get(id).getCabeza())) {
+                            this.jugadores.get(id).añadirPuntos(this.PUNTOSTESORO);
+                            int nuevosPuntos = this.jugadores.get(id).getPuntos();
+                            setChanged();
+                            notifyObservers("PTS;" + id + ";" + nuevosPuntos);
+                        }
+                    }
                 }
             }
         }
