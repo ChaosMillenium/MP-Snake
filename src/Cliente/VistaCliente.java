@@ -1,5 +1,6 @@
 package Cliente;
 
+import Utilidades.SelectorColor;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.GridLayout;

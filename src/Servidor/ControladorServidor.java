@@ -27,6 +27,9 @@ public class ControladorServidor implements Observer {
     }
 
     public void iniciarServer() {
+        VistaControlar control = new VistaControlar(this.modelo);
+        modelo.addObserver(control);
+        control.setVisible(true);
         this.servidor.startServer();
     }
 
@@ -96,7 +99,12 @@ public class ControladorServidor implements Observer {
                 this.servidor.nuevoTesoro(x, y);
                 break;
             }
-            default: {
+            
+            case "FIN":{
+                this.servidor.eliminarJugador(Integer.parseInt(parseado[1]));
+                break;
+            }
+            default:{
                 System.err.println(accion);
                 break;
             }

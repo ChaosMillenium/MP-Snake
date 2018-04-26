@@ -198,6 +198,11 @@ public class ModeloJuego extends Observable {
         }
     }
 
+    public void finalizarJugador(int id){
+        this.eliminarJugador(id);
+        notifyObservers("FIN;" + id);
+    }
+    
     public boolean hayJugadores() {
         return !this.jugadores.isEmpty();
     }

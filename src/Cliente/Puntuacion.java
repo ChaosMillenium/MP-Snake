@@ -1,6 +1,7 @@
 package Cliente;
 
 
+import Utilidades.SelectorColor;
 import java.util.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

@@ -122,6 +122,9 @@ public class ThreadServidor implements Runnable {
 
     public synchronized void eliminarJugador(int id) { //Envía a todos los jugadores que se ha eliminado un nuevo jugador
         try {
+            PrintWriter out = new PrintWriter(
+                    ThreadServidor.conexionesActivas.get(id).getOutputStream(), true);
+            out.println(ConstructorMensajes.fin(id));
             ThreadServidor.conexionesActivas.get(id).close();
         } catch (IOException ex) {
             System.err.println("Error de E/S");
