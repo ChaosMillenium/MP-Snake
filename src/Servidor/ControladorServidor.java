@@ -27,7 +27,7 @@ public class ControladorServidor implements Observer {
     }
 
     public void iniciarServer() {
-        VistaControlar control = new VistaControlar(this.modelo);
+        VistaConsolaServidor control = new VistaConsolaServidor(new ControladorConsolaServidor(this.modelo));
         modelo.addObserver(control);
         control.setVisible(true);
         this.servidor.startServer();

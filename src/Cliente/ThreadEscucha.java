@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import javax.swing.JOptionPane;
 
 
 public class ThreadEscucha extends Thread {
@@ -30,8 +31,8 @@ public class ThreadEscucha extends Thread {
 
             }
         } catch (IOException ex) {
-            System.err.println("Error de E/S"); //TODO: Controlar excepción
-            //aqui saltaba excepcion
+            JOptionPane.showMessageDialog(null, "El servidor ha cerrado la conexión.");
+            System.exit(1);
         }
     }
 
