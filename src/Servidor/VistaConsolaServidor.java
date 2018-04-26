@@ -1,27 +1,33 @@
 package Servidor;
 
 import Utilidades.SelectorColor;
-import Cliente.ThreadEscucha;
-import java.util.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.*;
 
 
-public class VistaControlar extends javax.swing.JFrame implements Observer{
+public class VistaConsolaServidor extends javax.swing.JFrame implements Observer{
 
-    private ModeloJuego modelo;
+    private ControladorConsolaServidor controlador;
+    private Map<Integer,JPanel> jugadores;
 
-    public VistaControlar(ModeloJuego observado) {
+    public VistaConsolaServidor(ControladorConsolaServidor observado) {
         initComponents();
         this.setTitle("Control");
-        this.modelo = observado;
-        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+        this.controlador = observado;
+        this.jugadores = new HashMap<>();
+        this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
         this.setBackground(Color.GRAY);
         this.setPreferredSize(new Dimension(250, 250));
         this.setVisible(true);
-        
     }
 
     @SuppressWarnings("unchecked")
@@ -52,8 +58,12 @@ public class VistaControlar extends javax.swing.JFrame implements Observer{
             if (parseado[0].equals("NJ")) {
                 int id = Integer.parseInt(parseado[1]);
                 JPanel jugador = crearPanelNuevoJugador(id);
+                this.jugadores.put(id, jugador);
                 this.add(jugador);
                 this.setVisible(true);
+            }
+            else if (parseado[0].equals("CBR") || parseado[0].equals("COL")){
+                this.remove(this.jugadores.get(Integer.parseInt(parseado[1])));
             }
         }
     }
@@ -70,7 +80,7 @@ public class VistaControlar extends javax.swing.JFrame implements Observer{
         ActionListener accionElim = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                modelo.eliminarJugador(id);
+                controlador.eliminarJugador(id);
             }
         };
         eliminar.addActionListener(accionElim);

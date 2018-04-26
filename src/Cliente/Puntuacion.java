@@ -1,6 +1,5 @@
 package Cliente;
 
-
 import Utilidades.SelectorColor;
 import java.util.*;
 import java.awt.*;
@@ -20,7 +19,7 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
         this.puntuaciones = new HashMap<>();
         this.setTitle("Puntuaciones");
         this.jugadorObs = observado;
-        getContentPane().setLayout(new BoxLayout(getContentPane(),  BoxLayout.Y_AXIS));
+        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         JPanel menu = new JPanel();
         this.add(menu);
         this.desconectar = new JButton("Fin de partida");
@@ -32,7 +31,6 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
         this.setVisible(true);
         this.setFocusableWindowState(false);
     }
-    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -60,10 +58,10 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
             String serpi = (String) arg;
             String[] parseado = serpi.split(";");
             if (parseado[0].equals("IDC") || parseado[0].equals("COI")) {
-                if(parseado[0].equals("IDC")){
-                    this.id = Integer.parseInt(parseado[1]);
+                if (parseado[0].equals("IDC")) {
+                    int id = Integer.parseInt(parseado[1]);
+                    this.id = id;
                 }
-                int id = Integer.parseInt(parseado[1]);
                 if (noExiste(id)) {
                     JPanel jugador = crearPanelNuevoJugador(id);
                     this.add(jugador);
@@ -76,8 +74,8 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
                 if (puntuacion != null) {
                     puntuacion.setText(String.valueOf(puntos));
                 }
-            } else if (parseado[0].equals("TAB")){
-                
+            } else if (parseado[0].equals("TAB")) {
+
             }
         }
     }
