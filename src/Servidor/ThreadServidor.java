@@ -8,10 +8,9 @@ package Servidor;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.Map;
 import Utilidades.*;
-import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -22,7 +21,7 @@ public class ThreadServidor implements Runnable {
     private ControladorServidor controlador;
     private Socket socket;
     private int socketID;
-    private static Map<Integer, Socket> conexionesActivas = Collections.synchronizedMap(new HashMap<>());
+    private static Map<Integer, Socket> conexionesActivas = new ConcurrentHashMap<>();
 
     public ThreadServidor(ControladorServidor controlador) { //Constructor inicial
         this.controlador = controlador;
