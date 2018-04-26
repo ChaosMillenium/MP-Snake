@@ -26,9 +26,8 @@ public class ControladorCliente extends Observable {
         boolean reintentar = true;
         while (reintentar) {
             try {
-                String dirIP = JOptionPane.showInputDialog("Introduce la IP del servidor");
-                String puerto = JOptionPane.showInputDialog("Introduce el puerto del servidor");
-                Socket socket = new Socket(dirIP, Integer.parseInt(puerto));
+                String[] datos = PeticionIPPuerto.pedirIPPuerto();
+                Socket socket = new Socket(datos[0], Integer.parseInt(datos[1]));
                 //Socket socket = new Socket("127.0.0.1",8000); //Pruebas
                 this.listener = new ThreadEscucha(socket, this);
                 this.listener.start();
@@ -103,7 +102,6 @@ public class ControladorCliente extends Observable {
                     break;
                 }
                 case "FIN": {
-                    notifyObservers(msg);
                     this.listener.cerrarConexion();
                     System.exit(0);
                     break;
