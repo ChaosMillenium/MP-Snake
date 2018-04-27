@@ -159,7 +159,7 @@ public class ControladorServidor implements Observer {
     }
 
     public void finalizarJugador(int id) {
-        this.modelo.finalizarJugador();
+        this.modelo.finalizarJugador(id);
     }
 
 }
