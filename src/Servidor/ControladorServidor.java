@@ -27,7 +27,7 @@ public class ControladorServidor implements Observer {
     }
 
     public void iniciarServer() {
-        VistaConsolaServidor control = new VistaConsolaServidor(new ControladorConsolaServidor(this.modelo));
+        VistaConsolaServidor control = new VistaConsolaServidor(this);
         modelo.addObserver(control);
         control.setVisible(true);
         this.servidor.startServer();
@@ -156,6 +156,10 @@ public class ControladorServidor implements Observer {
 
     public List<Coordenadas> getTesoros() {
         return this.modelo.getTesoros();
+    }
+
+    public void finalizarJugador(int id) {
+        this.modelo.finalizarJugador();
     }
 
 }
