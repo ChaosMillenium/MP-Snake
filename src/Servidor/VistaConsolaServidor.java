@@ -16,10 +16,10 @@ import javax.swing.*;
 
 public class VistaConsolaServidor extends javax.swing.JFrame implements Observer{
 
-    private ControladorConsolaServidor controlador;
+    private ControladorServidor controlador;
     private Map<Integer,JPanel> jugadores;
 
-    public VistaConsolaServidor(ControladorConsolaServidor observado) {
+    public VistaConsolaServidor(ControladorServidor observado) {
         initComponents();
         this.setTitle("Control");
         this.controlador = observado;
@@ -80,7 +80,7 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
         ActionListener accionElim = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controlador.eliminarJugador(id);
+                controlador.finalizarJugador(id);
             }
         };
         eliminar.addActionListener(accionElim);
