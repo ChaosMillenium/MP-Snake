@@ -9,6 +9,8 @@ import Utilidades.Coordenadas;
 import Utilidades.Direccion;
 import static java.lang.Double.max;
 import static java.lang.Math.abs;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -241,7 +243,7 @@ public class ModeloJuego extends Observable {
                     }
                 }
             }
-            if (!this.jugadores.isEmpty()) {
+            try {
                 if (this.colisionBorde(this.jugadores.get(id).getCabeza())) {
                     notifyObservers("CBR;" + id);
                     this.eliminarJugador(id);
@@ -256,6 +258,8 @@ public class ModeloJuego extends Observable {
                         }
                     }
                 }
+            } catch (NullPointerException ex){
+                //Si salta es que el jugador ya no existe
             }
         }
     }
@@ -313,7 +317,7 @@ public class ModeloJuego extends Observable {
                             }
                         }
                     } else { //Si no va a colisionar, busca un tesoro y va a por el
-                        Coordenadas tesoro = this.tesoros.get(0); //De momento va a por el primero de la lista (mejorable)
+                        Coordenadas tesoro = tesoroMasCercano(jugador.getCabeza());
                         Direccion nuevaDireccion = calcularDireccion(tesoro, jugador.getCabeza());
                         jugador.setDireccion(nuevaDireccion);
                     }
@@ -326,7 +330,7 @@ public class ModeloJuego extends Observable {
         int distanciaX = abs(origen.getX() - destino.getX());
         int distanciaY = abs(origen.getY() - destino.getY());
 
-        if (distanciaX < distanciaY) {
+        if ((distanciaX < distanciaY) || (distanciaY==0)) {
             if (origen.getX() < destino.getX()) {
                 return Direccion.DER;
             } else {
@@ -339,5 +343,23 @@ public class ModeloJuego extends Observable {
                 return Direccion.ARRIBA;
             }
         }
+    }
+
+    private Coordenadas tesoroMasCercano(Coordenadas origen) {
+        Coordenadas resultado = this.tesoros.get(0); //Por defecto
+        double menorDistancia = Integer.MAX_VALUE;
+        for (Coordenadas tesoro : this.tesoros) {
+            int tesoroX = tesoro.getX();
+            int tesoroY = tesoro.getY();
+            int origenX = origen.getX();
+            int origenY = origen.getY();
+
+            double distancia = sqrt(pow(tesoroX - origenX, 2) + pow(tesoroY - origenY, 2));
+            if (menorDistancia > distancia) {
+                menorDistancia = distancia;
+                resultado = tesoro;
+            }
+        }
+        return resultado;
     }
 }
