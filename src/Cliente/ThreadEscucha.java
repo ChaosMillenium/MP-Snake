@@ -9,7 +9,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import javax.swing.JOptionPane;
 
-
 public class ThreadEscucha extends Thread {
 
     private ControladorCliente controlador;
@@ -31,8 +30,7 @@ public class ThreadEscucha extends Thread {
 
             }
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, "El servidor ha cerrado la conexión.");
-            System.exit(1);
+            this.cerrarConexion();
         }
     }
 
@@ -55,10 +53,12 @@ public class ThreadEscucha extends Thread {
             System.err.println("Error de E/S"); //TODO: Controlar excepción
         }
     }
-    
-    public void cerrarConexion(){
+
+    public void cerrarConexion() {
         try {
+            JOptionPane.showMessageDialog(null, "El servidor ha cerrado la conexión.");
             this.socket.close();
+            System.exit(1);
         } catch (IOException ex) {
             System.err.println("Error de E/S"); //TODO: Controlar excepción
         }
