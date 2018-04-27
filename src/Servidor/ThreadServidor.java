@@ -11,6 +11,8 @@ import java.net.Socket;
 import java.util.Map;
 import Utilidades.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -93,8 +95,8 @@ public class ThreadServidor implements Runnable {
                 System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (NullPointerException: Mensaje no reconocido/Desconectado sin aviso)");
             } finally {
                 try {
-                    this.eliminarJugador(this.socketID);
-                    this.controlador.eliminarJugador(this.socketID);
+                    //this.eliminarJugador(this.socketID);
+                    //this.controlador.eliminarJugador(this.socketID);
                     break;
                 } catch (NullPointerException ex) {
                     break;
@@ -119,18 +121,21 @@ public class ThreadServidor implements Runnable {
         enviarMensaje(ConstructorMensajes.coi(coordenadas, id));
     }
 
-    public synchronized void eliminarJugador(int id) { //Envía a todos los jugadores que se ha eliminado un nuevo jugador
+    public synchronized void eliminarJugador(int id) { //Envía a todos los jugadores que se ha eliminado un jugador
+        int[] coordenadas = this.controlador.getCoordenadasAnt(id);
+        enviarMensaje(ConstructorMensajes.elj(id, coordenadas));
         try {
             PrintWriter out = new PrintWriter(
                     ThreadServidor.conexionesActivas.get(id).getOutputStream(), true);
             out.println(ConstructorMensajes.fin(id));
-            ThreadServidor.conexionesActivas.get(id).close();
+            Thread.sleep(500);
         } catch (IOException ex) {
             System.err.println("Error de E/S");
+        } catch (InterruptedException ex) {
+            System.err.println("Error de interrupcion");
         }
-        int[] coordenadas = this.controlador.getCoordenadasAnt(id);
-        enviarMensaje(ConstructorMensajes.elj(id, coordenadas));
         System.out.println("El cliente " + id + " ha salido.");
+        
     }
 
     public void moverJugador(int id, int[] cabeza, int[] cola) { //Envía a todos los jugadores que se ha movido un nuevo jugador
