@@ -5,6 +5,7 @@
  */
 package Servidor;
 
+import Utilidades.Coordenadas;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -43,10 +44,11 @@ public class ThreadActualizarTablero extends Thread {
             Set<Map.Entry<Integer, Jugador>> entradas = Collections.synchronizedSet(this.modelo.getJugadores().entrySet());
             synchronized (entradas) {
                 for (Map.Entry<Integer, Jugador> entrada : entradas) { //Movimiento de jugadores
-                    entrada.getValue().nuevaCabeza();
-                    entrada.getValue().eliminarCola();
+                    Jugador jugador = entrada.getValue();
+                    jugador.nuevaCabeza();
+                    jugador.eliminarCola();
                     this.modelo.notificarMovimiento(entrada.getKey());
-                    entrada.getValue().setEspera(false); //Ya se puede cambiar de dirección
+                    jugador.setEspera(false); //Ya se puede cambiar de dirección                    
                 }
             }
             synchronized (this.modelo.getTesoros()) {
@@ -55,6 +57,7 @@ public class ThreadActualizarTablero extends Thread {
                     this.modelo.generarTesoro();
                 }
             }
+            this.modelo.calcularMovimientoAutomatico();
             try {
                 Thread.sleep(this.VELOCIDAD);
             } catch (InterruptedException e) {

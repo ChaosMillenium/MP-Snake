@@ -8,6 +8,7 @@ package Servidor;
 import Utilidades.Coordenadas;
 import Utilidades.Direccion;
 import static java.lang.Double.max;
+import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -284,5 +286,58 @@ public class ModeloJuego extends Observable {
     public void setFilasColumnas(int filas, int columnas) {
         this.filas = filas;
         this.columnas = columnas;
+    }
+
+    public void setManual(int id, boolean manual) {
+        this.jugadores.get(id).setManual(manual);
+    }
+
+    public void calcularMovimientoAutomatico() { //Calcula el siguiente movimiento de todos los jugadores que esten en modo automatico
+        Set<Map.Entry<Integer, Jugador>> entradas = Collections.synchronizedSet(this.jugadores.entrySet());
+        synchronized (entradas) {
+            for (Map.Entry<Integer, Jugador> entrada : entradas) {
+                Jugador jugador = entrada.getValue();
+                if (!jugador.isManual()) {
+                    Direccion direccion = jugador.getDireccion();
+                    Coordenadas comprobar = jugador.moverEnDireccion();
+                    if (colisionBorde(comprobar) || (colisionJugador(comprobar, entrada.getKey())) != 0) { //Si va a colisionar, busca huir
+                        if (direccion.equals(Direccion.ABAJO) || direccion.equals(direccion.ARRIBA)) {
+                            jugador.setDireccion(Direccion.DER);  //Se prueba con el lado derecho y se recalcula
+                            if (colisionBorde(comprobar) || (colisionJugador(comprobar, entrada.getKey())) != 0) { //Si va a colisionar
+                                jugador.setDireccion(Direccion.IZQ); //Si aun asi fuera a colisionar esta muerto, nada se puede hacer
+                            }
+                        } else {
+                            jugador.setDireccion(Direccion.ARRIBA);
+                            if (colisionBorde(comprobar) || (colisionJugador(comprobar, entrada.getKey())) != 0) { //Si va a colisionar
+                                jugador.setDireccion(Direccion.ABAJO);
+                            }
+                        }
+                    } else { //Si no va a colisionar, busca un tesoro y va a por el
+                        Coordenadas tesoro = this.tesoros.get(0); //De momento va a por el primero de la lista (mejorable)
+                        Direccion nuevaDireccion = calcularDireccion(tesoro, jugador.getCabeza());
+                        jugador.setDireccion(nuevaDireccion);
+                    }
+                }
+            }
+        }
+    }
+
+    private Direccion calcularDireccion(Coordenadas destino, Coordenadas origen) { //Calcula la direccion mejor a la que acercarse a la coordenada dada desde el origen
+        int distanciaX = abs(origen.getX() - destino.getX());
+        int distanciaY = abs(origen.getY() - destino.getY());
+
+        if (distanciaX < distanciaY) {
+            if (origen.getX() < destino.getX()) {
+                return Direccion.DER;
+            } else {
+                return Direccion.IZQ;
+            }
+        } else {
+            if (origen.getY() < destino.getY()) {
+                return Direccion.ABAJO;
+            } else {
+                return Direccion.ARRIBA;
+            }
+        }
     }
 }

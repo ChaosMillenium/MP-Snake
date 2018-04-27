@@ -80,6 +80,8 @@ public class ThreadServidor implements Runnable {
                             this.eliminarJugador(this.socketID); //Avisa al resto de la eliminación de un jugador y cierra la conexión
                             this.controlador.eliminarJugador(this.socketID); //Elimina al jugador del modelo
                             return;
+                        } else if (ConstructorMensajes.isMan(parseado[0])){ //Pone el modo manual o automático
+                            this.controlador.setManual(this.socketID, parseado[1]);
                         }
 
                     } else {
