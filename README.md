@@ -11,3 +11,5 @@ ELJ;1:0;0;1;0;2;0: Informa de que un jugador indicado ha sido eliminado del jueg
 TSR;10;10 Nuevo tesoro (2 argumentos: Coordenadas X e Y) Servidor -> Cliente<br />
 Al conectarse un usuario, se envía un mensaje con esta cabecera las coordenadas de los tesoros en juego.
 <br /><br />
+
+MAN;1 Informa si el jugador ha elegido jugar manual o automáticamente (1 argumento: 1 si es manual, 0 si es auto) Cliente -> Servidor<br /><br />

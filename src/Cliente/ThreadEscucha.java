@@ -29,9 +29,8 @@ public class ThreadEscucha extends Thread {
             out.println(ConstructorMensajes.man(this.manual));
             while (true) {
                 String mensaje = input.readLine();
-                //System.out.println(mensaje);
+                System.out.println(mensaje); //pruebas
                 this.controlador.selectorMensaje(mensaje);
-
             }
         } catch (IOException ex) {
             this.cerrarConexion();
