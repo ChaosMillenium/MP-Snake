@@ -21,7 +21,7 @@ public class ControladorCliente extends Observable {
 
     private Serpiente serpienteCliente;
     private ThreadEscucha listener;
-    
+
     public void establecerConexion() {
         boolean reintentar = true;
         while (reintentar) {
@@ -29,7 +29,7 @@ public class ControladorCliente extends Observable {
                 String[] datos = PeticionIPPuerto.pedirIPPuerto();
                 Socket socket = new Socket(datos[0], Integer.parseInt(datos[1]));
                 //Socket socket = new Socket("127.0.0.1",8000); //Pruebas
-                this.listener = new ThreadEscucha(socket, this);
+                this.listener = new ThreadEscucha(socket, this, Boolean.parseBoolean(datos[2]));
                 this.listener.start();
                 reintentar = false;
             } catch (HeadlessException | IOException | NumberFormatException ex) {
@@ -40,7 +40,8 @@ public class ControladorCliente extends Observable {
             }
         }
     }
-    public void cerrarConexion(){
+
+    public void cerrarConexion() {
         this.listener.enviarFin(this.serpienteCliente.getId());
         this.listener.cerrarConexion();
         System.exit(0);
@@ -119,6 +120,5 @@ public class ControladorCliente extends Observable {
             }
         }
     }
-
 
 }

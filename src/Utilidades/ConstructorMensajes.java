@@ -62,11 +62,25 @@ public class ConstructorMensajes {
         return "TSR;" + x + ";" + y;
     }
 
+    public static String man(boolean manual) {
+        int manualInt;
+        if (manual) {
+            manualInt = 1;
+        } else {
+            manualInt = 0;
+        }
+        return "MAN;" + manualInt;
+    }
+
     public static boolean isDir(String mensaje) {
         return mensaje.equals("DIR");
     }
 
     public static boolean isFin(String mensaje) {
         return mensaje.equals("FIN");
+    }
+
+    public static boolean isMan(String mensaje) {
+        return mensaje.equals("MAN");
     }
 }

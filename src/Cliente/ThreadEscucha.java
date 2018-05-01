@@ -13,16 +13,20 @@ public class ThreadEscucha extends Thread {
 
     private ControladorCliente controlador;
     private Socket socket;
+    private boolean manual;
 
-    public ThreadEscucha(Socket socket, ControladorCliente controlador) {
+    public ThreadEscucha(Socket socket, ControladorCliente controlador, boolean esManual) {
         this.socket = socket;
         this.controlador = controlador;
+        this.manual = esManual;
     }
 
     @Override
     public void run() {
         try {
             BufferedReader input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+            PrintWriter out = new PrintWriter(this.socket.getOutputStream(), true);
+            out.println(ConstructorMensajes.man(this.manual));
             while (true) {
                 String mensaje = input.readLine();
                 System.out.println(mensaje); //pruebas

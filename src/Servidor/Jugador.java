@@ -11,7 +11,8 @@ public class Jugador {
     private Direccion direccion = Direccion.ARRIBA;
     private Coordenadas anteriorCola;
     private boolean espera = false; //Valora que no se pueda cambiar de dirección hasta el próximo turno de tablero para evitar giros de 360º si se pulsa muy rápido
-    
+    private boolean manual = false;
+
     public Jugador(int tamaño) {
         this.tamaño = tamaño;
         this.serpiente = new LinkedList<>();
@@ -42,30 +43,7 @@ public class Jugador {
     }
 
     public void nuevaCabeza() {
-        Coordenadas cabeza = this.serpiente.getFirst();
-        Coordenadas nuevaCabeza = null;
-        switch (this.direccion) {
-            case ARRIBA: {
-                int nuevoY = this.serpiente.getFirst().getY() - 1;
-                nuevaCabeza = new Coordenadas(cabeza.getX(), nuevoY);
-                break;
-            }
-            case ABAJO: {
-                int nuevoY = this.serpiente.getFirst().getY() + 1;
-                nuevaCabeza = new Coordenadas(cabeza.getX(), nuevoY);
-                break;
-            }
-            case IZQ: {
-                int nuevoX = this.serpiente.getFirst().getX() - 1;
-                nuevaCabeza = new Coordenadas(nuevoX, cabeza.getY());
-                break;
-            }
-            case DER: {
-                int nuevoX = this.serpiente.getFirst().getX() + 1;
-                nuevaCabeza = new Coordenadas(nuevoX, cabeza.getY());
-                break;
-            }
-        }
+        Coordenadas nuevaCabeza = moverEnDireccion();
         this.serpiente.addFirst(nuevaCabeza);
     }
 
@@ -94,5 +72,36 @@ public class Jugador {
     public void setEspera(boolean espera) {
         this.espera = espera;
     }
-    
+
+    public void setManual(boolean manual) {
+        this.manual = manual;
+    }
+
+    public boolean isManual() {
+        return manual;
+    }
+
+    public Coordenadas moverEnDireccion() {
+        switch (this.direccion) {
+            case ARRIBA: {
+                int nuevoY = this.serpiente.getFirst().getY() - 1;
+                return new Coordenadas(this.serpiente.getFirst().getX(), nuevoY);
+            }
+            case ABAJO: {
+                int nuevoY = this.serpiente.getFirst().getY() + 1;
+                return new Coordenadas(this.serpiente.getFirst().getX(), nuevoY);
+            }
+            case IZQ: {
+                int nuevoX = this.serpiente.getFirst().getX() - 1;
+                return new Coordenadas(nuevoX, this.serpiente.getFirst().getY());
+            }
+            case DER: {
+                int nuevoX = this.serpiente.getFirst().getX() + 1;
+                return new Coordenadas(nuevoX, this.serpiente.getFirst().getY());
+            }
+            default: {
+                return null;
+            }
+        }
+    }
 }

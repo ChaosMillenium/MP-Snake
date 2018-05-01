@@ -9,6 +9,9 @@ import Utilidades.ConstructorMensajes;
 import Utilidades.Coordenadas;
 import Utilidades.Direccion;
 import static java.lang.Double.max;
+import static java.lang.Math.abs;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -28,7 +32,7 @@ public class ModeloJuego extends Observable {
 
     private int columnas, filas;
     private Map<Integer, Jugador> jugadores;
-    private final int VELOCIDAD = 750;
+    private final int VELOCIDAD = 75;
     private final int TAMAÑOBASE = 3;
     private final int PUNTOSTESORO = 100;
     private ThreadActualizarTablero hiloTablero;
@@ -113,29 +117,50 @@ public class ModeloJuego extends Observable {
         return tesoros;
     }
 
-    private void asignarCoordInicio(Jugador jugador, int id) {
+    private void asignarCoordInicio(Jugador jugador, int id) { //TODO: Rehacer
         Random r = new Random();
-        int nuevoX, nuevoY;
-        boolean fin = false;
-        int margenColumnas = (int) max(this.TAMAÑOBASE, this.columnas * 0.2);
-        int margenFilas = (int) max(this.TAMAÑOBASE, this.filas * 0.2);
-        while (!fin) {
-            //Se asigna una coordenada aleatoria con un margen con los bordes
-            nuevoX = r.nextInt(this.columnas - (2 * margenColumnas)) + margenColumnas;
-            nuevoY = r.nextInt(this.filas - (2 * margenFilas)) + margenFilas;
-            //System.out.println("X: " + nuevoX + " Y: " + nuevoY); //Pruebas coordenadas iniciales
-            for (int i = 0; i < this.TAMAÑOBASE; i++) {
-                Coordenadas coord = new Coordenadas(nuevoX + i, nuevoY);
-                if (colisionJugador(coord, id) != 0) { //Se intenta de nuevo
-                    jugador.eliminarSerpiente();
-                    break;
+        int margen = this.TAMAÑOBASE;
+        int nuevoX = r.nextInt(this.columnas - margen) + margen;
+        int nuevoY = r.nextInt(this.filas - margen) + margen;
+        Coordenadas nuevoCoord = new Coordenadas(nuevoX, nuevoY);
+        if ((colisionJugador(nuevoCoord, id) == 0) && (colisionTesoro(nuevoCoord) == null)) {
+            jugador.nuevaCabeza(nuevoCoord);
+            Coordenadas arriba = new Coordenadas(nuevoX, nuevoY - 1);
+            Coordenadas abajo = new Coordenadas(nuevoX, nuevoY + 1);
+            Coordenadas der = new Coordenadas(nuevoX + 1, nuevoY);
+            Coordenadas izq = new Coordenadas(nuevoX - 1, nuevoY);
+            for (int i = 1; i < this.TAMAÑOBASE; i++) {
+                if ((colisionJugador(arriba, id) == 0) && (colisionTesoro(abajo) == null)) {
+                    jugador.nuevaCabeza(arriba);
+                    arriba.aumentarX(-1);
+                    abajo.aumentarX(-1);
+                    izq.aumentarX(-1);
+                    der.aumentarX(-1);
+                } else if ((colisionJugador(abajo, id) == 0) && (colisionTesoro(abajo) == null)) {
+                    jugador.nuevaCabeza(abajo);
+                    arriba.aumentarX(1);
+                    abajo.aumentarX(1);
+                    izq.aumentarX(1);
+                    der.aumentarX(1);
+                } else if ((colisionJugador(der, id) == 0) && (colisionTesoro(der) == null)) {
+                    jugador.nuevaCabeza(der);
+                    arriba.aumentarY(1);
+                    abajo.aumentarY(1);
+                    izq.aumentarY(1);
+                    der.aumentarY(1);
+                } else if ((colisionJugador(izq, id) == 0) && (colisionTesoro(izq) == null)) {
+                    jugador.nuevaCabeza(izq);
+                    arriba.aumentarY(-1);
+                    abajo.aumentarY(-1);
+                    izq.aumentarY(-1);
+                    der.aumentarY(-1);
                 } else {
-                    jugador.nuevaCabeza(coord);
-                }
-                if ((i == this.TAMAÑOBASE - 1)) {
-                    fin = true;
+                    jugador.eliminarSerpiente();
+                    asignarCoordInicio(jugador, id); //Empezar de nuevo
                 }
             }
+        } else {
+            asignarCoordInicio(jugador, id); //Empezar de nuevo
         }
     }
 
@@ -170,13 +195,6 @@ public class ModeloJuego extends Observable {
         synchronized (this.jugadores) {
             Jugador jugador = this.jugadores.get(id);
             if (!jugador.isEspera()) { //Comprueba que se pueda cambiar dirección
-                /*if (((direccion == Direccion.ARRIBA) && (direccion != Direccion.ABAJO)) //No se puede mover en la dirección contraria
-                        || ((direccion == Direccion.ABAJO) && (direccion != Direccion.ARRIBA))
-                        || ((direccion == Direccion.IZQ) && (direccion != Direccion.DER))
-                        || ((direccion == Direccion.DER) && (direccion != Direccion.IZQ))) {
-                    jugador.setDireccion(direccion);
-                    jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
-                }*/
                 if (jugador.getDireccion().equals(Direccion.IZQ) && !(direccion.equals(Direccion.DER) || direccion.equals(Direccion.IZQ))) {
                     jugador.setDireccion(direccion);
                     jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
@@ -241,14 +259,16 @@ public class ModeloJuego extends Observable {
                     }
                 }
             }
-            if (!this.jugadores.isEmpty()) {
+            try {
                 if (this.colisionBorde(this.jugadores.get(id).getCabeza())) {
                     notifyObservers("CBR;" + id);
                     this.eliminarJugador(id);
                 } else {
                     notifyObservers("MOV;" + id);
                     if (!this.jugadores.isEmpty()) {
-                        if (this.colisionTesoro(this.jugadores.get(id).getCabeza())) {
+                        Coordenadas tesoro;
+                        if ((tesoro = this.colisionTesoro(this.jugadores.get(id).getCabeza())) != null) {
+                            this.tesoros.remove(tesoro);
                             this.jugadores.get(id).añadirPuntos(this.PUNTOSTESORO);
                             int nuevosPuntos = this.jugadores.get(id).getPuntos();
                             setChanged();
@@ -256,6 +276,8 @@ public class ModeloJuego extends Observable {
                         }
                     }
                 }
+            } catch (NullPointerException ex) {
+                //Si salta es que el jugador ya no existe
             }
         }
     }
@@ -271,20 +293,88 @@ public class ModeloJuego extends Observable {
         notifyObservers("TSR;" + candidato.getX() + ";" + candidato.getY());
     }
 
-    private boolean colisionTesoro(Coordenadas coord) {
-        Iterator<Coordenadas> iter = this.tesoros.iterator();
-        while (iter.hasNext()) {
-            Coordenadas tesoro = iter.next();
+    private Coordenadas colisionTesoro(Coordenadas coord) {
+        for (Coordenadas tesoro : this.tesoros) {
             if (coord.equals(tesoro)) {
-                iter.remove();
-                return true;
+                return tesoro;
             }
         }
-        return false;
+        return null;
     }
 
     public void setFilasColumnas(int filas, int columnas) {
         this.filas = filas;
         this.columnas = columnas;
+    }
+
+    public void setManual(int id, boolean manual) {
+        this.jugadores.get(id).setManual(manual);
+    }
+
+    public void calcularMovimientoAutomatico() { //Calcula el siguiente movimiento de todos los jugadores que esten en modo automatico
+        Set<Map.Entry<Integer, Jugador>> entradas = Collections.synchronizedSet(this.jugadores.entrySet());
+        synchronized (entradas) {
+            for (Map.Entry<Integer, Jugador> entrada : entradas) {
+                Jugador jugador = entrada.getValue();
+                if (!jugador.isManual()) {
+                    Direccion direccion = jugador.getDireccion();
+                    Coordenadas comprobar = jugador.moverEnDireccion();
+                    if (colisionBorde(comprobar) || (colisionJugador(comprobar, entrada.getKey())) != 0) { //Si va a colisionar, busca huir
+                        if (direccion.equals(Direccion.ABAJO) || direccion.equals(Direccion.ARRIBA)) {
+                            jugador.setDireccion(Direccion.DER);  //Se prueba con el lado derecho y se recalcula
+                            if (colisionBorde(comprobar) || (colisionJugador(comprobar, entrada.getKey())) != 0) { //Si va a colisionar
+                                jugador.setDireccion(Direccion.IZQ); //Si aun asi fuera a colisionar esta muerto, nada se puede hacer
+                            }
+                        } else {
+                            jugador.setDireccion(Direccion.ARRIBA);
+                            if (colisionBorde(comprobar) || (colisionJugador(comprobar, entrada.getKey())) != 0) { //Si va a colisionar
+                                jugador.setDireccion(Direccion.ABAJO);
+                            }
+                        }
+                    } else { //Si no va a colisionar, busca un tesoro y va a por el
+                        Coordenadas tesoro = tesoroMasCercano(jugador.getCabeza());
+                        Direccion nuevaDireccion = calcularDireccion(tesoro, jugador.getCabeza());
+                        cambiarDireccion(nuevaDireccion, entrada.getKey());
+                    }
+                }
+            }
+        }
+    }
+
+    private Direccion calcularDireccion(Coordenadas destino, Coordenadas origen) { //Calcula la direccion mejor a la que acercarse a la coordenada dada desde el origen
+        int distanciaX = abs(origen.getX() - destino.getX());
+        int distanciaY = abs(origen.getY() - destino.getY());
+
+        if ((distanciaX < distanciaY) || (distanciaY == 0)) {
+            if (origen.getX() < destino.getX()) {
+                return Direccion.DER;
+            } else {
+                return Direccion.IZQ;
+            }
+        } else {
+            if (origen.getY() < destino.getY()) {
+                return Direccion.ABAJO;
+            } else {
+                return Direccion.ARRIBA;
+            }
+        }
+    }
+
+    private Coordenadas tesoroMasCercano(Coordenadas origen) {
+        Coordenadas resultado = this.tesoros.get(0); //Por defecto
+        double menorDistancia = Integer.MAX_VALUE;
+        for (Coordenadas tesoro : this.tesoros) {
+            int tesoroX = tesoro.getX();
+            int tesoroY = tesoro.getY();
+            int origenX = origen.getX();
+            int origenY = origen.getY();
+
+            double distancia = sqrt(pow(tesoroX - origenX, 2) + pow(tesoroY - origenY, 2));
+            if (menorDistancia > distancia) {
+                menorDistancia = distancia;
+                resultado = tesoro;
+            }
+        }
+        return resultado;
     }
 }

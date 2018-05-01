@@ -99,12 +99,12 @@ public class ControladorServidor implements Observer {
                 this.servidor.nuevoTesoro(x, y);
                 break;
             }
-            
-            case "FIN":{
+
+            case "FIN": {
                 this.servidor.eliminarJugador(Integer.parseInt(parseado[1]));
                 break;
             }
-            default:{
+            default: {
                 System.err.println(accion);
                 break;
             }
@@ -160,6 +160,16 @@ public class ControladorServidor implements Observer {
 
     public void finalizarJugador(int id) {
         this.modelo.finalizarJugador(id);
+    }
+
+    public void setManual(int id, String manual) {
+        boolean manualBol;
+        if (manual.equals("1")) {
+            manualBol = true;
+        } else {
+            manualBol = false;
+        }
+        this.modelo.setManual(id, manualBol);
     }
 
 }
