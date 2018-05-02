@@ -11,8 +11,6 @@ import java.net.Socket;
 import java.util.Map;
 import Utilidades.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -71,7 +69,7 @@ public class ThreadServidor implements Runnable {
                 while (true) {
                     String input = in.readLine(); //Lee un mensaje enviado desde el cliente
                     if (input != null) {
-                        System.out.println(input); //Propósito de pruebas
+                        //System.out.println(input); //Propósito de pruebas
                         String[] parseado = input.split(";"); //Parsea los mensajes
                         if (ConstructorMensajes.isDir(parseado[0])) { //Si la cabecera es un mensaje de dirección
                             this.controlador.cambiarDireccion(this.socketID, parseado[1]); //Cambia la dirección del jugador en el modelo
@@ -143,7 +141,7 @@ public class ThreadServidor implements Runnable {
     public void moverJugador(int id, int[] cabeza, int[] cola) { //Envía a todos los jugadores que se ha movido un nuevo jugador
         String mensaje = ConstructorMensajes.mov(id, cabeza[0], cabeza[1], cola[0], cola[1]);
         enviarMensaje(mensaje);
-        System.out.println(mensaje);
+        //System.out.println(mensaje);
     }
 
     public synchronized void colision(int id1) { //Envía a todos los jugadores que se ha ocurrido una colisión con un borde

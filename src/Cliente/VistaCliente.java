@@ -1,7 +1,6 @@
 package Cliente;
 
 import Utilidades.SelectorColor;
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.Observable;
@@ -9,7 +8,6 @@ import java.util.Observer;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SpringLayout;
 
 public class VistaCliente extends javax.swing.JFrame implements Observer {
 

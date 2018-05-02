@@ -55,60 +55,62 @@ public class ControladorServidor implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        String accion = (String) arg;
-        String[] parseado = accion.split(";");
-        switch (parseado[0]) {
-            case "NJ": {
-                int id = Integer.parseInt(parseado[1]);
-                this.servidor.nuevoJugador(id, this.getCoordenadas(id));
-                break;
-            }
-            case "MOV": {
-                int id = Integer.parseInt(parseado[1]);
-                int[] cabeza = {this.modelo.getCabeza(id).getX(),
-                    this.modelo.getCabeza(id).getY()};
-                int[] cola = {this.modelo.getAnteriorCola(id).getX(),
-                    this.modelo.getAnteriorCola(id).getY()};
-                this.servidor.moverJugador(id, cabeza, cola);
-                break;
-            }
+        if (!((String) arg).isEmpty()) {
+            String accion = (String) arg;
+            String[] parseado = accion.split(";");
+            switch (parseado[0]) {
+                case "NJ": {
+                    int id = Integer.parseInt(parseado[1]);
+                    this.servidor.nuevoJugador(id, this.getCoordenadas(id));
+                    break;
+                }
+                case "MOV": {
+                    int id = Integer.parseInt(parseado[1]);
+                    int[] cabeza = {this.modelo.getCabeza(id).getX(),
+                        this.modelo.getCabeza(id).getY()};
+                    int[] cola = {this.modelo.getAnteriorCola(id).getX(),
+                        this.modelo.getAnteriorCola(id).getY()};
+                    this.servidor.moverJugador(id, cabeza, cola);
+                    break;
+                }
 
-            case "COL": {
-                int id1 = Integer.parseInt(parseado[1]);
-                int id2 = Integer.parseInt(parseado[2]);
-                this.servidor.colision(id1, id2);
-                break;
-            }
+                case "COL": {
+                    int id1 = Integer.parseInt(parseado[1]);
+                    int id2 = Integer.parseInt(parseado[2]);
+                    this.servidor.colision(id1, id2);
+                    break;
+                }
 
-            case "CBR": {
-                int id = Integer.parseInt(parseado[1]);
-                this.servidor.colision(id);
-                break;
-            }
+                case "CBR": {
+                    int id = Integer.parseInt(parseado[1]);
+                    this.servidor.colision(id);
+                    break;
+                }
 
-            case "PTS": {
-                int id = Integer.parseInt(parseado[1]);
-                int puntos = Integer.parseInt(parseado[2]);
-                this.servidor.darPuntos(id, puntos);
-                break;
-            }
+                case "PTS": {
+                    int id = Integer.parseInt(parseado[1]);
+                    int puntos = Integer.parseInt(parseado[2]);
+                    this.servidor.darPuntos(id, puntos);
+                    break;
+                }
 
-            case "TSR": {
-                int x = Integer.parseInt(parseado[1]);
-                int y = Integer.parseInt(parseado[2]);
-                this.servidor.nuevoTesoro(x, y);
-                break;
-            }
+                case "TSR": {
+                    int x = Integer.parseInt(parseado[1]);
+                    int y = Integer.parseInt(parseado[2]);
+                    this.servidor.nuevoTesoro(x, y);
+                    break;
+                }
 
-            case "FIN": {
-                this.servidor.eliminarJugador(Integer.parseInt(parseado[1]));
-                break;
-            }
-            default: {
-                System.err.println(accion);
-                break;
-            }
+                case "FIN": {
+                    this.servidor.eliminarJugador(Integer.parseInt(parseado[1]));
+                    break;
+                }
+                default: {
+                    System.err.println(accion);
+                    break;
+                }
 
+            }
         }
 
     }
