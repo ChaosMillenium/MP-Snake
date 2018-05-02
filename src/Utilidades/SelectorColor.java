@@ -6,7 +6,6 @@
 package Utilidades;
 
 import java.awt.Color;
-import java.util.Random;
 
 /**
  *

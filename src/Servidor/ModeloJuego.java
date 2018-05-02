@@ -5,17 +5,13 @@
  */
 package Servidor;
 
-import Utilidades.ConstructorMensajes;
 import Utilidades.Coordenadas;
 import Utilidades.Direccion;
-import static java.lang.Double.max;
 import static java.lang.Math.abs;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +19,8 @@ import java.util.Observable;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -219,8 +217,11 @@ public class ModeloJuego extends Observable {
     }
 
     public void finalizarJugador(int id) {
-        this.eliminarJugador(id);
+        this.hiloTablero.pausa();
+        setChanged();
         notifyObservers("FIN;" + id);
+        this.hiloTablero.pausa();
+        this.eliminarJugador(id);
     }
 
     public boolean hayJugadores() {
