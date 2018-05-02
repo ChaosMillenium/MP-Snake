@@ -19,7 +19,7 @@ public class ThreadActualizarTablero extends Thread {
     private ModeloJuego modelo;
     private boolean pausa = false;
     private final int VELOCIDAD;
-    private final int PROBABILIDAD = 1;
+    private final int PROBABILIDAD = 3;
 
     public ThreadActualizarTablero(ModeloJuego modelo) {
         this.modelo = modelo;
@@ -32,7 +32,7 @@ public class ThreadActualizarTablero extends Thread {
         while (hayJugadores()) {
             while (this.pausa) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(VELOCIDAD);
                 } catch (InterruptedException e) {
                     System.err.println("Error en hilo de tablero.");
                     this.start();

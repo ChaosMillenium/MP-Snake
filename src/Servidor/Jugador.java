@@ -43,7 +43,7 @@ public class Jugador {
     }
 
     public void nuevaCabeza() {
-        Coordenadas nuevaCabeza = moverEnDireccion();
+        Coordenadas nuevaCabeza = simularDireccion();
         this.serpiente.addFirst(nuevaCabeza);
     }
 
@@ -81,7 +81,7 @@ public class Jugador {
         return manual;
     }
 
-    public Coordenadas moverEnDireccion() {
+    public Coordenadas simularDireccion() {
         switch (this.direccion) {
             case ARRIBA: {
                 int nuevoY = this.serpiente.getFirst().getY() - 1;

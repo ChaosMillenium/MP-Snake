@@ -78,7 +78,7 @@ public class ThreadServidor implements Runnable {
                                 System.err.println("Error: El identificador no coincide (FIN), procediendo a desconectarle");
                             }
                             this.eliminarJugador(this.socketID); //Avisa al resto de la eliminación de un jugador y cierra la conexión
-                            this.controlador.eliminarJugador(this.socketID); //Elimina al jugador del modelo
+                            this.controlador.finalizarJugador(this.socketID); //Elimina al jugador del modelo
                             return;
                         } else if (ConstructorMensajes.isMan(parseado[0])){ //Pone el modo manual o automático
                             this.controlador.setManual(this.socketID, parseado[1]);
@@ -97,7 +97,6 @@ public class ThreadServidor implements Runnable {
                 try {
                     //this.eliminarJugador(this.socketID);
                     //this.controlador.eliminarJugador(this.socketID);
-                    break;
                 } catch (NullPointerException ex) {
                     break;
                     //Salta cuando ya se ha eliminado, por lo que no hay que repetirlo
