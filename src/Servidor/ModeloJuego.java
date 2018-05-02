@@ -6,7 +6,6 @@
 package Servidor;
 
 import Utilidades.Coordenadas;
-import Utilidades.Direccion;
 import static java.lang.Math.abs;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -19,8 +18,7 @@ import java.util.Observable;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import Utilidades.Direccion;
 
 /**
  *
@@ -318,45 +316,78 @@ public class ModeloJuego extends Observable {
             for (Map.Entry<Integer, Jugador> entrada : entradas) {
                 Jugador jugador = entrada.getValue();
                 if (!jugador.isManual()) {
+                    Coordenadas tesoro = tesoroMasCercano(jugador.getCabeza());
+                    Direccion nuevaDireccion = calcularDireccion(tesoro, jugador.getCabeza(), jugador.getDireccion());
+                    cambiarDireccion(nuevaDireccion, entrada.getKey());
                     Direccion direccion = jugador.getDireccion();
-                    Coordenadas comprobar = jugador.moverEnDireccion();
+                    Coordenadas comprobar = jugador.simularDireccion();
                     if (colisionBorde(comprobar) || (colisionJugador(comprobar, entrada.getKey())) != 0) { //Si va a colisionar, busca huir
                         if (direccion.equals(Direccion.ABAJO) || direccion.equals(Direccion.ARRIBA)) {
                             jugador.setDireccion(Direccion.DER);  //Se prueba con el lado derecho y se recalcula
+                            comprobar = jugador.simularDireccion();
                             if (colisionBorde(comprobar) || (colisionJugador(comprobar, entrada.getKey())) != 0) { //Si va a colisionar
                                 jugador.setDireccion(Direccion.IZQ); //Si aun asi fuera a colisionar esta muerto, nada se puede hacer
                             }
                         } else {
                             jugador.setDireccion(Direccion.ARRIBA);
+                            comprobar = jugador.simularDireccion();
                             if (colisionBorde(comprobar) || (colisionJugador(comprobar, entrada.getKey())) != 0) { //Si va a colisionar
                                 jugador.setDireccion(Direccion.ABAJO);
                             }
                         }
-                    } else { //Si no va a colisionar, busca un tesoro y va a por el
-                        Coordenadas tesoro = tesoroMasCercano(jugador.getCabeza());
-                        Direccion nuevaDireccion = calcularDireccion(tesoro, jugador.getCabeza());
-                        cambiarDireccion(nuevaDireccion, entrada.getKey());
                     }
                 }
             }
         }
     }
 
-    private Direccion calcularDireccion(Coordenadas destino, Coordenadas origen) { //Calcula la direccion mejor a la que acercarse a la coordenada dada desde el origen
+    private Direccion calcularDireccion(Coordenadas destino, Coordenadas origen, Direccion direccionOriginal) { //Calcula la direccion mejor a la que acercarse a la coordenada dada desde el origen
         int distanciaX = abs(origen.getX() - destino.getX());
         int distanciaY = abs(origen.getY() - destino.getY());
 
-        if ((distanciaX < distanciaY) || (distanciaY == 0)) {
+        if ((distanciaX < distanciaY) && ((distanciaX != 0)) || (distanciaY == 0)) {
             if (origen.getX() < destino.getX()) {
-                return Direccion.DER;
+                if (direccionOriginal != Direccion.IZQ) {
+                    return Direccion.DER;
+                } else {
+                    if (origen.getY() < destino.getY()) {
+                        return Direccion.ABAJO;
+                    } else {
+                        return Direccion.ARRIBA;
+                    }
+                }
             } else {
-                return Direccion.IZQ;
+                if (direccionOriginal != Direccion.DER) {
+                    return Direccion.IZQ;
+                } else {
+                    if (origen.getY() < destino.getY()) {
+                        return Direccion.ABAJO;
+                    } else {
+                        return Direccion.ARRIBA;
+                    }
+                }
             }
         } else {
             if (origen.getY() < destino.getY()) {
-                return Direccion.ABAJO;
+                if (direccionOriginal != Direccion.ARRIBA) {
+                    return Direccion.ABAJO;
+                } else {
+                    if (origen.getX() < destino.getX()) {
+                        return Direccion.DER;
+                    } else {
+                        return Direccion.IZQ;
+                    }
+                }
             } else {
-                return Direccion.ARRIBA;
+                if (direccionOriginal != Direccion.ABAJO) {
+                    return Direccion.ARRIBA;
+                } else {
+                    if (origen.getX() < destino.getX()) {
+                        return Direccion.DER;
+                    } else {
+                        return Direccion.IZQ;
+                    }
+                }
             }
         }
     }
