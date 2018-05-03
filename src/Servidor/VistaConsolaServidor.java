@@ -14,11 +14,11 @@ import java.util.Set;
 import javax.swing.*;
 
 public class VistaConsolaServidor extends javax.swing.JFrame implements Observer {
-    
+
     private ControladorServidor controlador;
     private Map<Integer, JPanel> jugadores;
     private JButton eliminarTodos;
-    
+
     public VistaConsolaServidor(ControladorServidor observado) {
         initComponents();
         this.setTitle("Control");
@@ -38,7 +38,7 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
         this.setPreferredSize(new Dimension(250, 250));
         this.setVisible(true);
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -78,18 +78,18 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
             }
         }
     }
-    
+
     private JPanel crearPanelNuevoJugador(int id) {
         JPanel menu = new JPanel();
         JPanel panelNombre = new JPanel();
         JPanel panelEliminar = new JPanel();
-        
+
         panelNombre.setBackground(SelectorColor.generarColor(Integer.parseInt(Integer.toString(id))));
         panelEliminar.setBackground(SelectorColor.generarColor(Integer.parseInt(Integer.toString(id))));
-        
+
         JLabel lblNombre = new JLabel(String.valueOf(id));
         JLabel lblJugador = new JLabel("Jugador: ");
-        
+
         JButton eliminar = new JButton("Eliminar");
         eliminar.addActionListener(new ActionListener() {
             @Override
@@ -97,26 +97,28 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
                 ocultarPanel(id);
             }
         });
-        
+
         panelNombre.add(lblJugador);
         panelNombre.add(lblNombre);
-        
+
         panelEliminar.add(eliminar);
-        
+
         menu.add(panelNombre);
         menu.add(panelEliminar);
         return menu;
     }
-    
+
     public void ocultarPanel(int id) {
         this.controlador.finalizarJugador(id);
     }
-    
-    public void expulsarTodos(){
-        Set<Integer> keys = this.jugadores.keySet();
-        if(!keys.isEmpty()){
-            for(int i : keys){
-                ocultarPanel(i);
+
+    public void expulsarTodos() {
+        if (!this.jugadores.isEmpty()) {
+            Set<Integer> keys = this.jugadores.keySet();
+            if (!keys.isEmpty()) {
+                for (int i : keys) {
+                    ocultarPanel(i);
+                }
             }
         }
     }
