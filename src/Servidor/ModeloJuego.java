@@ -28,7 +28,7 @@ public class ModeloJuego extends Observable {
 
     private int columnas, filas;
     private Map<Integer, Jugador> jugadores;
-    private final int VELOCIDAD = 150;
+    private final int VELOCIDAD = 75;
     private final int TAMAÑOBASE = 3;
     private final int PUNTOSTESORO = 100;
     private ThreadActualizarTablero hiloTablero;
