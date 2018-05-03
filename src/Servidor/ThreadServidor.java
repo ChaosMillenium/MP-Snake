@@ -49,7 +49,6 @@ public class ThreadServidor implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
             try {
                 PrintWriter out = new PrintWriter(this.socket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
@@ -90,7 +89,6 @@ public class ThreadServidor implements Runnable {
                 }
             } catch (IOException e) {
                 System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (IOException: Finalización incorrecta por parte del cliente.)");
-                break;
             } catch (NullPointerException e) {
                 System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (NullPointerException: Mensaje no reconocido/Desconectado sin aviso)");
             } finally {
@@ -98,10 +96,9 @@ public class ThreadServidor implements Runnable {
                     //this.eliminarJugador(this.socketID);
                     //this.controlador.eliminarJugador(this.socketID);
                 } catch (NullPointerException ex) {
-                    break;
                     //Salta cuando ya se ha eliminado, por lo que no hay que repetirlo
                 }
-            }
+            
         }
     }
 
