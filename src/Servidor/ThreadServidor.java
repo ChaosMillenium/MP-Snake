@@ -49,7 +49,6 @@ public class ThreadServidor implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
             try {
                 PrintWriter out = new PrintWriter(this.socket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
@@ -78,7 +77,7 @@ public class ThreadServidor implements Runnable {
                                 System.err.println("Error: El identificador no coincide (FIN), procediendo a desconectarle");
                             }
                             this.eliminarJugador(this.socketID); //Avisa al resto de la eliminación de un jugador y cierra la conexión
-                            this.controlador.eliminarJugador(this.socketID); //Elimina al jugador del modelo
+                            this.controlador.finalizarJugador(this.socketID); //Elimina al jugador del modelo
                             return;
                         } else if (ConstructorMensajes.isMan(parseado[0])){ //Pone el modo manual o automático
                             this.controlador.setManual(this.socketID, parseado[1]);
@@ -88,21 +87,18 @@ public class ThreadServidor implements Runnable {
                         throw new NullPointerException(); //Lanza una excepción si el mensaje no sigue la codificación adecuada
                     }
                 }
-            } catch (IOException e) {
+            } catch (IOException e) {   //TODO : Eliminar del modelo al jugador
                 System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (IOException: Finalización incorrecta por parte del cliente.)");
-                break;
             } catch (NullPointerException e) {
                 System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (NullPointerException: Mensaje no reconocido/Desconectado sin aviso)");
             } finally {
                 try {
                     //this.eliminarJugador(this.socketID);
                     //this.controlador.eliminarJugador(this.socketID);
-                    break;
                 } catch (NullPointerException ex) {
-                    break;
                     //Salta cuando ya se ha eliminado, por lo que no hay que repetirlo
                 }
-            }
+            
         }
     }
 

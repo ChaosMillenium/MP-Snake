@@ -61,7 +61,7 @@ public class ThreadEscucha extends Thread {
         try {
             JOptionPane.showMessageDialog(null, "El servidor ha cerrado la conexión.");
             this.socket.close();
-            System.exit(1);
+            System.exit(0);
         } catch (IOException ex) {
             System.err.println("Error de E/S"); //TODO: Controlar excepción
         }

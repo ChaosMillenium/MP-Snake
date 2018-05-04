@@ -26,17 +26,19 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
         this.jugadores = new HashMap<>();
         this.eliminarTodos = new JButton("Expulsar a todos");
         this.getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-        this.eliminarTodos.setEnabled(true);
+        this.eliminarTodos.setEnabled(true);        //boton que expulsa a todos los jugadores del servidor
         this.eliminarTodos.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 expulsarTodos();
             }
         });
+        this.eliminarTodos.setAlignmentY(this.eliminarTodos.CENTER_ALIGNMENT);
         this.add(this.eliminarTodos);
         this.setBackground(Color.GRAY);
         this.setPreferredSize(new Dimension(250, 250));
         this.setVisible(true);
+        this.pack();
     }
 
     @SuppressWarnings("unchecked")
@@ -65,24 +67,29 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
             String serpi = (String) arg;
             String[] parseado = serpi.split(";");
             if (parseado[0].equals("NJ")) {
+                //Cuando hay un nuevo jugador crea un nuevo panel
                 int id = Integer.parseInt(parseado[1]);
                 JPanel jug = crearPanelNuevoJugador(id);
-                this.pack();
                 this.jugadores.put(id, jug);
                 this.add(jug);
                 this.setVisible(true);
-            } else if (parseado[0].equals("CBR") || parseado[0].equals("COL") || parseado[0].equals("FIN")) {
-                JPanel jug = this.jugadores.get(Integer.parseInt(parseado[1]));
-                jug.setVisible(false);
-                this.remove(this.jugadores.get(Integer.parseInt(parseado[1])));
+                this.pack();
+            } else if (parseado[0].equals("CBR") || parseado[0].equals("FIN")) {
+                //Cuando un jugador se choca con un borde se elimia
+                eliminarPanel((Integer.parseInt(parseado[1])));
+            } else if (parseado[0].equals("COL")) {
+                //Cuando un jugador se choca con otro jugador se borran
+                eliminarPanel((Integer.parseInt(parseado[1])));
+                eliminarPanel((Integer.parseInt(parseado[2])));
             }
         }
     }
 
     private JPanel crearPanelNuevoJugador(int id) {
-        JPanel menu = new JPanel();
-        JPanel panelNombre = new JPanel();
-        JPanel panelEliminar = new JPanel();
+        //Crea un nuevo panel para 1 jugador
+        JPanel menu = new JPanel();                 //panel contenedor de todo
+        JPanel panelNombre = new JPanel();          //panel contenedor de los JLabel
+        JPanel panelEliminar = new JPanel();        //panel contenedor de boton
 
         panelNombre.setBackground(SelectorColor.generarColor(Integer.parseInt(Integer.toString(id))));
         panelEliminar.setBackground(SelectorColor.generarColor(Integer.parseInt(Integer.toString(id))));
@@ -90,7 +97,7 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
         JLabel lblNombre = new JLabel(String.valueOf(id));
         JLabel lblJugador = new JLabel("Jugador: ");
 
-        JButton eliminar = new JButton("Eliminar");
+        JButton eliminar = new JButton("Eliminar"); //boton que elimina un jugador
         eliminar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -108,15 +115,28 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
         return menu;
     }
 
+    public void eliminarPanel(int i) {
+        //Elimina un panel de la vista, elimina tambien al jugador del mapa
+        if (this.jugadores.containsValue(i)){
+            JPanel jug = this.jugadores.get(i);             
+            jug.setVisible(false);
+            this.getContentPane().remove(this.jugadores.get(i));
+            this.jugadores.remove(i);
+        }
+    }
+
     public void ocultarPanel(int id) {
+        //Avisa al controlador para que finaliza la conexion con ese cliente
         this.controlador.finalizarJugador(id);
     }
 
     public void expulsarTodos() {
+        //Finaliza la conexion con todos los clientes
         if (!this.jugadores.isEmpty()) {
             Set<Integer> keys = this.jugadores.keySet();
             if (!keys.isEmpty()) {
                 for (int i : keys) {
+                    this.jugadores.remove(i);
                     ocultarPanel(i);
                 }
             }
