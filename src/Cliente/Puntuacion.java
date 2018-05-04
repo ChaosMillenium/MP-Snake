@@ -58,8 +58,8 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
             String serpi = (String) arg;
             String[] parseado = serpi.split(";");
             if (parseado[0].equals("IDC") || parseado[0].equals("COI")) {
+                int id = Integer.parseInt(parseado[1]);
                 if (parseado[0].equals("IDC")) {
-                    int id = Integer.parseInt(parseado[1]);
                     this.id = id;
                 }
                 if (noExiste(id)) {
@@ -74,8 +74,11 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
                 if (puntuacion != null) {
                     puntuacion.setText(String.valueOf(puntos));
                 }
-            } else if (parseado[0].equals("TAB")) {
-
+            } else if (parseado[0].equals("ELJ")) {
+                int s = Integer.parseInt(parseado[1]);
+                JLabel lbl = this.puntuaciones.get(s);
+                lbl.setVisible(false);
+                this.getContentPane().remove(lbl);
             }
         }
     }

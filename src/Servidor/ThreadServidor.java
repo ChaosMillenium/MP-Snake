@@ -87,7 +87,7 @@ public class ThreadServidor implements Runnable {
                         throw new NullPointerException(); //Lanza una excepción si el mensaje no sigue la codificación adecuada
                     }
                 }
-            } catch (IOException e) {
+            } catch (IOException e) {   //TODO : Eliminar del modelo al jugador
                 System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (IOException: Finalización incorrecta por parte del cliente.)");
             } catch (NullPointerException e) {
                 System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (NullPointerException: Mensaje no reconocido/Desconectado sin aviso)");
