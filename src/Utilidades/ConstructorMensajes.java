@@ -40,14 +40,8 @@ public class ConstructorMensajes {
         return "ERR;" + mensaje;
     }
 
-    public static String elj(int id, int[] coordenadas) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("ELJ;").append(id).append(";");
-        for (int i = 0; i < coordenadas.length - 1; i++) {
-            sb.append(coordenadas[i]).append(";");
-        }
-        sb.append(coordenadas[coordenadas.length - 1]);
-        return sb.toString();
+    public static String elj(int id) {
+        return "ELJ;" + id;
     }
 
     public static String mov(int id, int cabezaX, int cabezaY, int colaX, int colaY) {

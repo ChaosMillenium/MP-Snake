@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Servidor;
 
 import java.util.Collections;
@@ -10,10 +6,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-/**
- *
- * @author millenium
- */
+
 public class ThreadActualizarTablero extends Thread {
 
     private ModeloJuego modelo;
@@ -35,7 +28,6 @@ public class ThreadActualizarTablero extends Thread {
                     Thread.sleep(VELOCIDAD);
                 } catch (InterruptedException e) {
                     System.err.println("Error en hilo de tablero.");
-                    this.start();
                 }
             }
 

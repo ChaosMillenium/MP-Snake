@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Servidor;
 
 import java.io.*;
@@ -12,10 +8,6 @@ import java.util.Map;
 import Utilidades.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- *
- * @author millenium
- */
 public class ThreadServidor implements Runnable {
 
     private ControladorServidor controlador;
@@ -76,7 +68,6 @@ public class ThreadServidor implements Runnable {
                             if (!(Integer.parseInt(parseado[1]) == this.socketID)) {
                                 System.err.println("Error: El identificador no coincide (FIN), procediendo a desconectarle");
                             }
-                            this.eliminarJugador(this.socketID); //Avisa al resto de la eliminación de un jugador y cierra la conexión
                             this.controlador.finalizarJugador(this.socketID); //Elimina al jugador del modelo
                             return;
                         } else if (ConstructorMensajes.isMan(parseado[0])){ //Pone el modo manual o automático
@@ -118,8 +109,7 @@ public class ThreadServidor implements Runnable {
     }
 
     public synchronized void eliminarJugador(int id) { //Envía a todos los jugadores que se ha eliminado un jugador
-        int[] coordenadas = this.controlador.getCoordenadasAnt(id);
-        enviarMensaje(ConstructorMensajes.elj(id, coordenadas));
+        enviarMensaje(ConstructorMensajes.elj(id));
         try {
             PrintWriter out = new PrintWriter(
                     ThreadServidor.conexionesActivas.get(id).getOutputStream(), true);
