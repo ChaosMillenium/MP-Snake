@@ -24,7 +24,10 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
         this.setTitle("Control");
         this.controlador = observado;
         this.jugadores = new HashMap<>();
+        JPanel panelBoton = new JPanel();
         this.eliminarTodos = new JButton("Expulsar a todos");
+        this.setMinimumSize(new Dimension(250, 250));
+        //this.setPreferredSize(new Dimension(250, 250));
         this.getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         this.eliminarTodos.setEnabled(true);        //boton que expulsa a todos los jugadores del servidor
         this.eliminarTodos.addActionListener(new ActionListener() {
@@ -33,12 +36,12 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
                 expulsarTodos();
             }
         });
+        panelBoton.add(this.eliminarTodos);
         this.eliminarTodos.setAlignmentY(this.eliminarTodos.CENTER_ALIGNMENT);
-        this.add(this.eliminarTodos);
+        this.add(panelBoton);
         this.setBackground(Color.GRAY);
-        this.setPreferredSize(new Dimension(250, 250));
+
         this.setVisible(true);
-        this.pack();
     }
 
     @SuppressWarnings("unchecked")
@@ -46,17 +49,7 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        getContentPane().setLayout(null);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -72,7 +65,8 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
                 JPanel jug = crearPanelNuevoJugador(id);
                 this.jugadores.put(id, jug);
                 this.add(jug);
-                this.setVisible(true);
+                this.revalidate();
+                this.repaint();
                 this.pack();
             } else if (parseado[0].equals("CBR") || parseado[0].equals("FIN")) {
                 //Cuando un jugador se choca con un borde se elimia
@@ -117,16 +111,15 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
 
     public void eliminarPanel(int i) {
         //Elimina un panel de la vista, elimina tambien al jugador del mapa
-        if (this.jugadores.containsValue(i)){
-            JPanel jug = this.jugadores.get(i);             
-            jug.setVisible(false);
-            this.getContentPane().remove(this.jugadores.get(i));
-            this.jugadores.remove(i);
-        }
+        this.getContentPane().remove(this.jugadores.get(i));
+        this.revalidate();
+        this.repaint();
+        this.jugadores.remove(i);
     }
 
     public void ocultarPanel(int id) {
         //Avisa al controlador para que finaliza la conexion con ese cliente
+        //eliminarPanel(id);
         this.controlador.finalizarJugador(id);
     }
 
@@ -136,7 +129,7 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
             Set<Integer> keys = this.jugadores.keySet();
             if (!keys.isEmpty()) {
                 for (int i : keys) {
-                    this.jugadores.remove(i);
+
                     ocultarPanel(i);
                 }
             }
