@@ -17,15 +17,17 @@ public class ThreadActualizarTablero extends Thread {
     public ThreadActualizarTablero(ModeloJuego modelo) {
         this.modelo = modelo;
         this.VELOCIDAD = this.modelo.getVELOCIDAD();
+        this.setName("Tablero");
     }
 
     @Override
     public void run() {
         Random aleatTesoro = new Random();
         while (hayJugadores()) {
-            while (this.pausa) {
+            if (this.pausa) {
                 try {
-                    Thread.sleep(VELOCIDAD);
+                    Thread.sleep(VELOCIDAD*2);
+                    this.pausa();
                 } catch (InterruptedException e) {
                     System.err.println("Error en hilo de tablero.");
                 }
@@ -42,7 +44,6 @@ public class ThreadActualizarTablero extends Thread {
                 }
             }
             synchronized (this.modelo.getTesoros()) {
-                //TODO: Revisar probabilidades
                 if (this.modelo.getTesoros().isEmpty() || (aleatTesoro.nextInt(100) < PROBABILIDAD)) { //PROBABILIDAD % cada VELOCIDAD ms de generar un tesoro
                     this.modelo.generarTesoro();
                 }
