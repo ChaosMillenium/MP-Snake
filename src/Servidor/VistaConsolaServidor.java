@@ -129,7 +129,6 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
             Set<Integer> keys = this.jugadores.keySet();
             if (!keys.isEmpty()) {
                 for (int i : keys) {
-
                     ocultarPanel(i);
                 }
             }
