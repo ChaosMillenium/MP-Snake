@@ -67,14 +67,19 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
                 break;
             }
             case "ELJ": {
-                int id = Integer.parseInt(msg[1]);
-                LinkedList<JPanel> serpiente = this.serpientes.get(id);
-                for (JPanel panel : serpiente){
-                    panel.setBackground(Color.white);
+                try {
+                    int id = Integer.parseInt(msg[1]);
+                    LinkedList<JPanel> serpiente = this.serpientes.get(id);
+                    for (JPanel panel : serpiente) {
+                        panel.setBackground(Color.white);
+                    }
+                    this.serpientes.remove(id);
+                } catch (NullPointerException e) {
                 }
-                this.serpientes.remove(id);
                 break;
+
             }
+
             case "COI": {
                 LinkedList<JPanel> serpiente = new LinkedList<>();
                 int id = Integer.parseInt(msg[1]);
@@ -87,16 +92,20 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
                 this.serpientes.put(id, serpiente);
             }
             case "MOV": {
-                int id = Integer.parseInt(msg[1]);
-                LinkedList<JPanel> serpiente = this.serpientes.get(id);
-                int filaNueva = Integer.parseInt(msg[3]);
-                int columnaNueva = Integer.parseInt(msg[2]);
-                int filaEliminar = Integer.parseInt(msg[5]);
-                int columnaEliminar = Integer.parseInt(msg[4]);
-                this.grid[filaNueva][columnaNueva].setBackground(SelectorColor.generarColor(id));
-                this.grid[filaEliminar][columnaEliminar].setBackground(Color.white);
-                serpiente.remove(this.grid[filaEliminar][columnaEliminar]);
-                serpiente.addFirst(this.grid[filaNueva][columnaNueva]);
+                try {
+                    int id = Integer.parseInt(msg[1]);
+                    LinkedList<JPanel> serpiente = this.serpientes.get(id);
+                    int filaNueva = Integer.parseInt(msg[3]);
+                    int columnaNueva = Integer.parseInt(msg[2]);
+                    int filaEliminar = Integer.parseInt(msg[5]);
+                    int columnaEliminar = Integer.parseInt(msg[4]);
+                    this.grid[filaNueva][columnaNueva].setBackground(SelectorColor.generarColor(id));
+                    this.grid[filaEliminar][columnaEliminar].setBackground(Color.white);
+                    serpiente.remove(this.grid[filaEliminar][columnaEliminar]);
+                    serpiente.addFirst(this.grid[filaNueva][columnaNueva]);
+                } catch (NullPointerException ex) {
+                    //Si llega movimiento de un jugador que no existe no pasa nada.
+                }
                 break;
             }
             case "FIN": {

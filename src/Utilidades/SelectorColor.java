@@ -6,7 +6,6 @@ public class SelectorColor {
 
     private static final String[] SELECCIONCOLORES = { //Selección de colores
         "#ff0000",
-        "#ff7700",
         "#00ff00",
         "#00ff8c",
         "#00ffff",

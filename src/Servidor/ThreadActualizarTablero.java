@@ -28,7 +28,6 @@ public class ThreadActualizarTablero extends Thread {
                     Thread.sleep(VELOCIDAD);
                 } catch (InterruptedException e) {
                     System.err.println("Error en hilo de tablero.");
-                    this.start();
                 }
             }
 

@@ -24,6 +24,8 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         JPanel menu = new JPanel();
         this.desconectar = new JButton("Fin de partida");
+        this.desconectar.setAlignmentY(Component.CENTER_ALIGNMENT);
+        this.desconectar.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.desconectar.setEnabled(true);
         this.desconectar.addActionListener(this);
         menu.add(this.desconectar);
