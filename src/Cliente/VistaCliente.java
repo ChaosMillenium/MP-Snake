@@ -15,11 +15,13 @@ import javax.swing.JPanel;
 public class VistaCliente extends javax.swing.JFrame implements Observer {
 
     private JPanel[][] grid; //Matriz filas x columnas
+    private int id;
     private ControladorCliente controlador;
     private Map<Integer, LinkedList<JPanel>> serpientes;
 
-    public VistaCliente(int filas, int columnas, ControladorCliente c) {
+    public VistaCliente(int filas, int columnas, ControladorCliente c, int id) {
         initComponents();
+        this.id = id;
         this.setTitle("Snake");
         //this.serpientes = new ArrayList<>();
         this.controlador = c;
@@ -87,6 +89,9 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
                     int fila = Integer.parseInt(msg[i + 1]);
                     int columna = Integer.parseInt(msg[i]);
                     this.grid[fila][columna].setBackground(SelectorColor.generarColor(id));
+                    if (id == this.id) {
+                        this.grid[fila][columna].setBorder(BorderFactory.createLineBorder(Color.yellow));    
+                    }
                     serpiente.add(this.grid[fila][columna]);
                 }
                 this.serpientes.put(id, serpiente);
@@ -101,6 +106,11 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
                     int columnaEliminar = Integer.parseInt(msg[4]);
                     this.grid[filaNueva][columnaNueva].setBackground(SelectorColor.generarColor(id));
                     this.grid[filaEliminar][columnaEliminar].setBackground(Color.white);
+                    
+                    if (id == this.id) {
+                        this.grid[filaNueva][columnaNueva].setBorder(BorderFactory.createLineBorder(Color.yellow));
+                        this.grid[filaEliminar][columnaEliminar].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                    }
                     serpiente.remove(this.grid[filaEliminar][columnaEliminar]);
                     serpiente.addFirst(this.grid[filaNueva][columnaNueva]);
                 } catch (NullPointerException ex) {

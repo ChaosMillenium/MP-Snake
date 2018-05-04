@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 public class ControladorCliente extends Observable {
 
     private Serpiente serpienteCliente;
+    private int id;
     private ThreadEscucha listener;
 
     public void establecerConexion() {
@@ -77,12 +78,13 @@ public class ControladorCliente extends Observable {
             switch (msgSplit[0]) {
                 case "TAB": {
                     //Cuando llega el tamaño de tablero se crea la vista del tablero
-                    VistaCliente v = new VistaCliente(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]), this);
+                    VistaCliente v = new VistaCliente(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]), this, this.id);
                     this.addObserver(v);
                     break;
                 }
                 case "IDC": {
                     //Se crea vista puntuaciones
+                    this.id = Integer.parseInt(msgSplit[1]);
                     Puntuacion p = new Puntuacion(this);
                     this.addObserver(p);
                     break;
