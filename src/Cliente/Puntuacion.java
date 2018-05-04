@@ -13,23 +13,25 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
     private JButton desconectar;
     private int id;
     private Map<Integer, JLabel> puntuaciones; //Mapa para guardar las puntuaciones, la clave es el id de jugador
+    private Map<Integer, JPanel> jugadores; //Mapa para guardar los paneles de los jugadores
 
     public Puntuacion(ControladorCliente observado) {
         initComponents();
         this.puntuaciones = new HashMap<>();
+        this.jugadores = new HashMap<>();
         this.setTitle("Puntuaciones");
         this.jugadorObs = observado;
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         JPanel menu = new JPanel();
-        this.add(menu);
         this.desconectar = new JButton("Fin de partida");
         this.desconectar.setEnabled(true);
         this.desconectar.addActionListener(this);
         menu.add(this.desconectar);
-        this.setBackground(Color.GREEN);
-        this.setPreferredSize(new Dimension(250, 250));
+        this.add(menu);
+        this.setMinimumSize(new Dimension(250, 250));
         this.setVisible(true);
         this.setFocusableWindowState(false);
+        this.pack();
     }
 
     @SuppressWarnings("unchecked")
@@ -37,17 +39,7 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        getContentPane().setLayout(null);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -65,7 +57,9 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
                 if (noExiste(id)) {
                     JPanel jugador = crearPanelNuevoJugador(id);
                     this.add(jugador);
-                    this.setVisible(true);
+                    this.jugadores.put(id, jugador);
+                    this.revalidate();
+                    this.repaint();
                 }
             } else if (parseado[0].equals("PTS")) {
                 int id = Integer.parseInt(parseado[1]);
@@ -75,10 +69,16 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
                     puntuacion.setText(String.valueOf(puntos));
                 }
             } else if (parseado[0].equals("ELJ")) {
-                int s = Integer.parseInt(parseado[1]);
-                JLabel lbl = this.puntuaciones.get(s);
-                lbl.setVisible(false);
-                this.getContentPane().remove(lbl);
+                int id = Integer.parseInt(parseado[1]);
+                JPanel jgdr = this.jugadores.get(id);
+                try {
+                    this.getContentPane().remove(jgdr);
+                    this.revalidate();
+                    this.repaint();
+                    this.jugadores.remove(id);
+                } catch (NullPointerException ex) {
+                    System.err.println("No existe");
+                }
             }
         }
     }

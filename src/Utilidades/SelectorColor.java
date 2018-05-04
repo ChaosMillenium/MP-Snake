@@ -1,19 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Utilidades;
 
 import java.awt.Color;
 
-/**
- *
- * @author millenium
- */
 public class SelectorColor {
 
-    private static final String[] seleccionColores = { //Selección de colores
+    private static final String[] SELECCIONCOLORES = { //Selección de colores
         "#ff0000",
         "#ff7700",
         "#00ff00",
@@ -35,8 +26,8 @@ public class SelectorColor {
     };
 
     public static Color generarColor(int id) {
-        int selector = id % SelectorColor.seleccionColores.length;
-        Color resultado = Color.decode(SelectorColor.seleccionColores[selector]);
+        int selector = id % SelectorColor.SELECCIONCOLORES.length;
+        Color resultado = Color.decode(SelectorColor.SELECCIONCOLORES[selector]);
         return resultado;
     }
 }
