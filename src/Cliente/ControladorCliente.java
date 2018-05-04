@@ -104,7 +104,6 @@ public class ControladorCliente extends Observable {
                 }
                 case "FIN": {
                     this.listener.cerrarConexion();
-                    System.exit(0);
                     break;
                 }
                 case "ERR": {

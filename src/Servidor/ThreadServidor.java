@@ -1,4 +1,3 @@
-
 package Servidor;
 
 import java.io.*;
@@ -14,6 +13,7 @@ public class ThreadServidor implements Runnable {
     private Socket socket;
     private int socketID;
     private static Map<Integer, Socket> conexionesActivas = new ConcurrentHashMap<>();
+    private int jugadores;
 
     public ThreadServidor(ControladorServidor controlador) { //Constructor inicial
         this.controlador = controlador;
@@ -32,7 +32,8 @@ public class ThreadServidor implements Runnable {
                 Socket sck = serverSck.accept(); //Acepta cliente
                 System.out.println("Conexión entrante");
                 int key = this.controlador.siguienteKey();
-                new Thread(new ThreadServidor(this.controlador, sck, key)).start(); //Inicia un hilo por cliente
+                this.jugadores++;
+                new Thread(new ThreadServidor(this.controlador, sck, key), "Cliente " + key).start(); //Inicia un hilo por cliente
             }
         } catch (IOException e) {
             System.err.println("Error de E/S");
@@ -41,55 +42,59 @@ public class ThreadServidor implements Runnable {
 
     @Override
     public void run() {
-            try {
-                PrintWriter out = new PrintWriter(this.socket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-                out.println(ConstructorMensajes.idc(this.socketID)); //Manda ID
-                out.println(ConstructorMensajes.tab(this.controlador.getFilas(), this.controlador.getColumnas())); //Manda tablero
-                this.controlador.añadirJugador(); //Añade jugador al modelo de juego
-                ThreadServidor.conexionesActivas.put(this.socketID, this.socket); //Añade el nuevo cliente a la lista de conexiones activas
-                //Envia todas las coordenadas de los jugadores ya existentes al nuevo jugador (incluido el suyo)
-                for (int id : ThreadServidor.conexionesActivas.keySet()) {
-                    int[] coordenadas = this.controlador.getCoordenadas(id);
-                    out.println(ConstructorMensajes.coi(coordenadas, id));
-                }
-                //Se envían las coordenadas de todos los tesoros
-                for (Coordenadas coord : this.controlador.getTesoros()) {
-                    out.println(ConstructorMensajes.tsr(coord.getX(), coord.getY()));
-                }
-                while (true) {
-                    String input = in.readLine(); //Lee un mensaje enviado desde el cliente
-                    if (input != null) {
-                        //System.out.println(input); //Propósito de pruebas
-                        String[] parseado = input.split(";"); //Parsea los mensajes
-                        if (ConstructorMensajes.isDir(parseado[0])) { //Si la cabecera es un mensaje de dirección
-                            this.controlador.cambiarDireccion(this.socketID, parseado[1]); //Cambia la dirección del jugador en el modelo
-                        } else if (ConstructorMensajes.isFin(parseado[0])) { //Si se envía desde cliente un fin de conexión
-                            if (!(Integer.parseInt(parseado[1]) == this.socketID)) {
-                                System.err.println("Error: El identificador no coincide (FIN), procediendo a desconectarle");
-                            }
-                            this.controlador.finalizarJugador(this.socketID); //Elimina al jugador del modelo
-                            return;
-                        } else if (ConstructorMensajes.isMan(parseado[0])){ //Pone el modo manual o automático
-                            this.controlador.setManual(this.socketID, parseado[1]);
+        try {
+            PrintWriter out = new PrintWriter(this.socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+            out.println(ConstructorMensajes.idc(this.socketID)); //Manda ID
+            out.println(ConstructorMensajes.tab(this.controlador.getFilas(), this.controlador.getColumnas())); //Manda tablero
+            this.controlador.añadirJugador(); //Añade jugador al modelo de juego
+            ThreadServidor.conexionesActivas.put(this.socketID, this.socket); //Añade el nuevo cliente a la lista de conexiones activas
+            //Envia todas las coordenadas de los jugadores ya existentes al nuevo jugador (incluido el suyo)
+            for (int id : ThreadServidor.conexionesActivas.keySet()) {
+                int[] coordenadas = this.controlador.getCoordenadas(id);
+                out.println(ConstructorMensajes.coi(coordenadas, id));
+            }
+            //Se envían las coordenadas de todos los tesoros
+            for (Coordenadas coord : this.controlador.getTesoros()) {
+                out.println(ConstructorMensajes.tsr(coord.getX(), coord.getY()));
+            }
+            while (true) {
+                String input = in.readLine(); //Lee un mensaje enviado desde el cliente
+                if (input != null) {
+                    //System.out.println(input); //Propósito de pruebas
+                    String[] parseado = input.split(";"); //Parsea los mensajes
+                    if (ConstructorMensajes.isDir(parseado[0])) { //Si la cabecera es un mensaje de dirección
+                        this.controlador.cambiarDireccion(this.socketID, parseado[1]); //Cambia la dirección del jugador en el modelo
+                    } else if (ConstructorMensajes.isFin(parseado[0])) { //Si se envía desde cliente un fin de conexión
+                        if (!(Integer.parseInt(parseado[1]) == this.socketID)) {
+                            System.err.println("Error: El identificador no coincide (FIN), procediendo a desconectarle");
                         }
-
-                    } else {
-                        throw new NullPointerException(); //Lanza una excepción si el mensaje no sigue la codificación adecuada
+                        break;
+                    } else if (ConstructorMensajes.isMan(parseado[0])) { //Pone el modo manual o automático
+                        this.controlador.setManual(this.socketID, parseado[1]);
                     }
                 }
-            } catch (IOException e) {   //TODO : Eliminar del modelo al jugador
-                System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (IOException: Finalización incorrecta por parte del cliente.)");
-            } catch (NullPointerException e) {
-                System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (NullPointerException: Mensaje no reconocido/Desconectado sin aviso)");
-            } finally {
-                try {
-                    //this.eliminarJugador(this.socketID);
-                    //this.controlador.eliminarJugador(this.socketID);
-                } catch (NullPointerException ex) {
-                    //Salta cuando ya se ha eliminado, por lo que no hay que repetirlo
+            }
+        } catch (IOException e) {
+            System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (IOException: Finalización incorrecta por parte del cliente.)");
+        } catch (NullPointerException e) {
+            System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (NullPointerException: Mensaje no reconocido/Desconectado sin aviso)");
+        } finally {
+            try {
+                this.controlador.finalizarJugador(this.socketID);
+                Socket sck = ThreadServidor.conexionesActivas.get(this.socketID);
+                ThreadServidor.conexionesActivas.remove(this.socketID);
+                this.jugadores--;
+                sck.close();
+                if (this.jugadores <= 0) {
+                    ThreadServidor.conexionesActivas.clear();
                 }
-            
+            } catch (NullPointerException ex) {
+                //Salta cuando ya se ha eliminado, por lo que no hay que repetirlo
+            } catch (IOException ex) {
+                //Salta cuando ya se ha eliminado, por lo que no hay que repetirlo
+            }
+
         }
     }
 
@@ -100,7 +105,6 @@ public class ThreadServidor implements Runnable {
                 out.println(mensaje);
             }
         } catch (IOException e) {
-            //TODO: Controlar excepcion
         }
     }
 
@@ -114,14 +118,17 @@ public class ThreadServidor implements Runnable {
             PrintWriter out = new PrintWriter(
                     ThreadServidor.conexionesActivas.get(id).getOutputStream(), true);
             out.println(ConstructorMensajes.fin(id));
-            Thread.sleep(500);
+            Thread.sleep(100);
+            Socket sck = ThreadServidor.conexionesActivas.get(id);
+            ThreadServidor.conexionesActivas.remove(id);
+            sck.close();
         } catch (IOException ex) {
             System.err.println("Error de E/S");
         } catch (InterruptedException ex) {
             System.err.println("Error de interrupcion");
         }
         System.out.println("El cliente " + id + " ha salido.");
-        
+
     }
 
     public void moverJugador(int id, int[] cabeza, int[] cola) { //Envía a todos los jugadores que se ha movido un nuevo jugador
@@ -137,7 +144,6 @@ public class ThreadServidor implements Runnable {
             out1.println(col);
             eliminarJugador(id1);
         } catch (IOException e) {
-            //TODO: Controlar excepcion
         }
     }
 
@@ -159,7 +165,6 @@ public class ThreadServidor implements Runnable {
                 eliminarJugador(id2);
             }
         } catch (IOException e) {
-            //TODO: Controlar excepcion
         }
     }
 

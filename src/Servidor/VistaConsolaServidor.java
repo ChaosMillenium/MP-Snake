@@ -6,6 +6,7 @@ import java.awt.Dimension;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -111,10 +112,14 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
 
     public void eliminarPanel(int i) {
         //Elimina un panel de la vista, elimina tambien al jugador del mapa
+        try{
         this.getContentPane().remove(this.jugadores.get(i));
         this.revalidate();
         this.repaint();
-        this.jugadores.remove(i);
+        this.jugadores.remove(i);}
+        catch (NullPointerException e){
+            System.err.println("Error: panel no encontrado al eliminar");
+        }
     }
 
     public void ocultarPanel(int id) {
@@ -126,10 +131,12 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
     public void expulsarTodos() {
         //Finaliza la conexion con todos los clientes
         if (!this.jugadores.isEmpty()) {
-            Set<Integer> keys = this.jugadores.keySet();
+            Set<Integer> keys = Collections.synchronizedSet(this.jugadores.keySet());
             if (!keys.isEmpty()) {
-                for (int i : keys) {
-                    ocultarPanel(i);
+                synchronized (keys) {
+                    for (int i : keys) {
+                        ocultarPanel(i);
+                    }
                 }
             }
         }
