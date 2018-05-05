@@ -1,4 +1,3 @@
-
 package Servidor;
 
 import Utilidades.Coordenadas;
@@ -15,7 +14,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import Utilidades.Direccion;
-
 
 public class ModeloJuego extends Observable {
 

@@ -1,17 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Cliente;
 
 import java.awt.GridLayout;
 import javax.swing.*;
-
-/**
- *
- * @author i.chicano.2016
- */
 public class PeticionIPPuerto {
 
     public static String[] pedirIPPuerto() throws NumberFormatException, NullPointerException {

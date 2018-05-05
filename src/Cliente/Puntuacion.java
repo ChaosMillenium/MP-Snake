@@ -9,11 +9,11 @@ import javax.swing.*;
 
 public class Puntuacion extends javax.swing.JFrame implements Observer, ActionListener {
 
-    private ControladorCliente jugadorObs;
-    private JButton desconectar;
-    private int id;
-    private Map<Integer, JLabel> puntuaciones; //Mapa para guardar las puntuaciones, la clave es el id de jugador
-    private Map<Integer, JPanel> jugadores; //Mapa para guardar los paneles de los jugadores
+    private ControladorCliente jugadorObs;      //Controlador asociado
+    private JButton desconectar;                //Boton para desconectarse del servidor
+    private int id;                             //Id de la vista
+    private Map<Integer, JLabel> puntuaciones;  //Mapa para guardar las puntuaciones, la clave es el id de jugador
+    private Map<Integer, JPanel> jugadores;     //Mapa para guardar los paneles de los jugadores
 
     public Puntuacion(ControladorCliente observado) {
         initComponents();
@@ -34,6 +34,8 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
         this.setVisible(true);
         this.setFocusableWindowState(false);
         this.pack();
+        //Seleccionamos un box layout en el que el boton desconectar se encuentra en la parte superior de la vista
+        //Conforme se vayan conectando mas jugadores se añadiran a la vista
     }
 
     @SuppressWarnings("unchecked")
@@ -52,11 +54,14 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
             String serpi = (String) arg;
             String[] parseado = serpi.split(";");
             if (parseado[0].equals("IDC") || parseado[0].equals("COI")) {
+                //Cuando llega una nueva serpiente
                 int id = Integer.parseInt(parseado[1]);
                 if (parseado[0].equals("IDC")) {
+                    //Solo llega un IDC
                     this.id = id;
                 }
                 if (noExiste(id)) {
+                    //Se añaden los datos del jugador a la vista(id + puntos)
                     JPanel jugador = crearPanelNuevoJugador(id);
                     this.add(jugador);
                     this.jugadores.put(id, jugador);
@@ -64,6 +69,7 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
                     this.repaint();
                 }
             } else if (parseado[0].equals("PTS")) {
+                //Cambia los puntos indicados a la serpiente indicada
                 int id = Integer.parseInt(parseado[1]);
                 long puntos = Long.parseLong(parseado[2]);
                 JLabel puntuacion = this.puntuaciones.get(id);
@@ -71,6 +77,7 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
                     puntuacion.setText(String.valueOf(puntos));
                 }
             } else if (parseado[0].equals("ELJ")) {
+                //Elimina el jugador indicado
                 int id = Integer.parseInt(parseado[1]);
                 JPanel jgdr = this.jugadores.get(id);
                 try {

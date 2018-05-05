@@ -3,7 +3,7 @@ package Utilidades;
 import java.awt.Color;
 
 public class SelectorColor {
-
+    //Selecciona el color de la serpiente en funcion de su id
     private static final String[] SELECCIONCOLORES = { //Selección de colores
         "#ff0000",
         "#00ff00",

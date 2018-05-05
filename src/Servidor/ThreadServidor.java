@@ -8,7 +8,6 @@ import Utilidades.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ThreadServidor implements Runnable {
-
     private ControladorServidor controlador;
     private Socket socket;
     private int socketID;
@@ -134,7 +133,6 @@ public class ThreadServidor implements Runnable {
     public void moverJugador(int id, int[] cabeza, int[] cola) { //Envía a todos los jugadores que se ha movido un nuevo jugador
         String mensaje = ConstructorMensajes.mov(id, cabeza[0], cabeza[1], cola[0], cola[1]);
         enviarMensaje(mensaje);
-        //System.out.println(mensaje);
     }
 
     public synchronized void colision(int id1) { //Envía a todos los jugadores que se ha ocurrido una colisión con un borde
@@ -175,5 +173,4 @@ public class ThreadServidor implements Runnable {
     public void nuevoTesoro(int x, int y) { //Envía a todos los jugadores que se ha añadido un nuevo tesoro
         enviarMensaje(ConstructorMensajes.tsr(x, y));
     }
-
 }

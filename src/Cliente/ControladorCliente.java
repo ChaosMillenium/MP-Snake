@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Cliente;
 
 import Utilidades.*;
@@ -12,16 +7,9 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Observable;
 import javax.swing.JOptionPane;
-
-/**
- *
- * @author danie
- */
 public class ControladorCliente extends Observable {
-
-    private Serpiente serpienteCliente;
-    private int id;
-    private ThreadEscucha listener;
+    private int id;                     //Id de este cliente
+    private ThreadEscucha listener;     //Thread de este cliente
 
     public void establecerConexion() {
         boolean reintentar = true;
@@ -43,28 +31,32 @@ public class ControladorCliente extends Observable {
     }
 
     public void cerrarConexion() {
-        this.listener.enviarFin(this.serpienteCliente.getId());
+        //Envia al servidor un Fin, seguidamente cierra conexion
+        this.listener.enviarFin(this.id);
         this.listener.cerrarConexion();
         System.exit(0);
     }
 
     public void setDirAct(int key) {
         //CONTROL DE DIRECCION
-        //direccines cambiadas, pulsa W y va arriba aunque si lees el codigo no deberia hacer eso
         switch (key) {
             case KeyEvent.VK_UP: {
+                //Pulsar flecha arriba
                 this.listener.enviarDireccion(Direccion.ARRIBA);
                 break;
             }
             case KeyEvent.VK_DOWN: {
+                //Pulsa flecha abajo
                 this.listener.enviarDireccion(Direccion.ABAJO);
                 break;
             }
             case KeyEvent.VK_LEFT: {
+                //Pulsa flecha izquierda
                 this.listener.enviarDireccion(Direccion.IZQ);
                 break;
             }
             case KeyEvent.VK_RIGHT: {
+                //Pulsa flecha derecha
                 this.listener.enviarDireccion(Direccion.DER);
                 break;
             }
@@ -72,43 +64,41 @@ public class ControladorCliente extends Observable {
     }
 
     public void selectorMensaje(String msg) {
+        //Metodo que determina que hacer con cada mensaje
         if (msg != null) {
-            String[] msgSplit = msg.split(";");
+            String[] parseado = msg.split(";"); //divide el mensaje
             setChanged();
-            switch (msgSplit[0]) {
+            switch (parseado[0]) {
                 case "TAB": {
                     //Cuando llega el tamaño de tablero se crea la vista del tablero
-                    VistaCliente v = new VistaCliente(Integer.parseInt(msgSplit[1]), Integer.parseInt(msgSplit[2]), this, this.id);
+                    VistaCliente v = new VistaCliente(Integer.parseInt(parseado[1]), Integer.parseInt(parseado[2]), this, this.id);
                     this.addObserver(v);
                     break;
                 }
                 case "IDC": {
                     //Se crea vista puntuaciones
-                    this.id = Integer.parseInt(msgSplit[1]);
+                    this.id = Integer.parseInt(parseado[1]);
                     Puntuacion p = new Puntuacion(this);
                     this.addObserver(p);
                     break;
                 }
                 case "COI": {
-                    this.serpienteCliente = new Serpiente(Integer.parseInt(msgSplit[1]));
-                    for (int i = 2; i < msgSplit.length; i += 2) {
-                        int x = Integer.parseInt(msgSplit[i]);
-                        int y = Integer.parseInt(msgSplit[i + 1]);
-                        Coordenadas c = new Coordenadas(x, y);
-                        this.serpienteCliente.addCasilla(c);
-                    }
+                    //Envia a la vista el mismo mensaje recibido
                     notifyObservers(msg);
                     break;
                 }
                 case "MOV": {
+                    //Envia a la vista el mismo mensaje recibido
                     notifyObservers(msg);
                     break;
                 }
                 case "FIN": {
+                    //Cierra la conexion
                     this.listener.cerrarConexion();
                     break;
                 }
                 case "ERR": {
+                    //Muestra el mensaje de error recibido y termina la conexion
                     notifyObservers(msg);
                     this.listener.cerrarConexion();
                     System.exit(0);
@@ -121,5 +111,4 @@ public class ControladorCliente extends Observable {
             }
         }
     }
-
 }

@@ -1,10 +1,8 @@
-
 package Servidor;
 
 import javax.swing.JOptionPane;
 
 public class ServidorMain {
-
     public static void main(String[] args) {
         ModeloJuego modelo = new ModeloJuego();
         ControladorServidor controlador = new ControladorServidor(modelo);
@@ -27,7 +25,6 @@ public class ServidorMain {
                 }
             }
         }
-        controlador.iniciarServer();
-        
+        controlador.iniciarServer();     
     }
 }
