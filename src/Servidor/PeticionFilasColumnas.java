@@ -1,11 +1,8 @@
-
 package Servidor;
 
 import javax.swing.*;
 
-
 public class PeticionFilasColumnas {
-
     public static int[] pedirFilasColumnas() throws NumberFormatException, NullPointerException{
         JTextField campoFilas = new JTextField(3);
         JTextField campoColumnas = new JTextField(3);
@@ -29,6 +26,5 @@ public class PeticionFilasColumnas {
         int columnas = Integer.parseInt(campoColumnas.getText());
         int[] filasColumnas = {filas, columnas};
         return filasColumnas;
-
     }
 }

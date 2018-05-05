@@ -15,7 +15,6 @@ import java.util.Set;
 import javax.swing.*;
 
 public class VistaConsolaServidor extends javax.swing.JFrame implements Observer {
-
     private ControladorServidor controlador;
     private Map<Integer, JPanel> jugadores;
     private JButton eliminarTodos;
@@ -28,7 +27,6 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
         JPanel panelBoton = new JPanel();
         this.eliminarTodos = new JButton("Expulsar a todos");
         this.setMinimumSize(new Dimension(250, 250));
-        //this.setPreferredSize(new Dimension(250, 250));
         this.getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         this.eliminarTodos.setEnabled(true);        //boton que expulsa a todos los jugadores del servidor
         this.eliminarTodos.addActionListener(new ActionListener() {
@@ -41,7 +39,6 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
         this.eliminarTodos.setAlignmentY(this.eliminarTodos.CENTER_ALIGNMENT);
         this.add(panelBoton);
         this.setBackground(Color.GRAY);
-
         this.setVisible(true);
     }
 
@@ -141,8 +138,6 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
             }
         }
     }
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }

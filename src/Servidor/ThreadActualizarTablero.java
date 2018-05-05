@@ -1,4 +1,3 @@
-
 package Servidor;
 
 import java.util.Collections;
@@ -8,7 +7,6 @@ import java.util.Set;
 
 
 public class ThreadActualizarTablero extends Thread {
-
     private ModeloJuego modelo;
     private boolean pausa = false;
     private final int VELOCIDAD;
@@ -32,7 +30,6 @@ public class ThreadActualizarTablero extends Thread {
                     System.err.println("Error en hilo de tablero.");
                 }
             }
-
             Set<Map.Entry<Integer, Jugador>> entradas = Collections.synchronizedSet(this.modelo.getJugadores().entrySet());
             synchronized (entradas) {
                 for (Map.Entry<Integer, Jugador> entrada : entradas) { //Movimiento de jugadores

@@ -1,6 +1,7 @@
 package Utilidades;
 
 public class ConstructorMensajes {
+    //Clase que construye mensajes String de cada tipo
 
     public static String idc(int id) {
         return "IDC;" + id;

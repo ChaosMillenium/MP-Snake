@@ -1,7 +1,7 @@
 package Utilidades;
 
 public class Coordenadas {
-
+    //Clase tipo coordenada
     private int x, y;
 
     public Coordenadas(int x, int y) {
