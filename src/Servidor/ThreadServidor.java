@@ -4,7 +4,9 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Map;
+
 import Utilidades.*;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ThreadServidor implements Runnable {
@@ -88,22 +90,22 @@ public class ThreadServidor implements Runnable {
                 if (this.jugadores <= 0) {
                     ThreadServidor.conexionesActivas.clear();
                 }
-            } catch (NullPointerException ex) {
-                //Salta cuando ya se ha eliminado, por lo que no hay que repetirlo
-            } catch (IOException ex) {
+            } catch (NullPointerException | IOException ex) {
                 //Salta cuando ya se ha eliminado, por lo que no hay que repetirlo
             }
-
         }
     }
 
     private synchronized void enviarMensaje(String mensaje) { //Envía un mensaje a todos los jugadores
-        try {
-            for (Socket jugador : ThreadServidor.conexionesActivas.values()) {
+
+        for (Socket jugador : ThreadServidor.conexionesActivas.values()) {
+            try {
                 PrintWriter out = new PrintWriter(jugador.getOutputStream(), true);
                 out.println(mensaje);
+            } catch (IOException e) {
+                System.err.println("Error de E/S al enviar mensaje a socket");
             }
-        } catch (IOException e) {
+
         }
     }
 
@@ -122,9 +124,9 @@ public class ThreadServidor implements Runnable {
             ThreadServidor.conexionesActivas.remove(id);
             sck.close();
         } catch (IOException ex) {
-            System.err.println("Error de E/S");
+            System.err.println("Error de E/S al enviar mensaje a socket");
         } catch (InterruptedException ex) {
-            System.err.println("Error de interrupcion");
+            System.err.println("Error de interrupcion de hilo");
         }
         System.out.println("El cliente " + id + " ha salido.");
 

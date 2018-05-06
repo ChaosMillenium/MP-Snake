@@ -45,7 +45,7 @@ public class ThreadEscucha extends Thread {
             String direccion = dir.toString();
             out.println(ConstructorMensajes.dir(direccion));
         } catch (IOException ex) {
-            System.err.println("Error de E/S"); //TODO: Controlar excepción
+            System.err.println("Error de E/S");
         }
     }
 
@@ -55,7 +55,7 @@ public class ThreadEscucha extends Thread {
             PrintWriter out = new PrintWriter(this.socket.getOutputStream(), true);
             out.println(ConstructorMensajes.fin(id));
         } catch (IOException ex) {
-            System.err.println("Error de E/S"); //TODO: Controlar excepción
+            System.err.println("Error de E/S");
         }
     }
 
@@ -66,7 +66,7 @@ public class ThreadEscucha extends Thread {
             this.socket.close();
             System.exit(0);
         } catch (IOException ex) {
-            System.err.println("Error de E/S"); //TODO: Controlar excepción
+            System.err.println("Error de E/S");
         }
     }
 }

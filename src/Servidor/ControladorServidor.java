@@ -2,10 +2,9 @@ package Servidor;
 
 import Utilidades.Coordenadas;
 import Utilidades.Direccion;
-import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 
 public class ControladorServidor implements Observer {
 
@@ -34,14 +33,6 @@ public class ControladorServidor implements Observer {
 
     public int getColumnas() {
         return this.modelo.getColumnas();
-    }
-
-    public int getTamañoBase() {
-        return this.modelo.getTamañoBase();
-    }
-
-    public Map<Integer, Jugador> getSerpientes() {
-        return this.modelo.getJugadores();
     }
 
     @Override
@@ -115,22 +106,6 @@ public class ControladorServidor implements Observer {
         }
     }
 
-    public void eliminarJugador(int id) {
-        this.modelo.eliminarJugador(id);
-    }
-
-    public int[] getCoordenadasAnt(int id) {
-        Coordenadas[] coordenadas = this.modelo.getCoordenadasAnt(id);
-        int[] coordInt = new int[coordenadas.length * 2];
-        int j = 0;
-        for (int i = 0; i < coordInt.length; i += 2) {
-            coordInt[i] = coordenadas[j].getX();
-            coordInt[i + 1] = coordenadas[j].getY();
-            j++;
-        }
-        return coordInt;
-    }
-
     public int[] getCoordenadas(int id) {
         Coordenadas[] coordenadas = this.modelo.getCoordenadas(id);
         int[] coordInt = new int[coordenadas.length * 2];
@@ -147,7 +122,7 @@ public class ControladorServidor implements Observer {
         return this.modelo.siguienteKey();
     }
 
-    public List<Coordenadas> getTesoros() {
+    public Set<Coordenadas> getTesoros() {
         return this.modelo.getTesoros();
     }
 

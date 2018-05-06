@@ -121,7 +121,6 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
 
     public void ocultarPanel(int id) {
         //Avisa al controlador para que finaliza la conexion con ese cliente
-        //eliminarPanel(id);
         this.controlador.finalizarJugador(id);
     }
 
