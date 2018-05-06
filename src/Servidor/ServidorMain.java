@@ -8,13 +8,14 @@ public class ServidorMain {
         ControladorServidor controlador = new ControladorServidor(modelo);
 
         modelo.addObserver(controlador);
-
-        while (true) {
+        boolean datosNoIntroducidos=true;
+        //Pedimos los datos de filas y columnas
+        while (datosNoIntroducidos) {
             try {
                 int[] filasColumnas = PeticionFilasColumnas.pedirFilasColumnas();
                 if ((filasColumnas[0] > 9) && (filasColumnas[1]) > 9) { //El tablero no puede ser menor de 10x10
                     modelo.setFilasColumnas(filasColumnas[0], filasColumnas[1]);
-                    break;
+                    datosNoIntroducidos=false;
                 }
                 else throw new NumberFormatException();
                 

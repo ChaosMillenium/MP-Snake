@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Observable;
 import javax.swing.JOptionPane;
+
 public class ControladorCliente extends Observable {
     private int id;                     //Id de este cliente
     private ThreadEscucha listener;     //Thread de este cliente

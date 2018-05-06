@@ -26,7 +26,6 @@ public class SelectorColor {
 
     public static Color generarColor(int id) {
         int selector = id % SelectorColor.SELECCIONCOLORES.length;
-        Color resultado = Color.decode(SelectorColor.SELECCIONCOLORES[selector]);
-        return resultado;
+        return Color.decode(SelectorColor.SELECCIONCOLORES[selector]);
     }
 }
