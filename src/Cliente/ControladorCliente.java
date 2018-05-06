@@ -7,39 +7,54 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Observable;
 import javax.swing.JOptionPane;
-
+/**
+ * Controlador del Cliente (MVC), el cual recibira todos los datos del Servidor 
+ * y se los pasara a las vistas.
+ * 
+ *@author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
+ */
 public class ControladorCliente extends Observable {
     private int id;                     //Id de este cliente
     private ThreadEscucha listener;     //Thread de este cliente
-
-    public void establecerConexion() {
+    
+    /**
+     * Conecta al Cliente y al Servidor y activa un hilo que escucha 
+     * constantemente peticiones del Servidor.
+     */
+    public void establecerConexion(){
         boolean reintentar = true;
-        while (reintentar) {
+        while (reintentar) { //Se intenta conectar hasta que lo consigue
             try {
-                String[] datos = PeticionIPPuerto.pedirIPPuerto();
+                String[] datos = PeticionIPPuerto.pedirIPPuerto(); //Recoge los datos necesarios para establecer la conexion
                 Socket socket = new Socket(datos[0], Integer.parseInt(datos[1]));
-                //Socket socket = new Socket("127.0.0.1",8000); //Pruebas
                 this.listener = new ThreadEscucha(socket, this, Boolean.parseBoolean(datos[2]));
-                this.listener.start();
-                reintentar = false;
-            } catch (HeadlessException | IOException | NumberFormatException ex) {
+                this.listener.start(); //Inicia el hilo de escucha
+                reintentar = false; //Deja de intentar conectarse una vez que se ha conectado
+            } catch (HeadlessException | IOException | NumberFormatException ex){
+                //Si surge algun problema lanza excepcion y pregunta si se quiere intentar otra vez
                 int yesNo = JOptionPane.showConfirmDialog(null, "Error " + ex + ". ¿Reintentar?", "Error de conexión", JOptionPane.YES_NO_OPTION);
-                if (yesNo == JOptionPane.NO_OPTION) {
-                    System.exit(0);
+                if (yesNo == JOptionPane.NO_OPTION){
+                    System.exit(0); //Si dice que no cierra el programa
                 }
             }
         }
     }
-
+    
+    /**
+     * Envia al servidor un Fin, seguidamente cierra conexion
+     */
     public void cerrarConexion() {
-        //Envia al servidor un Fin, seguidamente cierra conexion
         this.listener.enviarFin(this.id);
         this.listener.cerrarConexion();
         System.exit(0);
     }
-
+    
+    /**
+     * Envia al Servidor la direccion que el jugador ha pulsado
+     * 
+     * @param key Tecla pulsada por el Cliente
+     */
     public void setDirAct(int key) {
-        //CONTROL DE DIRECCION
         switch (key) {
             case KeyEvent.VK_UP: {
                 //Pulsar flecha arriba
@@ -64,8 +79,12 @@ public class ControladorCliente extends Observable {
         }
     }
 
+    /**
+     * Determina que hacer con cada mensaje recibido por el hilo de escucha
+     * 
+     * @param msg Mensaje recibido del hilo
+     */
     public void selectorMensaje(String msg) {
-        //Metodo que determina que hacer con cada mensaje
         if (msg != null) {
             String[] parseado = msg.split(";"); //divide el mensaje
             setChanged();

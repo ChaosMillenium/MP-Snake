@@ -7,8 +7,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
+/**
+ * 
+ * 
+ * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
+ */
 public class Puntuacion extends javax.swing.JFrame implements Observer, ActionListener {
-
     private ControladorCliente jugadorObs;      //Controlador asociado
     private JButton desconectar;                //Boton para desconectarse del servidor
     private int id;                             //Id de la vista
