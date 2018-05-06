@@ -12,12 +12,25 @@ import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+/**
+ * Clase Vista del Cliente (MVC) interpreta los mensajes recibidos del Controlador
+ * 
+ * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
+ */
 public class VistaCliente extends javax.swing.JFrame implements Observer {
     private JPanel[][] grid;                            //Matriz filas x columnas
     private int id;                                     //Id de este cliente
     private ControladorCliente controlador;             //Controlador de la vista
     private Map<Integer, LinkedList<JPanel>> serpientes;//Mapa de las serpientes con key su id
 
+    /**
+     * Crea la vista de juego e inicializa el tablero
+     * 
+     * @param filas Numero de filas del tablero
+     * @param columnas Numero de columnas del tablero
+     * @param c Controlador asociado a esta vista
+     * @param id Id del jugador asociado a esta vista
+     */
     public VistaCliente(int filas, int columnas, ControladorCliente c, int id) {
         initComponents();
         this.id = id;
@@ -33,8 +46,7 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
                 pixel.setBackground(Color.white);
                 pixel.setBorder(BorderFactory.createLineBorder(Color.black));
                 this.grid[i][j] = pixel;
-                //Añadimos cada panel al jFrame
-                this.add(pixel);
+                this.add(pixel); //Añadimos cada panel al jFrame
             }
         }
 
@@ -45,8 +57,7 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
         this.requestFocusInWindow();
         this.toFront();
         this.requestFocus();
-        //Añadimos el KeyListener al jFrame
-        this.addKeyListener(new DetectorTeclas(this.controlador));
+        this.addKeyListener(new DetectorTeclas(this.controlador)); //Añadimos el KeyListener al jFrame
     }
 
     @SuppressWarnings("unchecked")
@@ -58,7 +69,14 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    
+    /**
+     * Cada vez que es notificado realiza cambios a la vista segun lo que recibe
+     * 
+     * @param o Objeto del cual recibimos los cambios, en este caso el Controlador
+     * @param arg Argumento que recibe cada vez que actualizamos, en nuestro caso un mensaje
+     */
     @Override
     public void update(Observable o, Object arg) {
         String msg = (String) arg;
@@ -70,9 +88,15 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
                 break;
             }
             case "ELJ": {
-                //Cuando recibe un mensaje de eliminar serpiente viene acompañado de la Id a eliminar
-                //Con el mapa elimamos la serpiente
-                //Hemos decidido que la vista del cliente se encargue de esto en lugar de mandar cada coordenada desde el modelo por peligro de desincronizacion
+                /**Cuando recibe un mensaje de eliminar serpiente viene acompañado 
+                 * de la Id a eliminar.
+                 * 
+                 * Con el mapa elimamos la serpiente
+                 * 
+                 * Hemos decidido que la vista del cliente se encargue de esto 
+                 * en lugar de mandar cada coordenada desde el modelo por 
+                 * peligro de desincronizacion
+                 */
                 try {
                     int id = Integer.parseInt(parseado[1]);
                     LinkedList<JPanel> serpiente = this.serpientes.get(id);
