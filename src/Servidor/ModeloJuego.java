@@ -462,14 +462,17 @@ public class ModeloJuego extends Observable {
             }
         }
     }
+
     /**
-     * Calcula la mejor dirección a la que acercarse a la coordenada dada desde el origen.
+     * Calcula la mejor dirección a la que acercarse a la coordenada dada desde
+     * el origen.
+     *
      * @param destino
      * @param origen
      * @param direccionOriginal Dirección original.
      * @return Dirección óptima.
      */
-    private Direccion calcularDireccion(Coordenadas destino, Coordenadas origen, Direccion direccionOriginal) { 
+    private Direccion calcularDireccion(Coordenadas destino, Coordenadas origen, Direccion direccionOriginal) {
         int distanciaX = abs(origen.getX() - destino.getX());
         int distanciaY = abs(origen.getY() - destino.getY());
 
@@ -519,9 +522,10 @@ public class ModeloJuego extends Observable {
             }
         }
     }
-    
+
     /**
      * Busca el tesoro más cercano a las coordenadas dadas.
+     *
      * @param origen
      * @return Coordenadas del tesoro más cercano a las coordenadas.
      */
