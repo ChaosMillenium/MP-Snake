@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.swing.*;
 
 public class VistaConsolaServidor extends javax.swing.JFrame implements Observer {
+
     private ControladorServidor controlador;
     private Map<Integer, JPanel> jugadores;
     private JButton eliminarTodos;
@@ -36,7 +37,7 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
             }
         });
         panelBoton.add(this.eliminarTodos);
-        this.eliminarTodos.setAlignmentY(this.eliminarTodos.CENTER_ALIGNMENT);
+        this.eliminarTodos.setAlignmentY(JButton.CENTER_ALIGNMENT);
         this.add(panelBoton);
         this.setBackground(Color.GRAY);
         this.setVisible(true);
@@ -57,22 +58,29 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
         if (!((String) arg).isEmpty()) {
             String serpi = (String) arg;
             String[] parseado = serpi.split(";");
-            if (parseado[0].equals("NJ")) {
-                //Cuando hay un nuevo jugador crea un nuevo panel
-                int id = Integer.parseInt(parseado[1]);
-                JPanel jug = crearPanelNuevoJugador(id);
-                this.jugadores.put(id, jug);
-                this.add(jug);
-                this.revalidate();
-                this.repaint();
-                this.pack();
-            } else if (parseado[0].equals("CBR") || parseado[0].equals("FIN")) {
-                //Cuando un jugador se choca con un borde se elimia
-                eliminarPanel((Integer.parseInt(parseado[1])));
-            } else if (parseado[0].equals("COL")) {
-                //Cuando un jugador se choca con otro jugador se borran
-                eliminarPanel((Integer.parseInt(parseado[1])));
-                eliminarPanel((Integer.parseInt(parseado[2])));
+            switch (parseado[0]) {
+                case "NJ":
+                    //Cuando hay un nuevo jugador crea un nuevo panel
+                    int id = Integer.parseInt(parseado[1]);
+                    JPanel jug = crearPanelNuevoJugador(id);
+                    this.jugadores.put(id, jug);
+                    this.add(jug);
+                    this.revalidate();
+                    this.repaint();
+                    this.pack();
+                    break;
+                case "CBR":
+                case "FIN":
+                    //Cuando un jugador se choca con un borde se elimia
+                    eliminarPanel((Integer.parseInt(parseado[1])));
+                    break;
+                case "COL":
+                    //Cuando un jugador se choca con otro jugador se borran
+                    eliminarPanel((Integer.parseInt(parseado[1])));
+                    eliminarPanel((Integer.parseInt(parseado[2])));
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -109,12 +117,12 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
 
     public void eliminarPanel(int i) {
         //Elimina un panel de la vista, elimina tambien al jugador del mapa
-        try{
-        this.getContentPane().remove(this.jugadores.get(i));
-        this.revalidate();
-        this.repaint();
-        this.jugadores.remove(i);}
-        catch (NullPointerException e){
+        try {
+            this.getContentPane().remove(this.jugadores.get(i));
+            this.revalidate();
+            this.repaint();
+            this.jugadores.remove(i);
+        } catch (NullPointerException e) {
             System.err.println("Error: panel no encontrado al eliminar");
         }
     }
