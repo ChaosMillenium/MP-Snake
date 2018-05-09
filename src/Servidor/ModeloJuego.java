@@ -22,7 +22,7 @@ import java.util.Iterator;
  * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
  */
 public class ModeloJuego extends Observable {
-
+    
     private int columnas, filas; //filas y columnas del tablero de juego
     private Map<Integer, Jugador> jugadores; //Mapa de jugadores, la clave es el id de jugador
     private final int VELOCIDAD = 75; //Velocidad de juego (cuando menor el valor, más rápido)
@@ -161,7 +161,7 @@ public class ModeloJuego extends Observable {
      * @param id ID del jugador.
      */
     private void asignarCoordInicio(Jugador jugador, int id) {
-
+        
         Random r = new Random();
         int margen = this.TAMAÑOBASE * 2; //Margen desde los bordes
         boolean repetir = true;
@@ -211,7 +211,7 @@ public class ModeloJuego extends Observable {
                         jugador.eliminarSerpiente();
                         repetir = true;
                     }
-
+                    
                 }
             }
         }
@@ -267,21 +267,7 @@ public class ModeloJuego extends Observable {
     public void cambiarDireccion(Direccion direccion, int id) {
         synchronized (this.jugadores) {
             Jugador jugador = this.jugadores.get(id);
-            if (!jugador.isEspera()) { //Comprueba que se pueda cambiar dirección
-                if (jugador.getDireccion().equals(Direccion.IZQ) && !(direccion.equals(Direccion.DER) || direccion.equals(Direccion.IZQ))) {
-                    jugador.setDireccion(direccion);
-                    jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
-                } else if (jugador.getDireccion().equals(Direccion.DER) && !(direccion.equals(Direccion.DER) || direccion.equals(Direccion.IZQ))) {
-                    jugador.setDireccion(direccion);
-                    jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
-                } else if (jugador.getDireccion().equals(Direccion.ARRIBA) && !(direccion.equals(Direccion.ARRIBA) || direccion.equals(Direccion.ABAJO))) {
-                    jugador.setDireccion(direccion);
-                    jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
-                } else if (jugador.getDireccion().equals(Direccion.ABAJO) && !(direccion.equals(Direccion.ARRIBA) || direccion.equals(Direccion.ABAJO))) {
-                    jugador.setDireccion(direccion);
-                    jugador.setEspera(true); //No se puede volver a cambiar dirección hasta siguiente ciclo
-                }
-            }
+            jugador.setDireccion(direccion);
         }
     }
 
@@ -342,7 +328,7 @@ public class ModeloJuego extends Observable {
         synchronized (this.jugadores) {
             int idColision;
             setChanged();
-
+            
             if (hayJugadores()) { //Evita error de concurrencia
                 if ((idColision = this.colisionJugador(this.jugadores.get(id).getCabeza(), id)) != 0) { //Comprueba colisión con otros jugadores.
                     notifyObservers("COL;" + id + ";" + idColision);
@@ -475,7 +461,7 @@ public class ModeloJuego extends Observable {
     private Direccion calcularDireccion(Coordenadas destino, Coordenadas origen, Direccion direccionOriginal) {
         int distanciaX = abs(origen.getX() - destino.getX());
         int distanciaY = abs(origen.getY() - destino.getY());
-
+        
         if ((distanciaX < distanciaY) && ((distanciaX != 0)) || (distanciaY == 0)) {
             if (origen.getX() < destino.getX()) {
                 if (direccionOriginal != Direccion.IZQ) {
@@ -538,7 +524,7 @@ public class ModeloJuego extends Observable {
             int tesoroY = tesoro.getY();
             int origenX = origen.getX();
             int origenY = origen.getY();
-
+            
             double distancia = sqrt(pow(tesoroX - origenX, 2) + pow(tesoroY - origenY, 2)); //Calcula la distancia en diagonal entre los dos puntos.
             if (menorDistancia > distancia) {
                 menorDistancia = distancia;
