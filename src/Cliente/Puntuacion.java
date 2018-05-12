@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 /**
- *
+ * Vista de puntuaciones de jugadores del cliente.
  *
  * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
  */
