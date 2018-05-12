@@ -10,7 +10,7 @@ import java.net.Socket;
 import javax.swing.JOptionPane;
 
 /**
- * Escucha las peticiones recibidas por el Servidor
+ * Clase que escucha las peticiones recibidas por el Servidor
  * 
  * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
  */

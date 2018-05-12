@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
- * Clase Vista del Cliente (MVC) interpreta los mensajes recibidos del Controlador
+ * Clase vista del cliente (MVC), interpreta los mensajes recibidos del Controlador
  * 
  * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
  */
