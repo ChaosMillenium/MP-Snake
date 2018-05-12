@@ -51,7 +51,11 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+/**
+ * Método que se actualiza cada vez que se llama la vista puntuación
+ * @param o es el objeto que te envía, osea el controlador
+ * @param arg es el mensaje
+ */
     @Override
     public void update(Observable o, Object arg) {
         if (!((String) arg).isEmpty()) {
@@ -95,7 +99,11 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
             }
         }
     }
-
+/**
+ * Crea la vista de los paneles
+ * @param id identificador de usuario
+ * @return devuelve el panel de un jugador nuevo con su puntuación cada vez que se llama a la función
+ */
     private JPanel crearPanelNuevoJugador(int id) {
         JPanel jugador = new JPanel();
         jugador.setBackground(SelectorColor.generarColor(id));
@@ -112,11 +120,17 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
         panelNombre.add(nombre);
         panelPuntuacion.add(lblPuntos);
         panelPuntuacion.add(puntuacion);
+        //
         jugador.add(panelNombre);
         jugador.add(panelPuntuacion);
+        //añadimos estos paneles al final, uno único, que será el que devuelva esta función
         return jugador;
     }
-
+/**
+ * probamos que el id sea válido
+ * @param id identificador de usuario
+ * @return booleano en caso afirmativo true de que sea un id válido
+ */
     private boolean noExiste(int id) {
         for (Integer idComparar : this.puntuaciones.keySet()) {
             if (id == idComparar) {
@@ -125,7 +139,10 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
         }
         return true;
     }
-
+/**
+ * cierra la conexión del jugador al que le afecta el botón
+ * @param e el evento del botón en el panel nuevo jugador
+ */
     @Override
     public void actionPerformed(ActionEvent e) {
         this.jugadorObs.cerrarConexion();
