@@ -8,7 +8,6 @@ import java.awt.Color;
  * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
  */
 public class SelectorColor {
-
     private static final String[] SELECCIONCOLORES = { //Selección de colores
         "#ff0000",//rojo
         "#00ff00",//verde
