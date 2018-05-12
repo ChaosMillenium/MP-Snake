@@ -8,25 +8,20 @@ import java.awt.Color;
  * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
  */
 public class SelectorColor {
-
     private static final String[] SELECCIONCOLORES = { //Selección de colores
-        "#ff0000",
-        "#00ff00",
-        "#00ff8c",
-        "#00ffff",
-        "#008cff",
-        "#0000ff",
-        "#7700ff",
-        "#d000ff",
-        "#ff00c7",
-        "#ff0066",
-        "#acbf00",
-        "#800000",
-        "#805300",
-        "#00800c",
-        "#008037",
-        "#800040",
-        "#068000"
+        "#ff0000",//rojo
+        "#00ff00",//verde
+        "#8B7D7B",//marrón
+        "#FF4500",//azulOscuro
+        "#FF4500",//naranjaRojo
+        "#8A2BE2",//violeta
+        "#8B8B83",//marfil4
+        "#7FFFD4",//aguamarino
+        "#6B8E23",//oliva
+        "#FF00FF",//magenta
+        "#696969",//gris oscuro
+        "#D2691E",//chocolate
+       
     };
 
     /**
