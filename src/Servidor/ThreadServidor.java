@@ -9,31 +9,54 @@ import Utilidades.*;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Servidor del juego que envía y recibe mensajes que manda desde y hacia el
+ * controlador del servidor (Es parte del controlador).
+ *
+ * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
+ */
 public class ThreadServidor implements Runnable {
+
     private ControladorServidor controlador;
     private Socket socket;
     private int socketID;
     private static Map<Integer, Socket> conexionesActivas = new ConcurrentHashMap<>();
     private int jugadores;
 
-    public ThreadServidor(ControladorServidor controlador) { //Constructor inicial
+    /**
+     * Constructor inicial para crear el servidor.
+     *
+     * @param controlador Controlador del servidor.
+     */
+    public ThreadServidor(ControladorServidor controlador) {
         this.controlador = controlador;
     }
 
-    private ThreadServidor(ControladorServidor controlador, Socket socket, int id) { //Constructor interno para generar un nuevo hilo por jugador, con su socket e identificador
+    /**
+     * Constructor interno para generar un nuevo hilo por jugador, con su socket
+     * e identificador.
+     *
+     * @param controlador Controlador del servidor.
+     * @param socket Socket de conexión con el cliente.
+     * @param id ID del jugador.
+     */
+    private ThreadServidor(ControladorServidor controlador, Socket socket, int id) {
         this.controlador = controlador;
         this.socket = socket;
         this.socketID = id;
     }
 
+    /**
+     * Inicia el servidor, que crea un hilo por nuevo cliente.
+     */
     public void startServer() {
         try (ServerSocket serverSck = new ServerSocket(8000)) { //Inicia el servidor
             System.out.println("Escuchando...");
             while (true) {
                 Socket sck = serverSck.accept(); //Acepta cliente
                 System.out.println("Conexión entrante");
-                int key = this.controlador.siguienteKey();
-                this.jugadores++;
+                int key = this.controlador.siguienteKey(); //Busca la siguiente clave libre.
+                this.jugadores++; //Añade un jugador
                 new Thread(new ThreadServidor(this.controlador, sck, key), "Cliente " + key).start(); //Inicia un hilo por cliente
             }
         } catch (IOException e) {
@@ -41,6 +64,10 @@ public class ThreadServidor implements Runnable {
         }
     }
 
+    /**
+     * Hilo del cliente, que enviará los mensajes iniciales para que inicie el
+     * juego y escuchará las peticiones del cliente.
+     */
     @Override
     public void run() {
         try {
@@ -82,6 +109,7 @@ public class ThreadServidor implements Runnable {
             System.err.println("Error: El cliente " + this.socketID + " se ha desconectado del servidor. (NullPointerException: Mensaje no reconocido/Desconectado sin aviso)");
         } finally {
             try {
+                //Se cierra la conexión y se elimina del juego y del mapa de conexiones.
                 this.controlador.finalizarJugador(this.socketID);
                 Socket sck = ThreadServidor.conexionesActivas.get(this.socketID);
                 ThreadServidor.conexionesActivas.remove(this.socketID);
@@ -96,7 +124,12 @@ public class ThreadServidor implements Runnable {
         }
     }
 
-    private synchronized void enviarMensaje(String mensaje) { //Envía un mensaje a todos los jugadores
+    /**
+     * Envía un mensaje a todos los jugadores
+     *
+     * @param mensaje
+     */
+    private synchronized void enviarMensaje(String mensaje) {
 
         for (Socket jugador : ThreadServidor.conexionesActivas.values()) {
             try {
@@ -109,18 +142,32 @@ public class ThreadServidor implements Runnable {
         }
     }
 
-    public synchronized void nuevoJugador(int id, int[] coordenadas) { //Envía a todos los jugadores que se ha añadido un nuevo jugador
+    /**
+     * Envía a todos los jugadores que se ha añadido un nuevo jugador
+     *
+     * @param id ID del jugador.
+     * @param coordenadas Array de enteros con las coordenadas (Pares X, Impares
+     * Y).
+     */
+    public synchronized void nuevoJugador(int id, int[] coordenadas) {
         enviarMensaje(ConstructorMensajes.coi(coordenadas, id));
     }
 
-    public synchronized void eliminarJugador(int id) { //Envía a todos los jugadores que se ha eliminado un jugador
+    /**
+     * Envía a todos los jugadores que se ha eliminado un jugador.
+     *
+     * @param id ID del jugador.
+     */
+    public synchronized void eliminarJugador(int id) {
+        //Envia ELJ a todos los jugadores.
         enviarMensaje(ConstructorMensajes.elj(id));
         try {
             PrintWriter out = new PrintWriter(
                     ThreadServidor.conexionesActivas.get(id).getOutputStream(), true);
+            //Manda un FIN al cliente.
             out.println(ConstructorMensajes.fin(id));
-            Thread.sleep(100);
-            Socket sck = ThreadServidor.conexionesActivas.get(id);
+            Thread.sleep(100); //Evita errores de concurrencia.
+            Socket sck = ThreadServidor.conexionesActivas.get(id); //Busca el socket y cierra la conexión.
             ThreadServidor.conexionesActivas.remove(id);
             sck.close();
         } catch (IOException ex) {
@@ -132,12 +179,26 @@ public class ThreadServidor implements Runnable {
 
     }
 
-    public void moverJugador(int id, int[] cabeza, int[] cola) { //Envía a todos los jugadores que se ha movido un nuevo jugador
+    /**
+     * Envía a todos los jugadores que se ha movido un nuevo jugador.
+     *
+     * @param id ID del jugador.
+     * @param cabeza Array con las coordenadas de la cabeza nueva (Pares X,
+     * Impares Y).
+     * @param cola Array con las coordenadas de la cola antigua (Pares X,
+     * Impares Y).
+     */
+    public void moverJugador(int id, int[] cabeza, int[] cola) {
         String mensaje = ConstructorMensajes.mov(id, cabeza[0], cabeza[1], cola[0], cola[1]);
         enviarMensaje(mensaje);
     }
 
-    public synchronized void colision(int id1) { //Envía a todos los jugadores que se ha ocurrido una colisión con un borde
+    /**
+     * Envía a todos los jugadores que se ha ocurrido una colisión con un borde.
+     *
+     * @param id1 ID del jugador.
+     */
+    public synchronized void colision(int id1) {
         try {
             String col = ConstructorMensajes.err("Colisión con borde");
             PrintWriter out1 = new PrintWriter(ThreadServidor.conexionesActivas.get(id1).getOutputStream(), true);
@@ -147,7 +208,14 @@ public class ThreadServidor implements Runnable {
         }
     }
 
-    public synchronized void colision(int id1, int id2) { //Envía a todos los jugadores que ha ocurrido una colisión entre dos jugadores, o uno consigo mismo
+    /**
+     * Envía a todos los jugadores que ha ocurrido una colisión entre dos
+     * jugadores, o uno consigo mismo.
+     *
+     * @param id1 ID del jugador 1 que ha colisionado.
+     * @param id2 ID del jugador 2 que ha colisionado (puede ser el mismo).
+     */
+    public synchronized void colision(int id1, int id2) {
         try {
             if (id1 == id2) {
                 String col = ConstructorMensajes.err("Colisión de " + id1 + " consigo mismo");
@@ -168,11 +236,23 @@ public class ThreadServidor implements Runnable {
         }
     }
 
-    public void darPuntos(int id, int puntos) { //Envía a todos los jugadores que se ha añadido puntos a un jugador
+    /**
+     * Envía a todos los jugadores que se ha añadido puntos a un jugador
+     *
+     * @param id ID del jugador.
+     * @param puntos Puntos a otorgar.
+     */
+    public void darPuntos(int id, int puntos) {
         enviarMensaje(ConstructorMensajes.pts(id, puntos));
     }
 
-    public void nuevoTesoro(int x, int y) { //Envía a todos los jugadores que se ha añadido un nuevo tesoro
+    /**
+     * Envía a todos los jugadores que se ha añadido un nuevo tesoro.
+     *
+     * @param x Coordenada X del tesoro.
+     * @param y Coordenada Y del tesoro.
+     */
+    public void nuevoTesoro(int x, int y) {
         enviarMensaje(ConstructorMensajes.tsr(x, y));
     }
 }
