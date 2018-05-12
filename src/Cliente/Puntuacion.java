@@ -20,6 +20,14 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
     private Map<Integer, JLabel> puntuaciones;  //Mapa para guardar las puntuaciones, la clave es el id de jugador
     private Map<Integer, JPanel> jugadores;     //Mapa para guardar los paneles de los jugadores
 
+    /**
+     * Constructor de la vista de puntuaciones del cliente; que muestra las
+     * puntuaciones de todos los jugadores. Seleccionamos un box layout en el
+     * que el botón Desconectar se encuentra en la parte superior de la vista.
+     * Conforme se vayan conectando más jugadores se añadirán a la vista.
+     *
+     * @param observado Controlador observado.
+     */
     public Puntuacion(ControladorCliente observado) {
         initComponents();
         this.puntuaciones = new HashMap<>();
@@ -39,8 +47,6 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
         this.setVisible(true);
         this.setFocusableWindowState(false);
         this.pack();
-        //Seleccionamos un box layout en el que el boton desconectar se encuentra en la parte superior de la vista
-        //Conforme se vayan conectando mas jugadores se añadiran a la vista
     }
 
     @SuppressWarnings("unchecked")
@@ -53,7 +59,7 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
         pack();
     }// </editor-fold>//GEN-END:initComponents
     /**
-     * Método que se actualiza cada vez que se llama la vista puntuación.
+     * Actualiza la vista cada vez que es necesario.
      *
      * @param o El Observable (controlador).
      * @param arg Mensaje usado para elegir la acción.
@@ -63,51 +69,61 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
         if (!((String) arg).isEmpty()) {
             String serpi = (String) arg;
             String[] parseado = serpi.split(";");
-            if (parseado[0].equals("IDC") || parseado[0].equals("COI")) {
-                //Cuando llega una nueva serpiente
-                int id = Integer.parseInt(parseado[1]);
-                if (parseado[0].equals("IDC")) {
-                    //Solo llega un IDC
-                    this.id = id;
+            switch (parseado[0]) {
+                case "IDC":
+                case "COI": {
+                    //Cuando llega una nueva serpiente
+                    int id = Integer.parseInt(parseado[1]);
+                    if (parseado[0].equals("IDC")) {
+                        //Solo llega un IDC
+                        this.id = id;
+                    }
+                    if (noExiste(id)) {
+                        //Se añaden los datos del jugador a la vista(id + puntos)
+                        JPanel jugador = crearPanelNuevoJugador(id);
+                        this.add(jugador);
+                        this.jugadores.put(id, jugador);
+                        this.revalidate();
+                        this.repaint();
+                    }
+                    break;
                 }
-                if (noExiste(id)) {
-                    //Se añaden los datos del jugador a la vista(id + puntos)
-                    JPanel jugador = crearPanelNuevoJugador(id);
-                    this.add(jugador);
-                    this.jugadores.put(id, jugador);
-                    this.revalidate();
-                    this.repaint();
+                case "PTS": {
+                    //Cambia los puntos indicados a la serpiente indicada
+                    int id = Integer.parseInt(parseado[1]);
+                    long puntos = Long.parseLong(parseado[2]);
+                    JLabel puntuacion = this.puntuaciones.get(id);
+                    if (puntuacion != null) {
+                        puntuacion.setText(String.valueOf(puntos));
+                    }
+                    break;
                 }
-            } else if (parseado[0].equals("PTS")) {
-                //Cambia los puntos indicados a la serpiente indicada
-                int id = Integer.parseInt(parseado[1]);
-                long puntos = Long.parseLong(parseado[2]);
-                JLabel puntuacion = this.puntuaciones.get(id);
-                if (puntuacion != null) {
-                    puntuacion.setText(String.valueOf(puntos));
+                case "ELJ": {
+                    //Elimina el jugador indicado
+                    int id = Integer.parseInt(parseado[1]);
+                    JPanel jgdr = this.jugadores.get(id);
+                    try {
+                        this.getContentPane().remove(jgdr);
+                        this.revalidate();
+                        this.repaint();
+                        this.jugadores.remove(id);
+                    } catch (NullPointerException ex) {
+                        System.err.println("No existe");
+                    }
+                    break;
                 }
-            } else if (parseado[0].equals("ELJ")) {
-                //Elimina el jugador indicado
-                int id = Integer.parseInt(parseado[1]);
-                JPanel jgdr = this.jugadores.get(id);
-                try {
-                    this.getContentPane().remove(jgdr);
-                    this.revalidate();
-                    this.repaint();
-                    this.jugadores.remove(id);
-                } catch (NullPointerException ex) {
-                    System.err.println("No existe");
-                }
+                default:
+                    break;
             }
         }
     }
 
     /**
-     * Crea la vista de los paneles
+     * Crea un panel por jugador.
      *
-     * @param id identificador de usuario
+     * @param id identificador de usuario.
      * @return devuelve el panel de un jugador nuevo con su puntuación cada vez
-     * que se llama a la función
+     * que se llama a la función.
      */
     private JPanel crearPanelNuevoJugador(int id) {
         JPanel jugador = new JPanel();
@@ -128,15 +144,15 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
         //
         jugador.add(panelNombre);
         jugador.add(panelPuntuacion);
-        //añadimos estos paneles al final, uno único, que será el que devuelva esta función
+        //añadimos estos paneles al final, uno único, que será el que devuelva esta función.
         return jugador;
     }
 
     /**
-     * probamos que el id sea válido
+     * Comprueba que exista el jugador.
      *
-     * @param id identificador de usuario
-     * @return booleano en caso afirmativo true de que sea un id válido
+     * @param id identificador de usuario.
+     * @return True si es un id válido.
      */
     private boolean noExiste(int id) {
         for (Integer idComparar : this.puntuaciones.keySet()) {
@@ -148,9 +164,9 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
     }
 
     /**
-     * cierra la conexión del jugador al que le afecta el botón
+     * Cierra la conexión del jugador al que le afecta el botón.
      *
-     * @param e el evento del botón en el panel nuevo jugador
+     * @param e el evento del botón en el panel nuevo jugador.
      */
     @Override
     public void actionPerformed(ActionEvent e) {

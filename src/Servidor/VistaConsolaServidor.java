@@ -85,6 +85,7 @@ public class VistaConsolaServidor extends javax.swing.JFrame implements Observer
                     this.repaint();
                     this.pack();
                     break;
+                case "CBR":
                 case "FIN":
                     //Cuando un jugador se choca con un borde se elimina.
                     eliminarPanel((Integer.parseInt(parseado[1])));
