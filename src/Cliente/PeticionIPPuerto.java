@@ -4,34 +4,36 @@ import java.awt.GridLayout;
 import javax.swing.*;
 
 /**
- * Clase que envia una peticion al cliente para poder conectarse al servidor
- * 
+ * Clase que envía una peticiín al cliente para poder conectarse al servidor.
+ *
  * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
  */
 public class PeticionIPPuerto {
+
     /**
-     * Constructor de la clase
-     * 
-     * @return Devuelve un array de String que contiene la IP, el puerto y 
-     * automatico o manual
-     * 
-     * @throws NumberFormatException Los valores introducidos no son validos
-     * @throws NullPointerException No se ha introducido ningun valor
+     * Solicita al cliente los datos necesarios para iniciar la conexión con el
+     * servidor.
+     *
+     * @return Devuelve un array de String que contiene la IP, el puerto y
+     * automático o manual.
+     *
+     * @throws NumberFormatException Los valores introducidos no son válidos.
+     * @throws NullPointerException No se ha introducido ningún valor.
      */
     public static String[] pedirIPPuerto() throws NumberFormatException, NullPointerException {
-        JTextField campoIP = new JTextField(3); //Se introducira la IP aqui
-        JTextField campoPuerto = new JTextField(3); //Se introducira el puerto aqui
+        JTextField campoIP = new JTextField(3); //Se introducira la IP aquí
+        JTextField campoPuerto = new JTextField(3); //Se introducira el puerto aquí
         JLabel texto = new JLabel("Introduzca la IP y puerto del servidor.");
-        JRadioButton selectManual = new JRadioButton("",true); //Selector de modo manual, inicialmente activado
-        JRadioButton selectAuto = new JRadioButton(); //Selector de modo automatico
+        JRadioButton selectManual = new JRadioButton("", true); //Selector de modo manual, inicialmente activado
+        JRadioButton selectAuto = new JRadioButton(); //Selector de modo automático
         ButtonGroup grupo = new ButtonGroup();
         grupo.add(selectManual);
         grupo.add(selectAuto);
-        
-        JPanel panel = new JPanel(); //JPanel contenedora de todos los elementos
-        JPanel ipPuerto = new JPanel(); //JPanel contenedora de los JPanels y JLabels asociados
+
+        JPanel panel = new JPanel(); //JPanel contenedor de todos los elementos
+        JPanel ipPuerto = new JPanel(); //JPanel contenedor de los JPanels y JLabels asociados
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        
+
         ipPuerto.setLayout(new GridLayout(0, 1));
         ipPuerto.add(texto);
         ipPuerto.add(new JLabel("IP: "));
@@ -40,7 +42,7 @@ public class PeticionIPPuerto {
         ipPuerto.add(campoPuerto);
         ipPuerto.add(new JLabel("Modo automático: "));
         panel.add(ipPuerto);
-        
+
         JPanel selector = new JPanel(); //JPanel contenedor de los JButtons y JLabels asociados
         selector.setLayout(new GridLayout(0, 2));
         selector.add(new JLabel("Manual: "));
@@ -51,14 +53,13 @@ public class PeticionIPPuerto {
 
         int eleccion = JOptionPane.showConfirmDialog(null, panel,
                 "Introduzca IP y puerto", JOptionPane.OK_CANCEL_OPTION);
-        if (eleccion == JOptionPane.CANCEL_OPTION){ //Si el jugador elige cancelar la conexion el programa se cierra
+        if (eleccion == JOptionPane.CANCEL_OPTION) { //Si el jugador elige no iniciar la conexión el programa se cierra.
             System.exit(0);
         }
         String opcion;
-        if (selectManual.isSelected()){ //Si el modo seleccionado es manual 
+        if (selectManual.isSelected()) { //Si el modo seleccionado es manual.
             opcion = "true";
-        }
-        else{ //Si el modo seleccionado es automatico
+        } else { //Si el modo seleccionado es automático.
             opcion = "false";
         }
         String[] resultado = {

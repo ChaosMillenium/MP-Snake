@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- * Clase encargada de detectar las pulsaciones del teclado del cliente
+ * Clase encargada de detectar las pulsaciones del teclado del cliente.
  * 
  * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
  */
@@ -16,7 +16,7 @@ public class DetectorTeclas implements KeyListener {
     }
     
     /**
-     * No se utiliza
+     * No se utiliza.
      */
     @Override
     public void keyTyped(KeyEvent e) {
@@ -24,9 +24,9 @@ public class DetectorTeclas implements KeyListener {
     }
     
     /**
-     * Envia al controlador la dirrecion pulsada por el jugador
+     * Envía al controlador la dirección pulsada por el jugador.
      * 
-     * @param e Tecla pulsada
+     * @param e Tecla pulsada.
      */
     @Override
     public void keyPressed(KeyEvent e) {
@@ -34,7 +34,7 @@ public class DetectorTeclas implements KeyListener {
     }
     
     /**
-     * No se utiliza
+     * No se utiliza.
      */
     @Override
     public void keyReleased(KeyEvent e) {

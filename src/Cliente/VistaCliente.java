@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
- * Clase vista del cliente (MVC), interpreta los mensajes recibidos del Controlador
+ * Clase vista del cliente (MVC), interpreta los mensajes recibidos del Controlador.
  * 
  * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
  */
@@ -24,7 +24,7 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
     private Map<Integer, LinkedList<JPanel>> serpientes;//Mapa de las serpientes con key su id
 
     /**
-     * Crea la vista de juego e inicializa el tablero
+     * Crea la vista de juego e inicializa el tablero.
      * 
      * @param filas Numero de filas del tablero
      * @param columnas Numero de columnas del tablero
@@ -72,10 +72,10 @@ public class VistaCliente extends javax.swing.JFrame implements Observer {
     
     
     /**
-     * Cada vez que es notificado realiza cambios a la vista segun lo que recibe
+     * Cada vez que es notificado realiza cambios a la vista segun lo que recibe.
      * 
-     * @param o Objeto del cual recibimos los cambios, en este caso el Controlador
-     * @param arg Argumento que recibe cada vez que actualizamos, en nuestro caso un mensaje
+     * @param o Objeto del cual recibimos los cambios, en este caso el Controlador.
+     * @param arg Argumento que recibe cada vez que actualizamos, en nuestro caso un mensaje.
      */
     @Override
     public void update(Observable o, Object arg) {
