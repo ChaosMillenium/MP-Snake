@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.Observable;
 import javax.swing.JOptionPane;
 /**
- * Controlador del Cliente (MVC), el cual recibira todos los datos del Servidor 
+ * Clase controlador del cliente (MVC), el cual recibira todos los datos del Servidor 
  * y se los pasara a las vistas.
  * 
  * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
