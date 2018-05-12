@@ -22,7 +22,7 @@ import java.util.Iterator;
  * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
  */
 public class ModeloJuego extends Observable {
-    
+
     private int columnas, filas; //filas y columnas del tablero de juego
     private Map<Integer, Jugador> jugadores; //Mapa de jugadores, la clave es el id de jugador
     private final int VELOCIDAD = 75; //Velocidad de juego (cuando menor el valor, más rápido)
@@ -161,7 +161,7 @@ public class ModeloJuego extends Observable {
      * @param id ID del jugador.
      */
     private void asignarCoordInicio(Jugador jugador, int id) {
-        
+
         Random r = new Random();
         int margen = this.TAMAÑOBASE * 2; //Margen desde los bordes
         boolean repetir = true;
@@ -211,7 +211,7 @@ public class ModeloJuego extends Observable {
                         jugador.eliminarSerpiente();
                         repetir = true;
                     }
-                    
+
                 }
             }
         }
@@ -328,17 +328,17 @@ public class ModeloJuego extends Observable {
         synchronized (this.jugadores) {
             int idColision;
             setChanged();
-            
-            if (hayJugadores()) { //Evita error de concurrencia
-                if ((idColision = this.colisionJugador(this.jugadores.get(id).getCabeza(), id)) != 0) { //Comprueba colisión con otros jugadores.
-                    notifyObservers("COL;" + id + ";" + idColision);
-                    this.eliminarJugador(id);
-                    if (idColision != id) { //Si la colisión es entre 2 jugadores elimina al segundo
-                        this.eliminarJugador(idColision);
+            try {
+                if (hayJugadores()) { //Evita error de concurrencia
+                    if ((idColision = this.colisionJugador(this.jugadores.get(id).getCabeza(), id)) != 0) { //Comprueba colisión con otros jugadores.
+                        notifyObservers("COL;" + id + ";" + idColision);
+                        this.eliminarJugador(id);
+                        if (idColision != id) { //Si la colisión es entre 2 jugadores elimina al segundo
+                            this.eliminarJugador(idColision);
+                        }
                     }
                 }
-            }
-            try {
+
                 if (this.colisionBorde(this.jugadores.get(id).getCabeza())) { //Comprueba colisión con los bordes.
                     notifyObservers("CBR;" + id);
                     this.eliminarJugador(id);
@@ -461,7 +461,7 @@ public class ModeloJuego extends Observable {
     private Direccion calcularDireccion(Coordenadas destino, Coordenadas origen, Direccion direccionOriginal) {
         int distanciaX = abs(origen.getX() - destino.getX());
         int distanciaY = abs(origen.getY() - destino.getY());
-        
+
         if ((distanciaX < distanciaY) && ((distanciaX != 0)) || (distanciaY == 0)) {
             if (origen.getX() < destino.getX()) {
                 if (direccionOriginal != Direccion.IZQ) {
@@ -524,7 +524,7 @@ public class ModeloJuego extends Observable {
             int tesoroY = tesoro.getY();
             int origenX = origen.getX();
             int origenY = origen.getY();
-            
+
             double distancia = sqrt(pow(tesoroX - origenX, 2) + pow(tesoroY - origenY, 2)); //Calcula la distancia en diagonal entre los dos puntos.
             if (menorDistancia > distancia) {
                 menorDistancia = distancia;

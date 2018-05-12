@@ -5,27 +5,41 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-
+/**
+ * Hilo que realiza los movimientos en el tablero de juego (Es parte del
+ * modelo).
+ *
+ * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
+ */
 public class ThreadActualizarTablero extends Thread {
-    private ModeloJuego modelo;
-    private boolean pausa = false;
-    private final int VELOCIDAD;
-    private final int PROBABILIDAD = 3;
 
+    private ModeloJuego modelo; //Modelo de juego.
+    private boolean pausa = false; //Indica que el juego está en pausa (Actualmente solo usado para evitar errores de concurrencia).
+    private final int VELOCIDAD; //Velocidad de juego (transferida desde el modelo).
+    private final int PROBABILIDAD = 3; //Probabilidad de aparición de un tesoro (X%).
+
+    /**
+     * Crea el hilo de tablero de juego.
+     *
+     * @param modelo Modelo de juego.
+     */
     public ThreadActualizarTablero(ModeloJuego modelo) {
         this.modelo = modelo;
         this.VELOCIDAD = this.modelo.getVELOCIDAD();
         this.setName("Tablero");
     }
 
+    /**
+     * Inicio del hilo del tablero.
+     */
     @Override
     public void run() {
-        Random aleatTesoro = new Random();
-        while (hayJugadores()) {
+        Random aleatTesoro = new Random(); //Usado para calcular la probabilidad de tesoro.
+        while (hayJugadores()) { //Si no hay jugadores se termina el hilo de juego.
             if (this.pausa) {
                 try {
-                    Thread.sleep(VELOCIDAD*2);
-                    this.pausa();
+                    Thread.sleep(VELOCIDAD * 2); //Espera dos ciclos de tablero para despausar otra vez (Para mantener la fluidez de juego).
+                    this.pausa(); //Quita la pausa y continúa el juego.
                 } catch (InterruptedException e) {
                     System.err.println("Error en hilo de tablero.");
                 }
@@ -45,7 +59,10 @@ public class ThreadActualizarTablero extends Thread {
                     this.modelo.generarTesoro();
                 }
             }
-            this.modelo.calcularMovimientoAutomatico();
+            this.modelo.calcularMovimientoAutomatico(); //Calcula las direcciones de los jugadores que estén en modo automático para el siguiente ciclo.
+            /*Existiría la posibilidad de incluir este cálculo en un hilo distinto, 
+              pero al ser un juego a pequeña escala (pocos jugadores) este cálculo no será pesado de hacer en un ciclo de juego.
+             */
             try {
                 Thread.sleep(this.VELOCIDAD);
             } catch (InterruptedException e) {
@@ -55,10 +72,17 @@ public class ThreadActualizarTablero extends Thread {
         }
     }
 
+    /**
+     * Pone en pausa el juego
+     */
     public void pausa() {
         this.pausa = !this.pausa;
     }
 
+    /**
+     * Evalúa si hay jugadores activos.
+     * @return True si hay jugadores en el mapa.
+     */
     private boolean hayJugadores() {
         return this.modelo.hayJugadores();
     }
