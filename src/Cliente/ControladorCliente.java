@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
  * Controlador del Cliente (MVC), el cual recibira todos los datos del Servidor 
  * y se los pasara a las vistas.
  * 
- *@author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
+ * @author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
  */
 public class ControladorCliente extends Observable {
     private int id;                     //Id de este cliente
