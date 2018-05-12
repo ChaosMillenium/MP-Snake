@@ -11,22 +11,19 @@ public class SelectorColor {
 
     private static final String[] SELECCIONCOLORES = { //Selección de colores
         "#ff0000",
-        "#d000ff",
-        "#00ff00",
-        "#00ff8c",
-        "#800000",
-        "#008cff",
-        "#0000ff",
-        "#7700ff",
-        "#ff00c7",
-        "#ff0066",
-        "#acbf00",
-        "#00ffff",
-        "#805300",
-        "#00800c",
-        "#008037",
-        "#800040",
-        "#068000"
+        
+        "#00ff00",//verde
+        "#8B7D7B",//marrón
+        "#FF4500",//azulOscuro
+        "#FF4500",//naranjaRojo
+        "#8A2BE2",//violeta
+        "#8B8B83",//marfil4
+        "#7FFFD4",//aguamarino
+        "#6B8E23",//oliva
+        "#FF00FF",//magenta
+        "#696969",//gris oscuro
+        "#D2691E",//chocolate
+       
     };
 
     /**
