@@ -53,7 +53,7 @@ public class Puntuacion extends javax.swing.JFrame implements Observer, ActionLi
     }// </editor-fold>//GEN-END:initComponents
 /**
  * Método que se actualiza cada vez que se llama la vista puntuación
- * @param o es el objeto que te envía, osea el controlador
+ * @param o es el objeto que te envía
  * @param arg es el mensaje
  */
     @Override
