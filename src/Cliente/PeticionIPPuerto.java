@@ -3,7 +3,10 @@ package Cliente;
 import java.awt.GridLayout;
 import javax.swing.*;
 public class PeticionIPPuerto {
-
+/**
+ *
+ *@author Iván Chicano Capelo, Daniel Diz Molinero, David Muñoz Alonso
+ */
     public static String[] pedirIPPuerto() throws NumberFormatException, NullPointerException {
         JTextField campoIP = new JTextField(3);
         JTextField campoPuerto = new JTextField(3);
